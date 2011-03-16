@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://smartfilters/locale/overlay.dtd">
+
+<overlay id="console2Overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript"><![CDATA[
+    function startSmartFilters(dir)
+    {
+      alert(dir);
+    }
+  ]]></script>
+
+  <popup id="folderPaneContext">
+    <menuitem id="smartFiltersMenu" label="&SmartFilters.title;" tooltiptext="&SmartFilters.tooltip;" oncommand="startSmartFilters(this);"/>
+  </popup>
+</overlay>
