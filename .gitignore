@@ -1,0 +1,6 @@
+# backup files
+*~
+# build artifacts
+chrome.jar
+install.rdf
+*.xpi
