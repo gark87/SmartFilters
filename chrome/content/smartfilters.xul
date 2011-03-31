@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<window
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    id="SmartFiltersWindow"
+    title="Oooops"
+    windowtype="global:SmartFilters"
+    width="640" height="480"
+    persist="width height screenX screenY sizemode zlevel"
+    onload="onLoad();"
+>
+  <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
+  <label id="status" value="(No status)" />
+  <hbox>
+    <progressmeter id="progressmeter" mode="determined" />
+    <button label="Cancel" oncommand="close();" />
+  </hbox>
+  <richlistbox id="SmartFiltersBox" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
+</window>
