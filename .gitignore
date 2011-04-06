@@ -1,6 +1,7 @@
 # backup files
 *~
 # build artifacts
+build
 chrome.jar
 install.rdf
 *.xpi

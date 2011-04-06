@@ -1,0 +1,20 @@
+dispMUA.arDispMUAAllocation["y"] =
+{
+  "yahoo groups message poster" : [ "yahoo.png" , "http://www.yahoo.com/" ] ,
+  "yet another newswatcher" : [ "ya-newswatcher.png" , "http://www.thothsw.com/yanw/" ] ,
+  "yet another mail client" : [ "yamc.png" , "http://www.borg-kindberg.ac.at/yamc/" ] ,
+  "yahoomailwebservice" : [ "yahoo.png" , "http://www.yahoo.com/" ] ,
+  "yahoomailclassic" : [ "yahoo.png" , "http://www.yahoo.com/" ] ,
+  "ya-newswatcher" : [ "ya-newswatcher.png" , "http://www.thothsw.com/yanw/" ] ,
+  "yourzine.nl" : [ "yourzine_nl.png" , "http://www.yourzine.nl/" ] ,
+  "yahoomailrc" : [ "yahoo.png" , "http://www.yahoo.com/" ] ,
+  "yandex.ru" : [ "yandex_ru.png" , "http://www.yandex.ru/" ] ,
+  "y.a.m.c.!" : [ "yamc.png" , "http://www.borg-kindberg.ac.at/yamc/" ] ,
+  "yamail" : [ "yandex_ru.png" , "http://www.yandex.ru/" ] ,
+  "yarn" : [ "yarn.png" , "http://www.vex.net/yarn/" ] ,
+  "yabb" : [ "yabb.png" , "http://www.yabbforum.com/" ] ,
+  "yum " : [ "yum.png" , "http://www.yum.de/" ] ,
+  "yams" : [ "yams.png" , "http://home.hccnet.nl/s.j.francke/yams/yams.htm" ] ,
+  "yam/" : [ "yam.png" , "http://www.yam.ch/" ] ,
+  "yam " : [ "yam.png" , "http://www.yam.ch/" ] ,
+}
