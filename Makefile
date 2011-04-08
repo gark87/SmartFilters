@@ -23,10 +23,9 @@ JAR=$(BCHROME)/$(CHROME).jar
 
 DISPMUA=dispmua
 SDISPMUA=$(SRC)/$(DISPMUA)
+DISPMUA_DATA=$(BCONTENT)/dispmua-data.js
 PROCESS_DISPMUA=$(SDISPMUA)/process.pl
 SRC_DISPMUA=$(shell find $(SDISPMUA) -type f -name "data-*.js")
-BUILD_DISPMUA=$(SRC_DISPMUA:$(SDISPMUA)/%=$(BCONTENT)/%)
-
 
 all: $(BUILD) $(XPI)
 
@@ -36,10 +35,10 @@ $(BMANIFEST): $(SMANIFEST)
 $(BUILD)/%: $(SRC)/%
 	cd $(SRC) && cp --parents $* ../$(BUILD)/
 
-$(BCONTENT)/%: $(SDISPMUA)/% $(PROCESS_DISPMUA)
-	$(PROCESS_DISPMUA) $(SDISPMUA)/$* > $@
+$(DISPMUA_DATA): $(PROCESS_DISPMUA) $(SRC_DISPMUA)
+	$(PROCESS_DISPMUA) $(SRC_DISPMUA) > $@
 
-$(JAR): $(BUILD_CHROMES) $(BUILD_DISPMUA)
+$(JAR): $(BUILD_CHROMES) $(DISPMUA_DATA)
 	cd $(BCHROME) && zip $(CHROME).jar -r *
 
 $(BUILD):

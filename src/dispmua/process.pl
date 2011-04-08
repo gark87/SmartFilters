@@ -13,6 +13,6 @@ sub isBot($) {
 
 while(<>) {
   s/\bdispMUA.arDispMUAAllocation\b/smartfilters_dispMUA.arDispMUAAllocation/og;
-  s/^(\s*"(([^"]|\\")*)"\s*:\s*)\[.*$/$1.isBot($2)/oe;
+  s/^(\s*"(([^"]|\\")*)"\s*:\s*)\[.*$/$1.isBot($2).','/oe;
   print;
 }

@@ -6,7 +6,6 @@ var messages = [];
 function onLoad() {
   gStatus = document.getElementById("status");
   gProgressMeter = document.getElementById("progressmeter");
-
   var uri = window.arguments[0].folderURI;
   var folder = GetMsgFolderFromUri(uri, false);
   var database = folder.getDBFolderInfoAndDB({});
@@ -15,6 +14,8 @@ function onLoad() {
     if (header instanceof Components.interfaces.nsIMsgDBHdr) {
       messages[allMessages] = header;
       allMessages++;
+      smartfilters_dispMUA.searchIcon(header);
+
       if (allMessages >= MAX)
         break;
     }

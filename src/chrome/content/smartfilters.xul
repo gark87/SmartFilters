@@ -10,6 +10,7 @@
 >
   <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-smartfilters.js"/>
   <label id="status" value="(No status)" />
   <hbox>
     <progressmeter id="progressmeter" mode="determined" />
