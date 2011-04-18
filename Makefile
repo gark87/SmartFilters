@@ -8,7 +8,7 @@ XPI=$(BUILD)/$(PROJECT)-$(VERSION).xpi
 CHROME=chrome
 BCHROME=$(BUILD)/$(CHROME)
 BCONTENT=$(BCHROME)/content
-SRC_CHROMES=$(shell find $(SRC)/$(CHROME) -name "*.js" -o -name "*.xul" -o -name "*.dtd")
+SRC_CHROMES=$(shell find $(SRC)/$(CHROME) -type f -a -not -name "*~")
 BUILD_CHROMES=$(SRC_CHROMES:$(SRC)/%=$(BUILD)/%)
 
 MANIFEST=chrome.manifest
@@ -47,8 +47,8 @@ $(BUILD):
 $(XPI): $(JAR) $(BRDF) $(BMANIFEST)
 	cd $(BUILD) && zip $(PROJECT)-${VERSION}.xpi -r $(MANIFEST) $(RDF) $(CHROME)
 
-clean:
-	rm -rf $(BUILD)
-
 $(BRDF): $(BASEVER) $(RDF_PRE)
 	sed -e "s/BASEVER/${VERSION}/g;" $(RDF_PRE) > $(BRDF)
+
+clean:
+	rm -rf $(BUILD)
