@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
+<?xml-stylesheet href="chrome://smartfilters/content/smartfilters.css" type="text/css"?>
 <window
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     id="SmartFiltersWindow"
     title="Oooops"
     windowtype="global:SmartFilters"
-    width="640" height="480"
     persist="width height screenX screenY sizemode zlevel"
     onload="onLoad();"
 >
@@ -12,9 +12,13 @@
   <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-smartfilters.js"/>
   <label id="status" value="(No status)" />
-  <hbox>
-    <progressmeter id="progressmeter" mode="determined" />
-    <button label="Cancel" oncommand="close();" />
-  </hbox>
-  <richlistbox id="SmartFiltersBox" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
+  <vbox>
+    <column>
+      <hbox>
+        <progressmeter id="progressmeter" mode="determined" />
+        <button label="Cancel" oncommand="close();" />
+      </hbox>
+    </column>
+    <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
+  </vbox>
 </window>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<bindings id="smartFiltersBindings" xmlns="http://www.mozilla.org/xbl" xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:xbl="http://www.mozilla.org/xbl">
+  <binding id="box" extends="chrome://global/content/bindings/richlistbox.xml#richlistbox">
+    <implementation>
+      <method name="createConsoleRow">
+        <parameter name="aMessage"/>
+        <parameter name="aType"/>
+        <body><![CDATA[
+          var item = document.createElement("richlistitem");
+
+          item.setAttribute("class", "smartfilters-item");
+          item.setAttribute("msg", aMessage);
+
+          return item;
+        ]]></body>
+      </method>
+    </implementation>
+  </binding>
+
+  <binding id="item" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
+    <content>
+      <xul:box flex="1">
+        <xul:box class="smartfilters-row-icon" xbl:inherits="selected">
+          <xul:image xbl:inherits="src,type"/>
+        </xul:box>
+        <xul:vbox class="smartfilters-row-content" flex="1">
+          <xul:label xbl:inherits="xbl:text=msg" flex="1"/>
+        </xul:vbox>
+      </xul:box>
+    </content>
+  </binding>
+</bindings>

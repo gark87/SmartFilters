@@ -21,6 +21,10 @@ function onLoad() {
     }
   }
   document.title = "SmartFiltering " + folder.name;
+  var box = document.getElementById("smartfilters-box");
+  box.appendChild(box.createConsoleRow("oooohh", "bot"));
+  box.appendChild(box.createConsoleRow("dddsss", "bot"));
+  box.appendChild(box.createConsoleRow("lalala", "bot"));
 }
 
 function setProgress(processed) {
@@ -30,3 +34,4 @@ function setProgress(processed) {
 function setStatus(text) {
   gStatus.value = "Status: " + text + "...";
 }
+
