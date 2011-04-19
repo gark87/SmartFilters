@@ -22,9 +22,6 @@ smartfilters_dispMUA.getHeader = function ( key )
   if ( value == null )
   {
     value = "" ;
-  } else {
-    if (value != "")
-         alert("key/value = "+ key +" / "+ value);
   }
 
   return ( value ) ;
@@ -182,7 +179,6 @@ smartfilters_dispMUA.searchIcon = function ( header )
 //    smartfilters_dispMUA.getInfo ( "Message-ID" , "message-id" ) ;
   }
 
-  alert(smartfilters_dispMUA.Info["FOUND"]);
   return smartfilters_dispMUA.Info;
 }
 smartfilters_dispMUA.scan = function ( index , value )
