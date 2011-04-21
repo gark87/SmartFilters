@@ -21,12 +21,9 @@
   <binding id="item" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
     <content>
       <xul:box flex="1">
-        <xul:box class="smartfilters-row-icon" xbl:inherits="selected">
-          <xul:image xbl:inherits="src,type"/>
-        </xul:box>
-        <xul:vbox class="smartfilters-row-content" flex="1">
+          <xul:image class="smartfilters-row-icon" xbl:inherits="src,type"/>
           <xul:label xbl:inherits="xbl:text=msg" flex="1"/>
-        </xul:vbox>
+          <xul:checkbox checked="true" flex="0"/>
       </xul:box>
     </content>
   </binding>

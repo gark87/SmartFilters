@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://smartfilters/content/smartfilters.css" type="text/css"?>
 <window
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -14,11 +15,16 @@
   <label id="status" value="(No status)" />
   <vbox>
     <column>
+      <progressmeter id="progressmeter" mode="determined" />
+    </column>
+    <column>
+      <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
+    </column>
+    <column>
       <hbox>
-        <progressmeter id="progressmeter" mode="determined" />
         <button label="Cancel" oncommand="close();" />
+        <button label="Apply" oncommand="var box = document.getElementById('smartfilters-box');   box.appendChild(box.createConsoleRow('lalala', 'bot'));" />
       </hbox>
     </column>
-    <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
   </vbox>
 </window>
