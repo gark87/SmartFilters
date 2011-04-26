@@ -23,7 +23,7 @@
     <column>
       <hbox>
         <button label="Cancel" oncommand="close();" />
-        <button label="Apply" oncommand="var box = document.getElementById('smartfilters-box');   box.appendChild(box.createConsoleRow('lalala', 'bot'));" />
+        <button label="Apply" oncommand="apply();" />
       </hbox>
     </column>
   </vbox>

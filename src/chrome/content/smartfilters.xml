@@ -11,6 +11,7 @@
 
           item.setAttribute("class", "smartfilters-item");
           item.setAttribute("msg", aMessage);
+          item.setAttribute("checked", "false");
 
           return item;
         ]]></body>
@@ -19,11 +20,21 @@
   </binding>
 
   <binding id="item" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
+    <implementation>
+      <method name="_needsToApply" >
+        <body><![CDATA[
+          var checkbox = document.getAnonymousElementByAttribute(this,
+                                "anonid", "smartfilters-checkbox");
+          return checkbox.getAttribute("checked");
+        ]]></body>
+      </method>
+    </implementation>
     <content>
       <xul:box flex="1">
           <xul:image class="smartfilters-row-icon" xbl:inherits="src,type"/>
-          <xul:label xbl:inherits="xbl:text=msg" flex="1"/>
-          <xul:checkbox checked="true" flex="0"/>
+          <xul:label xbl:inherits="xbl:text=msg"/>
+          <xul:spacer flex="99999" />
+          <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
       </xul:box>
     </content>
   </binding>

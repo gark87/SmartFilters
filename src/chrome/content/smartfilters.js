@@ -2,12 +2,13 @@ const MAX = 1000;
 
 var allMessages = 0;
 var messages = [];
+var folder = null;
 
 function onLoad() {
   gStatus = document.getElementById("status");
   gProgressMeter = document.getElementById("progressmeter");
   var uri = window.arguments[0].folderURI;
-  var folder = GetMsgFolderFromUri(uri, false);
+  folder = GetMsgFolderFromUri(uri, false);
   var database = folder.getDBFolderInfoAndDB({});
   for(var enumerator = database.EnumerateMessages(); enumerator.hasMoreElements(); ) {
     var header = enumerator.getNext();
@@ -22,9 +23,36 @@ function onLoad() {
   }
   document.title = "SmartFiltering " + folder.name;
   var box = document.getElementById("smartfilters-box");
-  box.appendChild(box.createConsoleRow("oooohh", "bot"));
-  box.appendChild(box.createConsoleRow("dddsss", "bot"));
-  box.appendChild(box.createConsoleRow("lalala", "bot"));
+/*  var worker = new Worker("chrome://smartfilters/content/worker.js");
+  worker.onerror = function(error) {
+    alert("error: " + error);
+  }
+
+  worker.onmessage = function(event) {
+    alert("message: " + event);
+  }
+
+  worker.postMessage(folder);
+  */
+}
+
+function apply() {
+  var filtersList = folder.getFilterList(null);
+  var box = document.getElementById("smartfilters-box");
+  var items = box.childNodes;
+  for (var i = 0 ; i < items.length; i++) {
+    var item = items[i];
+    var checkbox = document.getAnonymousElementByAttribute(item,
+                                "anonid", "smartfilters-checkbox");
+    if (!checkbox.checked)
+      continue;
+
+    var newFilter = filtersList.createFilter(item.getAttribute("msg"));
+    newFilter.enabled = true;
+    filtersList.insertFilterAt(filtersList.filterCount, newFilter);
+  }
+  filtersList.saveToDefaultFile();
+  close();
 }
 
 function setProgress(processed) {
