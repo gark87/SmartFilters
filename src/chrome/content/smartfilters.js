@@ -22,7 +22,7 @@ function onLoad() {
     }
   }
   document.title = "SmartFiltering " + folder.name;
-  var box = document.getElementById("smartfilters-box");
+  setStatus("Looking for mailing bots");
 /*  var worker = new Worker("chrome://smartfilters/content/worker.js");
   worker.onerror = function(error) {
     alert("error: " + error);
@@ -34,6 +34,13 @@ function onLoad() {
 
   worker.postMessage(folder);
   */
+}
+
+function stop() {
+  var box = document.getElementById("smartfilters-box");
+  box.appendChild(box.createConsoleRow("oooohh", "bot", 23));
+  box.appendChild(box.createConsoleRow("dddsss", "bot", 34));
+  box.appendChild(box.createConsoleRow("lalala", "bot", 17));
 }
 
 function apply() {
