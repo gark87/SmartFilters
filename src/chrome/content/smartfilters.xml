@@ -3,9 +3,9 @@
 <bindings id="smartFiltersBindings" xmlns="http://www.mozilla.org/xbl" xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:xbl="http://www.mozilla.org/xbl">
   <binding id="box" extends="chrome://global/content/bindings/richlistbox.xml#richlistbox">
     <implementation>
-      <method name="createConsoleRow">
+      <method name="createRow">
         <parameter name="aMessage"/>
-        <parameter name="aType"/>
+        <parameter name="icons"/>
         <parameter name="aPercent"/>
         <body><![CDATA[
           var item = document.createElement("richlistitem");
@@ -14,30 +14,30 @@
           item.setAttribute("msg", aMessage);
           item.setAttribute("percent", aPercent + "%");
           item.setAttribute("checked", "false");
+          this.appendChild(item);
 
-          return item;
+          // add all needed icons
+          var iconBox = document.getAnonymousElementByAttribute(item,
+                                        "anonid", "smartfilters-icon-box");
+          for (var i = 0; i < icons.length; i++) {
+            var icon = document.createElement('image');
+            icon.setAttribute('class', 'smartfilters-row-icon');
+            iconBox.appendChild(icon);
+          }
+          return;
         ]]></body>
       </method>
     </implementation>
   </binding>
 
   <binding id="item" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
-    <implementation>
-      <method name="_needsToApply" >
-        <body><![CDATA[
-          var checkbox = document.getAnonymousElementByAttribute(this,
-                                "anonid", "smartfilters-checkbox");
-          return checkbox.getAttribute("checked");
-        ]]></body>
-      </method>
-    </implementation>
     <content>
       <xul:box flex="1">
-          <xul:image class="smartfilters-row-icon" xbl:inherits="src,type"/>
-          <xul:label xbl:inherits="xbl:text=msg"/>
-          <xul:spacer flex="99999" />
-          <xul:label xbl:inherits="xbl:text=percent"/>
-          <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
+        <xul:box anonid="smartfilters-icon-box" />
+        <xul:label xbl:inherits="xbl:text=msg"/>
+        <xul:spacer flex="99999" />
+        <xul:label xbl:inherits="xbl:text=percent"/>
+        <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
       </xul:box>
     </content>
   </binding>

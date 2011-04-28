@@ -38,9 +38,9 @@ function onLoad() {
 
 function stop() {
   var box = document.getElementById("smartfilters-box");
-  box.appendChild(box.createConsoleRow("oooohh", "bot", 23));
-  box.appendChild(box.createConsoleRow("dddsss", "bot", 34));
-  box.appendChild(box.createConsoleRow("lalala", "bot", 17));
+  box.createRow("oooohh", [ "bot" ], 23);
+  box.createRow("ddddssss", [ "bot", "qwe" ], 1);
+  box.createRow("lalala", [ "bot", "1", "asdas" ], 99);
 }
 
 function apply() {
