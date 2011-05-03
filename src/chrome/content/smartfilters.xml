@@ -1,7 +1,15 @@
 <?xml version="1.0"?>
 
-<bindings id="smartFiltersBindings" xmlns="http://www.mozilla.org/xbl" xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:xbl="http://www.mozilla.org/xbl">
+<bindings id="smartFiltersBindings"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          xmlns:xbl="http://www.mozilla.org/xbl">
   <binding id="box" extends="chrome://global/content/bindings/richlistbox.xml#richlistbox">
+    <content>
+      <xul:scrollbox style="overflow:auto;" orient="vertical" flex="1">
+        <children/>
+      </xul:scrollbox>
+    </content>
     <implementation>
       <method name="createRow">
         <parameter name="aMessage"/>
