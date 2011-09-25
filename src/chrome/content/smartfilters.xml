@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!DOCTYPE bindings SYSTEM "chrome://smartfilters/locale/smartfilters.dtd">
 
 <bindings id="smartFiltersBindings"
           xmlns="http://www.mozilla.org/xbl"
@@ -6,32 +7,36 @@
           xmlns:xbl="http://www.mozilla.org/xbl">
   <binding id="box" extends="chrome://global/content/bindings/richlistbox.xml#richlistbox">
     <content>
-      <xul:scrollbox style="overflow:auto;" orient="vertical" flex="1">
-        <children/>
-      </xul:scrollbox>
+    <xul:scrollbox style="overflow:auto;" orient="vertical" flex="1" anonid="main-box">
+      <children/>
+    </xul:scrollbox>
     </content>
     <implementation>
       <method name="createRow">
-        <parameter name="aMessage"/>
-        <parameter name="icons"/>
-        <parameter name="aPercent"/>
+        <parameter name="view"/>
+        <parameter name="data"/>
         <body><![CDATA[
           var item = document.createElement("richlistitem");
 
+          // set right class
           item.setAttribute("class", "smartfilters-item");
-          item.setAttribute("msg", aMessage);
-          item.setAttribute("percent", aPercent + "%");
-          item.setAttribute("checked", "false");
           this.appendChild(item);
-
+          // set view properties
+          item.setAttribute("msg", view.message);
+          item.setAttribute("percent", view.percent + "%");
+          item.setAttribute("folder", view.folder);
           // add all needed icons
-          var iconBox = document.getAnonymousElementByAttribute(item,
-                                        "anonid", "smartfilters-icon-box");
-          for (var i = 0; i < icons.length; i++) {
+          var iconBox = document.getAnonymousElementByAttribute(item, "anonid",
+              "smartfilters-iconbox");
+          for (var i = 0; i < view.icons.length; i++) {
             var icon = document.createElement('image');
             icon.setAttribute('class', 'smartfilters-row-icon');
             iconBox.appendChild(icon);
           }
+          item.setAttribute("checked", "false");
+          // save data
+          item.data = data;
+
           return;
         ]]></body>
       </method>
@@ -40,13 +45,22 @@
 
   <binding id="item" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
     <content>
-      <xul:box flex="1">
-        <xul:box anonid="smartfilters-icon-box" />
-        <xul:label xbl:inherits="xbl:text=msg"/>
-        <xul:spacer flex="99999" />
-        <xul:label xbl:inherits="xbl:text=percent"/>
-        <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
-      </xul:box>
+      <xul:vbox flex="99999">
+        <xul:box>
+          <xul:box anonid="smartfilters-iconbox">
+            <children />
+          </xul:box>
+          <xul:label xbl:inherits="xbl:text=msg"/>
+          <xul:spacer flex="99999" />
+<!--          <xul:label xbl:inherits="xbl:text=percent" crop="center"/> -->
+        </xul:box>
+        <xul:box>
+          <xul:label value="&move.to.folder;"/>
+          <xul:textbox flex="1" xbl:inherits="value=folder" anonid="smartfilters-folder"/>
+          <xul:spacer flex="99999" />
+        </xul:box>
+      </xul:vbox>
+      <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
     </content>
   </binding>
 </bindings>

@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!DOCTYPE bindings SYSTEM "chrome://smartfilters/locale/smartfilters.dtd">
+
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://smartfilters/content/smartfilters.css" type="text/css"?>
 <window
@@ -10,16 +12,20 @@
     onload="onLoad();"
 >
   <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
+  <script type="application/x-javascript" src="chrome://messenger/content/mailWindowOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/mailing-list.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-smartfilters.js"/>
   <label id="status" value="(Before start)" />
   <hbox>
     <progressmeter id="progressmeter" mode="determined" flex="999" />
-    <button label="Stop" oncommand="stop();" />
+    <button label="&stop.button;" oncommand="stop();" />
+    <button label="&select.all.button;" oncommand="selectAll(true);" />
+    <button label="&unselect.all.button;" oncommand="selectAll(false);" />
   </hbox>
   <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
   <hbox>
-    <button label="Cancel" oncommand="close();" />
-    <button label="Apply" oncommand="apply();" />
+    <button label="&cancel.button;" oncommand="close();" />
+    <button label="&apply.button;" oncommand="apply();" />
   </hbox>
 </window>
