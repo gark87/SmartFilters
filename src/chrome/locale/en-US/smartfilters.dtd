@@ -1,0 +1,8 @@
+<!ENTITY move.to.folder "Create new folder and filter with name:"> 
+<!ENTITY mailing.list "Mailing List">
+<!-- buttons -->
+<!ENTITY stop.button "Stop">
+<!ENTITY select.all.button "Select All">
+<!ENTITY unselect.all.button "Unselect All">
+<!ENTITY cancel.button "Cancel">
+<!ENTITY apply.button "Apply">
