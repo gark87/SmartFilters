@@ -13,6 +13,7 @@
 >
   <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
   <script type="application/x-javascript" src="chrome://messenger/content/mailWindowOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/hashset.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/mailing-list.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-smartfilters.js"/>

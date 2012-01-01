@@ -1,5 +1,10 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
+/* combobox */
+.combobox {
+	-moz-binding: url("chrome://smartfilters/content/smartfilters.xml#combobox");
+}
+
 /* richlistbox */
 .smartfilters-box {
 	-moz-binding: url("chrome://smartfilters/content/smartfilters.xml#box");

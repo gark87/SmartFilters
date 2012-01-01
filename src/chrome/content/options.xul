@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE options SYSTEM "chrome://smartfilters/locale/options.dtd">
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://smartfilters/content/smartfilters.css"     type="text/css"?>
+
+<prefwindow 
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    style="height:480px; width:640px"
+    >
+  <prefpane id="globals" label="&global.pane.title;">
+    <preferences>
+      <preference id="filter.1" name="smartfilters.filter.1" type="string"/>
+      <preference id="filter.2" name="smartfilters.filter.2" type="string"/>
+    </preferences>
+    <description style="white-space: pre-wrap">
+    &common.description;
+    </description>
+    <menulist preference="filter.1">
+      <menupopup>
+	<menuitem label="&mailing.list;" value="mailing list"/>
+	<menuitem label="Nothing" value="nothing"/>
+      </menupopup>
+    </menulist>
+    <menulist preference="filter.2">
+      <menupopup>
+	<menuitem label="&mailing.list;" value="mailing list"/>
+	<menuitem label="Nothing" value="nothing"/>
+      </menupopup>
+    </menulist>
+  </prefpane>
+  <prefpane id="mailing-list" label="&mailing.list;"
+    image="chrome://smartfilters/skin/classic/bot.png">
+    <preferences>
+      <preference id="mailing.list.pattern" name="smartfilters.mailing.list.pattern" type="string"/>
+    </preferences>
+    <hbox>
+      <label value="Folder pattern:"/>
+      <textbox preference="mailing.list.pattern"/>
+    </hbox>
+    <description style="white-space: pre-wrap">
+    &mailing.list.notation;
+    `.'  - &mailing.list.dot;
+    `%u' - &mailing.list.user;
+    `%d' - &mailing.list.domain;
+    `%f' - &mailing.list.folder;
+    </description>
+    <description>&mailing.list.example;</description>
+  </prefpane>
+</prefwindow>
+

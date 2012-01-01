@@ -9,6 +9,14 @@ var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
              getService(Components.interfaces.nsIStringBundleService).
              createBundle("chrome://smartfilters/locale/smartfilters.properties");
 
+var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+           .getService(Components.interfaces.nsIPrefService)
+	   .getBranch("smartfilters.");
+
+var filtersMap = {
+  "mailing list" : MailingListUtil,
+};
+
 function onLoad() {
   gStatus = document.getElementById("status");
   gProgressMeter = document.getElementById("progressmeter");
@@ -39,17 +47,17 @@ function onLoad() {
   }
   document.title = locale.GetStringFromName("title") + folder.name;
   setStatus("Looking for mailing bots");
-  mailingListProcessor();
-  var worker = new Worker("chrome://smartfilters/content/worker.js");
-  worker.onerror = function(error) {
-    alert("error: " + error);
+  var obj = {};
+  prefs.getChildList("filter.", obj);
+  for (var i = 1; i <= obj.value; i++) {
+    var pref = prefs.getCharPref("filter." + i);
+    var filt = filtersMap[pref];
+    alert(i + " - " + pref + " = " + filt);
+    if (filt) {
+      var a = new filt(messages); 
+      a.process();
+    }
   }
-
-  worker.onmessage = function(event) {
-    alert("message: " + event);
-  }
-
-  worker.postMessage(folder);
 }
 
 var hdrParser = Components.classes["@mozilla.org/messenger/headerparser;1"]
