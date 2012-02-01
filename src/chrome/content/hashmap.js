@@ -1,14 +1,18 @@
 ///////////////////////////////////////////////
 // Hash set
 ///////////////////////////////////////////////
-function HashSet() {
+function HashMap() {
   var size = 0;
   var _map = new Object();
 
-  this.put = function(k) {
+  this.add = function(k) {
+    this.put(k, 1);
+  }
+
+  this.put = function(k, v) {
     if (_map[k] == undefined)
       size++;
-    _map[k] = 1;
+    _map[k] = v;
   }
 
   this.remove = function(k) {
@@ -21,9 +25,9 @@ function HashSet() {
     return _map[k];
   }
 
-  this.foreach = function(func) {
+  this.foreach = function(func, obj) {
     for (var prop in _map)
-      func(prop);
+      (func).call(obj, prop);
   }
 
   this.keys = function() {
