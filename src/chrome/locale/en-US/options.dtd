@@ -2,6 +2,8 @@
 <!ENTITY use.mailing.list   "Use mailing list SmartFilter">
 <!ENTITY common.description "Order of SmartFilters: ">
 
+
+<!ENTITY robot "Robot">
 <!ENTITY mailing.list "Mailing List">
 <!ENTITY mailing.list.notation  "The following notation can be used:">
 <!ENTITY mailing.list.dot "dot stands for folder separator">

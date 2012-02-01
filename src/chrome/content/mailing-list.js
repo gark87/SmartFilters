@@ -1,88 +1,103 @@
 ///////////////////////////////////////////////
-// mailing list filter
+// mailing list SmartFilter processor
 ///////////////////////////////////////////////
-function MailingListUtil(messages) {
-  this.map = {};
-  this.regularMails = [];
-  for(var i = 0 ; i < messages.length; i++) {
-    var message = messages[i];
-    // collect recipients(To: and CC:)
-    var recipients = {};
-    processAddressList(message.ccList, recipients);
-    processAddressList(message.recipients, recipients);
-    // collect author(From:)
-    var authors = {};
-    processAddressList(message.author, authors);
-    // user is one of the recipients - that's how we get this email
-    if (searchArrayInMap(myEmails, recipients)) {
-      this.regularMails.push(i);
-      continue;
+
+function MailingListUtil() {
+  // fields
+  this.recipient2indices = {};
+  this.mailing_list_100 = new HashMap();
+
+  this.process = function(prevResult) {
+    this.init(prevResult, "mailing list", function(i, message) {
+      // collect recipients(To: and CC:)
+      var recipients = new HashMap();
+      Util.processAddressList(message.ccList, recipients);
+      Util.processAddressList(message.recipients, recipients);
+      // collect author(From:)
+      var authors = new HashMap();
+      Util.processAddressList(message.author, authors);
+      // user is one of the recipients - that's how we get this email
+      if (Util.searchArrayInSet(myEmails, recipients)) {
+        this.regularMails.push(i);
+        return;
+      }
+      // user is the author - that's how we get this email
+      if (Util.searchArrayInSet(myEmails, authors)) {
+        this.regularMails.push(i);
+        return;
+      }
+      // the only one recipient means that it's 100% mailing list
+      if (recipients.getSize() == 1)
+        this.mailing_list_100.add(recipients.keys().pop());
+      // more than one - lets count them.
+      recipients.foreach(function (recipient) {
+        var indices = this.recipient2indices[recipient];
+        if (indices == undefined)
+          indices = this.recipient2indices[recipient] = new HashMap();
+        indices.add(i);
+      }, this);
+    });
+
+    var recipient2indices = this.recipient2indices;
+    var results = this.createReturnArray(this.regularMails);
+    // first of all: process 100% mailing list
+    this.mailing_list_100.foreach(function(email) {
+      var set = recipient2indices[email];
+      var result = new SmartFiltersResult(set.keys(), this.icons, this.prevMessage + email, this.prevFolder + email, this.createFilterTerm);
+      results.push(result);
+      for (var key in recipient2indices) {
+        if (key == email)
+          continue;
+        var hashSet = recipient2indices[key];
+        set.foreach(function(prop) { hashSet.remove(prop); });
+      }
+      delete recipient2indices[email];
+    }, this);
+    // init keys array to sort and track
+    var keys = [];
+    for (var key in recipient2indices)
+      keys.push(key);
+    while(keys.length > 0) {
+      // sort keys array by number of element in set
+      keys.sort(function (a,b) {
+        return recipient2indices[a].getSize() - recipient2indices[b].getSize();
+      });
+      // biggest set
+      var biggestKey = keys[keys.length - 1];
+      var biggestSet = recipient2indices[biggestKey];
+      var biggestSize = biggestSet.getSize();
+      if (biggestSize == 0)
+        break;
+
+      results.push(new SmartFiltersResult(biggestSet.keys(), this.icons,
+            this.prevMessage + biggestKey, this.prevFolder + biggestKey,
+            this.createFilterTerm));
+      // remove biggest set elements from other sets
+      for (var i = 0; i < keys.length; i++) {
+        var hashSet = recipient2indices[keys[i]];
+        biggestSet.foreach(function(prop) { hashSet.remove(prop); });
+      }
+      delete recipient2indices[biggestKey];
+      keys.splice(keys.length - 1, 1);
     }
-    // user is the author - that's how we get this email
-    if (searchArrayInMap(myEmails, authors)) {
-      this.regularMails.push(i);
-      continue;
-    }
-    for (var recipient in recipients) {
-      var indeces = this.map[recipient];
-      if (indeces == undefined)
-        indeces = this.map[recipient] = new HashSet(); 
-      indeces.put(i);
-    }
-  }
+    return results;
+  };
 }
 
+MailingListUtil.prototype = new Util();
+MailingListUtil.prototype.constructor = MailingListUtil;
 
-MailingListUtil.prototype.process = function() {
-  var map = this.map;
-  // init keys array to sort and track
-  var keys = [];
-  for (var key in map) 
-    keys.push(key);
-  var result = [];
-  while(keys.length > 0) {
-    // sort keys array by number of element in set
-    keys.sort(function (a,b) {
-        return map[a].getSize() - map[b].getSize();
-        });
-    // biggest set
-    var biggestKey = keys[keys.length - 1];
-    var biggestSet = map[biggestKey];
-    var biggestSize = biggestSet.getSize();
-    if (biggestSize == 0)
-      break;
+MailingListUtil.prototype.createFilterTerm = function(filter) {
+  var term = filter.createTerm();
 
-    // remove biggest set elements from other sets
-    for (var i = 0; i < keys.length; i++) {
-      var hashSet = map[keys[i]];	
-      biggestSet.foreach(function(prop) { hashSet.remove(prop); });
-    }
-    var view = {
-      icons   : [ "mailing list" ],
-      message : biggestKey,
-      folder  : biggestKey,
-      emails  : biggestSize,
-    };
-    var data = {
-      email            : biggestKey, 
-      createFilterTerm : function createFilterTerm(filter) {
-        var term = filter.createTerm();
+  term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
+  term.op = Components.interfaces.nsMsgSearchOp.Contains;
+  term.booleanAnd = true;
 
-        term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
-        term.op = Components.interfaces.nsMsgSearchOp.Contains;
-        term.booleanAnd = true;
+  var termValue = term.value;
+  termValue.attrib = term.attrib;
+  termValue.str = this.email;
 
-        var termValue = term.value;
-        termValue.attrib = term.attrib;
-        termValue.str = this.email;
-
-        term.value = termValue;
-        filter.appendTerm(term);
-      }
-    };
-    box.createRow(view, data);
-    result.push({});
-    keys.splice(keys.length - 1, 1);
-    delete map[biggestKey];
-  }
+  term.value = termValue;
+  filter.appendTerm(term);
 }

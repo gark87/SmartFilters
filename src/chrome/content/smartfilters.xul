@@ -11,12 +11,18 @@
     persist="width height screenX screenY sizemode zlevel"
     onload="onLoad();"
 >
+  <!-- system scripts-->
   <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
   <script type="application/x-javascript" src="chrome://messenger/content/mailWindowOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://smartfilters/content/hashset.js"/>
+  <script type="application/x-javascript" src="chrome://messenger/content/ispUtils.js" />
+  <!-- my scripts -->
+  <script type="application/x-javascript" src="chrome://smartfilters/content/hashmap.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/result.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/util.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/mailing-list.js"/>
-  <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-smartfilters.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-data.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <label id="status" value="(Before start)" />
   <hbox>
     <progressmeter id="progressmeter" mode="determined" flex="999" />

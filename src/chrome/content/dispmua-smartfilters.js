@@ -1,203 +1,110 @@
-/**
- * This file logic was copied from dispMUA project and changed a bit.
- */
+///////////////////////////////////////////////
+// bot(dispmua) filter
+///////////////////////////////////////////////
+RobotUtil.prototype = new Util();
+RobotUtil.prototype.constructor = RobotUtil;
 
-// declare var for data
-var smartfilters_dispMUA = {
-  arDispMUAAllocation : new Array(),
-  header: null,
-  Info : {},
-}
+function RobotUtil(prevResult) {
+  this.domain2map = new HashMap();
 
-// load data
-var scriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-                             .getService(Components.interfaces.mozIJSSubScriptLoader);
-scriptLoader.loadSubScript("chrome://smartfilters/content/dispmua-data.js");
-
-// methods
-smartfilters_dispMUA.getHeader = function ( key )
-{
-  var value = smartfilters_dispMUA.header.getProperty ( key ) ;
-
-  if ( value == null )
-  {
-    value = "" ;
-  }
-
-  return ( value ) ;
-}
-smartfilters_dispMUA.searchIcon = function ( header )
-{
-  smartfilters_dispMUA.header = header;
-  var strUserAgent = "";
-  if ( ! strUserAgent )
-  {
-    strUserAgent = smartfilters_dispMUA.getHeader ( "user-agent" ) ;
-  }
-
-  if ( ! strUserAgent )
-  {
-    strUserAgent = smartfilters_dispMUA.getHeader ( "x-mailer" ) ;
-
-    if ( ! strUserAgent )
-    {
-      strUserAgent = smartfilters_dispMUA.getHeader ( "x-newsreader" ) ;
-    }
-  }
-
-  var strExtra = "" ;
-
-  if ( smartfilters_dispMUA.getHeader ( "x-bugzilla-reason" ) )
-  {
-    strExtra = "bugzilla" ;
-  }
-  else if ( smartfilters_dispMUA.getHeader ( "x-php-bug" ) )
-  {
-    strExtra = "phpbug" ;
-  }
-
-  strUserAgent = strUserAgent.replace ( /(^\s+)|(\s+$)/g , "" ) ;
-  smartfilters_dispMUA.Info["STRING"] = "" ;
-  smartfilters_dispMUA.setInfo ( false , [] ) ;
-
-  if ( strUserAgent != "" )
-  {
-    smartfilters_dispMUA.Info["STRING"] = strUserAgent ;
-    var lower = strUserAgent.toLowerCase() ;
-
-    //user overlay array
-    for ( var key in smartfilters_dispMUA.arDispMUAOverlay )
-    {
-      if ( lower.indexOf ( key ) > -1 )
-      {
-        //an overlay icon already has the full path in it, including the protocol
-        smartfilters_dispMUA.Info["PATH"] = "" ;
-        smartfilters_dispMUA.Info["ICON"] = smartfilters_dispMUA.arDispMUAOverlay[key] ;
-        //that the user knows he made the crap
-        smartfilters_dispMUA.Info["STRING"] = strUserAgent + "\n" +
-                                 "User override icon" + "\n" +
-                                 "Key: " + key + "\n" +
-                                 "Icon: " + smartfilters_dispMUA.Info["ICON"] ;
-        smartfilters_dispMUA.Info["FOUND"] = true ;
-        break ;
+  this.process = function(prevResult) {
+    this.init(prevResult, "robot", function(i, message) {
+      // collect author(From:)
+      var authors = new HashMap();
+      Util.processAddressList(message.author, authors);
+      // user is the author - not a robot
+      if (Util.searchArrayInSet(myEmails, authors)) {
+        this.regularMails.push(i);
+//        return;
       }
-    }
-
-    if ( !smartfilters_dispMUA.Info["FOUND"] )
-    {
-      for ( var key in smartfilters_dispMUA.arDispMUAAllocation["fullmatch"] )
-      {
-        if ( lower == key )
-        {
-          smartfilters_dispMUA.setInfo ( true , smartfilters_dispMUA.arDispMUAAllocation["fullmatch"][key] ) ;
-          break ;
+      var author = getEmailInfo(authors.keys()[0]);
+      var lower = message.messageId.toLowerCase();
+      var createIfNeeded = function(messageId) {
+        var id2map = this.domain2map.get(author.domain);
+        if (id2map == undefined) {
+          this.domain2map.put(author.domain, id2map = new HashMap());
+        }
+        var name2index = id2map.get(messageId);
+        if (name2index == undefined) {
+          id2map.put(messageId, name2index = new HashMap());
+        }
+        var indices = name2index.get(author.username);
+        if (indices == undefined) {
+          name2index.put(author.username, indices = new Array());
+        }
+        return indices;
+      };
+      for (var key in RobotUtil.smartfilters_dispMUA['message-id']) {
+        if (lower.indexOf(key) > -1) {
+          createIfNeeded.call(this, key).push(i);
+          return;
         }
       }
-    }
-
-    if ( !smartfilters_dispMUA.Info["FOUND"] )
-    {
-      smartfilters_dispMUA.scan ( "presearch" , strUserAgent )
-    }
-
-    if ( !smartfilters_dispMUA.Info["FOUND"] )
-    {
-      var chLetter = lower.substr ( 0 , 1 ) ;
-
-      if ( smartfilters_dispMUA.arDispMUAAllocation[chLetter] )
-      {
-        for ( var key in smartfilters_dispMUA.arDispMUAAllocation[chLetter] )
-        {
-          if ( lower.substr ( 0 , key.length ) == key )
-          {
-            smartfilters_dispMUA.setInfo ( true , smartfilters_dispMUA.arDispMUAAllocation[chLetter][key] ) ;
-            break ;
+      createIfNeeded.call(this, 'nothing').push(i);
+    });
+    var results = this.createReturnArray(this.regularMails);
+    this.domain2map.foreach(function(domain) {
+      var id2map = this.domain2map.get(domain);
+      // this check is for Twitter-like notifications
+      // (when username is some hash). I do not like such mails.
+      if (id2map.getSize() == 1) {
+        var id = id2map.keys()[0];
+        var name2index = id2map.get(id);
+        // just regular
+        if (id == 'nothing') {
+          name2index.foreach(function (name) {
+            var indices = name2index.get(name);
+            for(var i = 0; i < indices.length; i++)
+              this.regularMails.push(indices[i]);
+          }, this);
+        } else {
+          // Twitter-like
+          var messageIndices = [];
+          name2index.foreach(function (name) {
+            var indices = name2index.get(name);
+            for(var i = 0; i < indices.length; i++)
+              messageIndices.push(indices[i]);
+          }, this);
+          var indicator = (name2index.getSize() == 1) ? name2index.keys()[0] + '@' + domain:domain;
+          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevMessage() + indicator, indicator, this.createReturnArray));
+        }
+        return;
+      }
+      var user2id = new HashMap();
+      id2map.foreach(function(id) {
+        var name2index = id2map.get(id);
+        name2index.foreach(function(name) {
+          var indices = name2index.get(name);
+          var prevId = user2id.get(name);
+          // messages from `user@domain` have two different Message-ID.
+          // this is not robot, just regular mail
+          if (prevId != undefined && prevId != id) {
+            for(var i = 0; i < indices.length; i++)
+              this.regularMails.push(indices[i]);
+            user2id.put(name, 'nothing');
+            return;
           }
-        }
-      }
-    }
-
-    if ( !smartfilters_dispMUA.Info["FOUND"] )
-    {
-      smartfilters_dispMUA.scan ( "postsearch" , strUserAgent )
-    }
-
-    if ( !smartfilters_dispMUA.Info["FOUND"] )
-    {
-      smartfilters_dispMUA.Info["ICON"] = "unknown.png" ;
-    }
-
-    if ( smartfilters_dispMUA.Info["ICON"] == "thunderbird.png" )
-    {
-      if ( lower.indexOf ( "; linux" ) > -1 )
-      {
-        smartfilters_dispMUA.Info["ICON"] = "thunderbird-linux.png" ;
-      }
-      else if ( ( lower.indexOf ( "(windows" ) > -1 ) || ( lower.indexOf ( "; windows" ) > -1 ) )
-      {
-        smartfilters_dispMUA.Info["ICON"] = "thunderbird-windows.png" ;
-      }
-      else if ( ( lower.indexOf ( "(macintosh" ) > -1 ) || ( lower.indexOf ( "; intel mac" ) > -1 ) || ( lower.indexOf ( "; ppc mac" ) > -1 ) )
-      {
-        smartfilters_dispMUA.Info["ICON"] = "thunderbird-mac.png" ;
-      }
-      else if ( lower.indexOf ( "; sunos" ) > -1 )
-      {
-        smartfilters_dispMUA.Info["ICON"] = "thunderbird-sunos.png" ;
-      }
-      else if ( lower.indexOf ( "(x11" ) > -1 )
-      {
-        smartfilters_dispMUA.Info["ICON"] = "thunderbird-x11.png" ;
-      }
-    }
+          // message has no Message-ID or some other mail from this user is regular
+          if (prevId == 'nothing' || id == 'nothing') {
+            for(var i = 0; i < indices.length; i++)
+              this.regularMails.push(indices[i]);
+            user2id.put(name, 'nothing');
+            return;
+          }
+          user2id.put(name, id);
+        }, this);
+      }, this);
+      user2id.foreach(function(username) {
+        var id = user2id.get(username);
+        // already added to regularMails
+        if (id == 'nothing')
+          return;
+        var indices = id2map.get(id).get(username);
+        var indicator = username + '@' + domain;
+        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevMessage() + indicator, indicator, this.createReturnArray));
+      }, this);
+    }, this);
+    return results;
   }
-  else if ( strExtra != "" )
-  {
-    if ( strExtra == "bugzilla" )
-    {
-      smartfilters_dispMUA.Info["ICON"] = "bugzilla.png" ;
-      smartfilters_dispMUA.Info["STRING"] = "X-Bugzilla-Reason" ;
-      smartfilters_dispMUA.Info["FOUND"] = true ;
-    }
-    else if ( strExtra == "phpbug" )
-    {
-      smartfilters_dispMUA.Info["ICON"] = "bug.png" ;
-      smartfilters_dispMUA.Info["STRING"] = "X-PHP-Bug" ;
-      smartfilters_dispMUA.Info["FOUND"] = true ;
-    }
-  }
-  else if ( smartfilters_dispMUA.getHeader ( "organization" ) != "" )
-  {
-//    smartfilters_dispMUA.getInfo ( "Organization" , "organization" ) ;
-  }
-  else if ( smartfilters_dispMUA.getHeader ( "x-mimeole" ) != "" )
-  {
-//    smartfilters_dispMUA.getInfo ( "X-MimeOLE" , "x-mimeole" ) ;
-  }
-  else if ( smartfilters_dispMUA.getHeader ( "message-id" ) != "" )
-  {
-//    smartfilters_dispMUA.getInfo ( "Message-ID" , "message-id" ) ;
-  }
-
-  return smartfilters_dispMUA.Info;
-}
-smartfilters_dispMUA.scan = function ( index , value )
-{
-  var lower = value.toLowerCase() ;
-
-  for ( var key in smartfilters_dispMUA.arDispMUAAllocation[index] )
-  {
-    if ( lower.indexOf ( key ) > -1 )
-    {
-      smartfilters_dispMUA.setInfo(true, smartfilters_dispMUA.arDispMUAAllocation[index][key]);
-      break;
-    }
-  }
-}
-
-smartfilters_dispMUA.setInfo = function ( found , info )
-{
-  smartfilters_dispMUA.Info["FOUND"] = found;
-  smartfilters_dispMUA.Info["VALUE"] = info;
 }
 

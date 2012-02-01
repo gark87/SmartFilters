@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////
-// Hash set
+// Hash map
 ///////////////////////////////////////////////
 function HashMap() {
   var size = 0;
@@ -33,7 +33,7 @@ function HashMap() {
   this.keys = function() {
     // init keys array to sort and track
     var keys = [];
-    for (var key in _map) 
+    for (var key in _map)
       keys.push(key);
     return keys;
   }

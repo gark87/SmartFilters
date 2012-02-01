@@ -1,4 +1,4 @@
-const MAX = 1000;
+const MAX = 5000;
 
 var messages = [];
 var folder = null;
@@ -11,11 +11,19 @@ var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
 
 var prefs = Components.classes["@mozilla.org/preferences-service;1"]
            .getService(Components.interfaces.nsIPrefService)
-	   .getBranch("smartfilters.");
+           .getBranch("smartfilters.");
 
 var filtersMap = {
   "mailing list" : MailingListUtil,
+  "robot"        : RobotUtil,
 };
+
+function range(from, to) {
+  var arr = [];
+  for(var i = from; i < to; i++)
+    arr.push(i);
+  return arr;
+}
 
 function onLoad() {
   gStatus = document.getElementById("status");
@@ -35,48 +43,42 @@ function onLoad() {
     myEmails.push(identity.email);
   }
   var database = folder.getDBFolderInfoAndDB({});
+  var i = 0;
   for(var enumerator = database.EnumerateMessages(); enumerator.hasMoreElements(); ) {
     var header = enumerator.getNext();
-    if (header instanceof Components.interfaces.nsIMsgDBHdr) {
-      messages[messages.length] = header;
-      smartfilters_dispMUA.searchIcon(header);
-
-      if (messages.length >= MAX)
-        break;
-    }
+    if (header instanceof Components.interfaces.nsIMsgDBHdr)
+      messages[i++ % MAX] = header;
   }
   document.title = locale.GetStringFromName("title") + folder.name;
   setStatus("Looking for mailing bots");
-  var obj = {};
-  prefs.getChildList("filter.", obj);
-  for (var i = 1; i <= obj.value; i++) {
+  var children = {};
+  var allMessages = range(0, messages.length);
+  var results = [new SmartFiltersResult(allMessages, ["wow"], "", "INBOX", function() {})];
+  prefs.getChildList("filter.", children);
+  for (var i = 1; i <= children.value; i++) {
     var pref = prefs.getCharPref("filter." + i);
     var filt = filtersMap[pref];
-    alert(i + " - " + pref + " = " + filt);
     if (filt) {
-      var a = new filt(messages); 
-      a.process();
+      var prevResults = results;
+      results = [];
+      for(var k = 0; k < prevResults.length; k++) {
+        var filter = new filt();
+        var result = filter.process(prevResults[k]);
+        for(var j = 0; j < result.length; j++)
+          results.push(result[j]);
+      }
     }
   }
-}
-
-var hdrParser = Components.classes["@mozilla.org/messenger/headerparser;1"]
-                                .getService(Components.interfaces.nsIMsgHeaderParser);
-
-function processAddressList(list, result) {
-  var emails = {};
-  hdrParser.parseHeadersWithArray(list, emails, {}, {});
-  for each (var recipient in emails.value) {
-    result[recipient] = 1;
+  for(var i = 0; i < results.length; i++) {
+    var result = results[i];
+    // messages not filtered by anything
+    if (result.getIcons().length == 0)
+      continue;
+    // all messages filtered
+//    if (result.getMessageIndeces().length == allMessages.length)
+//      continue;
+    box.createRow(result);
   }
-}
-
-function searchArrayInMap(arr, map) {
-  for each (var elem in arr) {
-    if (map[elem] != undefined)
-      return true;
-  }
-  return false;
 }
 
 function selectAll(select) {
@@ -90,9 +92,9 @@ function selectAll(select) {
 }
 
 function stop() {
-  box.createRow({message: "oooohh", icons: [ "bot" ], percent: 23}, {});
-  box.createRow({message: "ddddssss", icons: [ "bot", "qwe" ], percent: 1}, {});
-  box.createRow({message: "lalala", icons: [ "bot", "1", "asdas" ], percent:99}, {});
+  //box.createRow({message: "oooohh", icons: [ "bot" ], percent: 23}, {});
+  //box.createRow({message: "ddddssss", icons: [ "bot", "qwe" ], percent: 1}, {});
+  //box.createRow({message: "lalala", icons: [ "bot", "1", "asdas" ], percent:99}, {});
 }
 
 function apply() {
