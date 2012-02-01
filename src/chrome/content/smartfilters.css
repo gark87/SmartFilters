@@ -15,6 +15,10 @@
 	-moz-binding: url("chrome://smartfilters/content/smartfilters.xml#item");
 }
 
-.smartfilters-row-icon {
-	list-style-image: url("chrome://smartfilters/skin/classic/bot.png");
+.smartfilters-row-icon[type="mailing list"] {
+	list-style-image: url("chrome://smartfilters/skin/classic/mailing_list.png");
+}
+
+.smartfilters-row-icon[type="robot"] {
+	list-style-image: url("chrome://smartfilters/skin/classic/robot.png");
 }

@@ -26,9 +26,11 @@
           // add all needed icons
           var iconBox = document.getAnonymousElementByAttribute(item, "anonid",
               "smartfilters-iconbox");
-          for (var i = 0; i < result.getIcons().length; i++) {
+          var icons = result.getIcons();
+          for (var i = 0; i < icons.length; i++) {
             var icon = document.createElement('image');
             icon.setAttribute('class', 'smartfilters-row-icon');
+            icon.setAttribute('type', icons[i]);
             iconBox.appendChild(icon);
           }
           item.setAttribute("checked", "false");
