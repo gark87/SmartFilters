@@ -1,13 +1,19 @@
+<!-- global -->
 <!ENTITY global.pane.title  "Global">
 <!ENTITY use.mailing.list   "Use mailing list SmartFilter">
 <!ENTITY common.description "Order of SmartFilters: ">
 
-
+<!-- robot -->
 <!ENTITY robot "Robot">
+<!ENTITY robot.notation  "The following notation can be used:">
+<!ENTITY robot.dot       "dot stands for folder separator">
+<!ENTITY robot.name      "will be replaced with robot name">
+<!ENTITY robot.domain    "will be replaced with robot domain">
+<!ENTITY robot.example "For example, you write here `&#37;u.&#37;d' and SmartFilter finds out that user@domain.org is email robot address then you will be suggested to create filter that moves messages from this robot into folder /user/domain.org">
+<!-- mailing list -->
 <!ENTITY mailing.list "Mailing List">
 <!ENTITY mailing.list.notation  "The following notation can be used:">
 <!ENTITY mailing.list.dot "dot stands for folder separator">
-<!ENTITY mailing.list.user "will be replaced with user name">
-<!ENTITY mailing.list.domain "will be replaced with domain name">
-<!ENTITY mailing.list.folder "will be replaced with smartfiltered folder">
-<!ENTITY mailing.list.example "For example, you write here `&#37;f.&#37;u.&#37;d' and SmartFilter finds user@domain.org mailing list then you will be suggested to create filter that moves messages for this mailing list into folder $folder/user/domain.org"> 
+<!ENTITY mailing.list.name "will be replaced with mailing list name">
+<!ENTITY mailing.list.domain "will be replaced with mailing list domain">
+<!ENTITY mailing.list.example "For example, you write here `&#37;u.&#37;d' and SmartFilter finds out that user@domain.org is mailing list address then you will be suggested to create filter that moves messages for this mailing list into folder /user/domain.org">

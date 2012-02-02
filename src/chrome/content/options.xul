@@ -5,6 +5,7 @@
 <?xml-stylesheet href="chrome://smartfilters/content/smartfilters.css"     type="text/css"?>
 
 <prefwindow
+    xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     style="height:480px; width:640px"
     >
@@ -32,7 +33,7 @@
     </menulist>
   </prefpane>
   <prefpane id="mailing-list" label="&mailing.list;"
-    image="chrome://smartfilters/skin/classic/bot.png">
+    image="chrome://smartfilters/skin/classic/mailing_list.png">
     <preferences>
       <preference id="mailing.list.pattern" name="smartfilters.mailing.list.pattern" type="string"/>
     </preferences>
@@ -40,14 +41,30 @@
       <label value="Folder pattern:"/>
       <textbox preference="mailing.list.pattern"/>
     </hbox>
-    <description style="white-space: pre-wrap">
-    &mailing.list.notation;
-    `.'  - &mailing.list.dot;
-    `%u' - &mailing.list.user;
-    `%d' - &mailing.list.domain;
-    `%f' - &mailing.list.folder;
-    </description>
-    <description>&mailing.list.example;</description>
+    <html:p>&mailing.list.notation;</html:p>
+    <html:ul>
+      <html:li>&mailing.list.dot;</html:li>
+      <html:li><html:b>%u</html:b> - &mailing.list.name;</html:li>
+      <html:li><html:b>%d</html:b> - &mailing.list.domain;</html:li>
+    </html:ul>
+    <html:p>&mailing.list.example;</html:p>
+  </prefpane>
+  <prefpane id="robot" label="&robot;"
+    image="chrome://smartfilters/skin/classic/robot.png">
+    <preferences>
+      <preference id="robot.pattern" name="smartfilters.robot.pattern" type="string"/>
+    </preferences>
+    <hbox>
+      <label value="Folder pattern:"/>
+      <textbox preference="robot.pattern"/>
+    </hbox>
+    <html:p>&robot.notation;</html:p>
+    <html:ul>
+      <html:li>&robot.dot;</html:li>
+      <html:li><html:b>%u</html:b> - &robot.name;</html:li>
+      <html:li><html:b>%d</html:b> - &robot.domain;</html:li>
+    </html:ul>
+    <html:p>&robot.example;</html:p>
   </prefpane>
 </prefwindow>
 
