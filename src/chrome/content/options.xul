@@ -7,7 +7,7 @@
 <prefwindow
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    style="height:480px; width:640px"
+    style="height:300px; width:600px"
     >
   <prefpane id="globals" label="&global.pane.title;">
     <preferences>
