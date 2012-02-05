@@ -3,10 +3,24 @@
 ///////////////////////////////////////////////
 
 function MailingListUtil() {
-  Util.call(this, data);
   // fields
-  this.recipient2indices = {};
-  this.mailing_list_100 = new HashMap();
+  var recipient2indices = {};
+  var mailing_list_100 = new HashMap();
+
+  this.createFilterTerm = function(filter) {
+    var term = filter.createTerm();
+
+    term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
+    term.op = Components.interfaces.nsMsgSearchOp.Contains;
+    term.booleanAnd = true;
+
+    var termValue = term.value;
+    termValue.attrib = term.attrib;
+    termValue.str = this.email;
+
+    term.value = termValue;
+    filter.appendTerm(term);
+  };
 
   this.process = function(prevResult) {
     this.init(prevResult, "mailing list", function(i, message) {
@@ -18,31 +32,30 @@ function MailingListUtil() {
       var authors = new HashMap();
       Util.processAddressList(message.author, authors);
       // user is one of the recipients - that's how we get this email
-      if (data.setContainsMyEmail(recipients)) {
+      if (this.data.setContainsMyEmail(recipients)) {
         this.regularMails.push(i);
         return;
       }
       // user is the author - that's how we get this email
-      if (data.setContainsMyEmail(authors)) {
+      if (this.data.setContainsMyEmail(authors)) {
         this.regularMails.push(i);
         return;
       }
       // the only one recipient means that it's 100% mailing list
       if (recipients.getSize() == 1)
-        this.mailing_list_100.add(recipients.keys().pop());
+        mailing_list_100.add(recipients.keys().pop());
       // more than one - lets count them.
       recipients.foreach(function (recipient) {
-        var indices = this.recipient2indices[recipient];
+        var indices = recipient2indices[recipient];
         if (indices == undefined)
-          indices = this.recipient2indices[recipient] = new HashMap();
+          indices = recipient2indices[recipient] = new HashMap();
         indices.add(i);
       }, this);
     });
 
-    var recipient2indices = this.recipient2indices;
     var results = this.createReturnArray(this.regularMails);
     // first of all: process 100% mailing list
-    this.mailing_list_100.foreach(function(email) {
+    mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
       var result = new SmartFiltersResult(set.keys(), this.icons, this.prevMessage + email, this.prevFolder + email, this.createFilterTerm);
       results.push(result);
@@ -85,17 +98,3 @@ function MailingListUtil() {
   };
 }
 
-MailingListUtil.prototype.createFilterTerm = function(filter) {
-  var term = filter.createTerm();
-
-  term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
-  term.op = Components.interfaces.nsMsgSearchOp.Contains;
-  term.booleanAnd = true;
-
-  var termValue = term.value;
-  termValue.attrib = term.attrib;
-  termValue.str = this.email;
-
-  term.value = termValue;
-  filter.appendTerm(term);
-}

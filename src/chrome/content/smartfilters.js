@@ -77,6 +77,7 @@ function SmartFilters() {
     var allMessages = range(0, data.numberOfMessages());
     var results = [new SmartFiltersResult(allMessages, ["wow"], "", "INBOX", function() {})];
     prefs.getChildList("filter.", children);
+    var util = new Util(data);
     for (var i = 1; i <= children.value; i++) {
       var pref = prefs.getCharPref("filter." + i);
       var filt = filtersMap[pref];
@@ -84,7 +85,8 @@ function SmartFilters() {
         var prevResults = results;
         results = [];
         for(var k = 0; k < prevResults.length; k++) {
-          var filter = new filt(data);
+          filt.prototype = util;
+          var filter = new filt();
           var result = filter.process(prevResults[k]);
           for(var j = 0; j < result.length; j++)
             results.push(result[j]);

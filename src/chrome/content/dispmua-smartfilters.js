@@ -1,10 +1,9 @@
 ///////////////////////////////////////////////
 // bot(dispmua) filter
 ///////////////////////////////////////////////
-function RobotUtil(data) {
-  Util.call(this, data);
+function RobotUtil() {
   // fields
-  this.domain2map = new HashMap();
+  var domain2map = new HashMap();
 
   this.process = function(prevResult) {
     this.init(prevResult, "robot", function(i, message) {
@@ -12,16 +11,16 @@ function RobotUtil(data) {
       var authors = new HashMap();
       Util.processAddressList(message.author, authors);
       // user is the author - not a robot
-      if (data.setContainsMyEmail(authors)) {
+      if (this.data.setContainsMyEmail(authors)) {
         this.regularMails.push(i);
 //        return;
       }
       var author = getEmailInfo(authors.keys()[0]);
       var lower = message.messageId.toLowerCase();
       var createIfNeeded = function(messageId) {
-        var id2map = this.domain2map.get(author.domain);
+        var id2map = domain2map.get(author.domain);
         if (id2map == undefined) {
-          this.domain2map.put(author.domain, id2map = new HashMap());
+          domain2map.put(author.domain, id2map = new HashMap());
         }
         var name2index = id2map.get(messageId);
         if (name2index == undefined) {
@@ -42,8 +41,8 @@ function RobotUtil(data) {
       createIfNeeded.call(this, 'nothing').push(i);
     });
     var results = this.createReturnArray(this.regularMails);
-    this.domain2map.foreach(function(domain) {
-      var id2map = this.domain2map.get(domain);
+    domain2map.foreach(function(domain) {
+      var id2map = domain2map.get(domain);
       // this check is for Twitter-like notifications
       // (when username is some hash). I do not like such mails.
       if (id2map.getSize() == 1) {
