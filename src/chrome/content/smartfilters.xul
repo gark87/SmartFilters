@@ -9,7 +9,7 @@
     title="Oooops"
     windowtype="global:SmartFilters"
     persist="width height screenX screenY sizemode zlevel"
-    onload="onLoad();"
+    onload="var filter = new SmartFilters(); filter.start();"
 >
   <!-- system scripts-->
   <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
@@ -26,13 +26,13 @@
   <label id="status" value="(Before start)" />
   <hbox>
     <progressmeter id="progressmeter" mode="determined" flex="999" />
-    <button label="&stop.button;" oncommand="stop();" />
-    <button label="&select.all.button;" oncommand="selectAll(true);" />
-    <button label="&unselect.all.button;" oncommand="selectAll(false);" />
+    <button label="&stop.button;" oncommand="filter.stop();" />
+    <button label="&select.all.button;" oncommand="filter.selectAll(true);" />
+    <button label="&unselect.all.button;" oncommand="filter.selectAll(false);" />
   </hbox>
   <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
   <hbox>
-    <button label="&cancel.button;" oncommand="close();" />
-    <button label="&apply.button;" oncommand="apply();" />
+    <button label="&cancel.button;" oncommand="filter.close();" />
+    <button label="&apply.button;" oncommand="filter.apply();" />
   </hbox>
 </window>

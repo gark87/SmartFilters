@@ -3,6 +3,7 @@
 ///////////////////////////////////////////////
 
 function MailingListUtil() {
+  Util.call(this, data);
   // fields
   this.recipient2indices = {};
   this.mailing_list_100 = new HashMap();
@@ -17,12 +18,12 @@ function MailingListUtil() {
       var authors = new HashMap();
       Util.processAddressList(message.author, authors);
       // user is one of the recipients - that's how we get this email
-      if (Util.searchArrayInSet(myEmails, recipients)) {
+      if (data.setContainsMyEmail(recipients)) {
         this.regularMails.push(i);
         return;
       }
       // user is the author - that's how we get this email
-      if (Util.searchArrayInSet(myEmails, authors)) {
+      if (data.setContainsMyEmail(authors)) {
         this.regularMails.push(i);
         return;
       }
@@ -83,9 +84,6 @@ function MailingListUtil() {
     return results;
   };
 }
-
-MailingListUtil.prototype = new Util();
-MailingListUtil.prototype.constructor = MailingListUtil;
 
 MailingListUtil.prototype.createFilterTerm = function(filter) {
   var term = filter.createTerm();

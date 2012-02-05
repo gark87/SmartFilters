@@ -1,10 +1,9 @@
 ///////////////////////////////////////////////
 // bot(dispmua) filter
 ///////////////////////////////////////////////
-RobotUtil.prototype = new Util();
-RobotUtil.prototype.constructor = RobotUtil;
-
-function RobotUtil(prevResult) {
+function RobotUtil(data) {
+  Util.call(this, data);
+  // fields
   this.domain2map = new HashMap();
 
   this.process = function(prevResult) {
@@ -13,7 +12,7 @@ function RobotUtil(prevResult) {
       var authors = new HashMap();
       Util.processAddressList(message.author, authors);
       // user is the author - not a robot
-      if (Util.searchArrayInSet(myEmails, authors)) {
+      if (data.setContainsMyEmail(authors)) {
         this.regularMails.push(i);
 //        return;
       }

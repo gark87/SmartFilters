@@ -1,7 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // This is base class for SmartFilter's processors()
 /////////////////////////////////////////////////////////////////////////////////////////
-function Util() {
+function Util(data) {
+  this.data = data;
   this.init = function(prevResult, icon, processMessage) {
     this.getPrevMessage = function () { return prevResult.getMessage(); };
     this.getPrevFolder = function () { return prevResult.getFolder(); };
@@ -26,7 +27,7 @@ function Util() {
     var messageIndices = prevResult.getMessageIndices();
     for(var i = 0; i < messageIndices.length; i++) {
       var messageIndex = messageIndices[i];
-      var message = messages[messageIndex];
+      var message = this.data.getMessage(messageIndex);
       processMessage.call(this, i, message);
     }
   }
@@ -42,10 +43,3 @@ Util.processAddressList = function(list, result) {
   }
 };
 
-Util.searchArrayInSet = function(arr, set) {
-  for each (var elem in arr) {
-    if (set.get(elem) != undefined)
-      return true;
-  }
-  return false;
-};
