@@ -29,7 +29,7 @@ function RobotUtil(data) {
         }
         var indices = name2index.get(author.username);
         if (indices == undefined) {
-          name2index.put(author.username, indices = new Array());
+          name2index.put(author.username, indices = []);
         }
         return indices;
       };

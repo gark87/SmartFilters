@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////
 function HashMap() {
   var size = 0;
-  var _map = new Object();
+  var _map = {};
 
   this.add = function(k) {
     this.put(k, 1);
