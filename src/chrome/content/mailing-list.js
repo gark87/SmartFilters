@@ -3,9 +3,43 @@
 ///////////////////////////////////////////////
 
 function MailingListUtil() {
-  // fields
+  // private fields
   var recipient2indices = {};
   var mailing_list_100 = new HashMap();
+
+  // override abstract methods
+  this.getIconName    = function() { return "mailing list"; }
+  this.getPrefPrefix  = function() { return "mailing.list"; }
+  this.processMessage = function(i, message) {
+    // collect recipients(To: and CC:)
+    var recipients = new HashMap();
+    Util.processAddressList(message.ccList, recipients);
+    Util.processAddressList(message.recipients, recipients);
+    // collect author(From:)
+    var authors = new HashMap();
+    Util.processAddressList(message.author, authors);
+    // user is one of the recipients - that's how we get this email
+    if (this.data.setContainsMyEmail(recipients)) {
+      this.regularMails.push(i);
+      return;
+    }
+
+    // user is the author - that's how we get this email
+    if (this.data.setContainsMyEmail(authors)) {
+      this.regularMails.push(i);
+      return;
+    }
+    // the only one recipient means that it's 100% mailing list
+    if (recipients.getSize() == 1)
+      mailing_list_100.add(recipients.keys().pop());
+    // more than one - lets count them.
+    recipients.foreach(function (recipient) {
+      var indices = recipient2indices[recipient];
+      if (indices == undefined)
+        indices = recipient2indices[recipient] = new HashMap();
+      indices.add(i);
+    }, this);
+  };
 
   this.createFilterTerm = function(filter) {
     var term = filter.createTerm();
@@ -23,41 +57,15 @@ function MailingListUtil() {
   };
 
   this.process = function(prevResult) {
-    this.init(prevResult, "mailing list", function(i, message) {
-      // collect recipients(To: and CC:)
-      var recipients = new HashMap();
-      Util.processAddressList(message.ccList, recipients);
-      Util.processAddressList(message.recipients, recipients);
-      // collect author(From:)
-      var authors = new HashMap();
-      Util.processAddressList(message.author, authors);
-      // user is one of the recipients - that's how we get this email
-      if (this.data.setContainsMyEmail(recipients)) {
-        this.regularMails.push(i);
-        return;
-      }
-      // user is the author - that's how we get this email
-      if (this.data.setContainsMyEmail(authors)) {
-        this.regularMails.push(i);
-        return;
-      }
-      // the only one recipient means that it's 100% mailing list
-      if (recipients.getSize() == 1)
-        mailing_list_100.add(recipients.keys().pop());
-      // more than one - lets count them.
-      recipients.foreach(function (recipient) {
-        var indices = recipient2indices[recipient];
-        if (indices == undefined)
-          indices = recipient2indices[recipient] = new HashMap();
-        indices.add(i);
-      }, this);
-    });
+    this.init(prevResult);
 
     var results = this.createReturnArray(this.regularMails);
     // first of all: process 100% mailing list
     mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
-      var result = new SmartFiltersResult(set.keys(), this.icons, this.prevMessage + email, this.prevFolder + email, this.createFilterTerm);
+      var author = getEmailInfo(email);
+      var folder = this.getFolderPath(author.username, author.domain);
+      var result = new SmartFiltersResult(set.keys(), this.icons, this.prevMessage + email, this.prevFolder + folder, this.createFilterTerm);
       results.push(result);
       for (var key in recipient2indices) {
         if (key == email)
@@ -83,8 +91,10 @@ function MailingListUtil() {
       if (biggestSize == 0)
         break;
 
+      var author = getEmailInfo(biggestKey);
+      var folder = this.getFolderPath(author.username, author.domain);
       results.push(new SmartFiltersResult(biggestSet.keys(), this.icons,
-            this.prevMessage + biggestKey, this.prevFolder + biggestKey,
+            this.prevMessage + biggestKey, this.prevFolder + folder,
             this.createFilterTerm));
       // remove biggest set elements from other sets
       for (var i = 0; i < keys.length; i++) {

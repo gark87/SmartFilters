@@ -1,9 +1,18 @@
 /////////////////////////////////////////////////////////////////////////////////////////
-// This is base class for SmartFilter's processors()
+// This is base class for SmartFilter's processors
 /////////////////////////////////////////////////////////////////////////////////////////
 function Util(data) {
   this.data = data;
-  this.init = function(prevResult, icon, processMessage) {
+  this.getFolderPath = function(username, domain) {
+    var prefPrefix = this.getPrefPrefix();
+    var result = this.data.preferences.getCharPref(prefPrefix + ".pattern");
+    if (!(username || result.match(/%d/)))
+        username = domain;
+    result = result.replace(/%u/g, username);
+    result = result.replace(/%d/g, domain);
+    return result;
+  }
+  this.init = function(prevResult) {
     this.getPrevMessage = function () { return prevResult.getMessage(); };
     this.getPrevFolder = function () { return prevResult.getFolder(); };
     this.getPrevIcons = prevResult.getIcons;
@@ -13,7 +22,7 @@ function Util(data) {
     var prevIcons = prevResult.getIcons();
     for(var i = 0; i < prevIcons.length; i++)
       icons[i] = prevIcons[i];
-    icons.push(icon);
+    icons.push(this.getIconName());
     this.getIcons = function() { return icons; }
 
     // about this mails this processor cannot say anything interesting
@@ -28,7 +37,7 @@ function Util(data) {
     for(var i = 0; i < messageIndices.length; i++) {
       var messageIndex = messageIndices[i];
       var message = this.data.getMessage(messageIndex);
-      processMessage.call(this, i, message);
+      this.processMessage(i, message);
     }
   }
 }

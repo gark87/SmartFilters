@@ -4,6 +4,9 @@
 function CommonData(folder, N) {
   var myEmails = [];
   var messages = [];
+  this.preferences = Components.classes["@mozilla.org/preferences-service;1"]
+                     .getService(Components.interfaces.nsIPrefService)
+                     .getBranch("smartfilters.");
 
   // find out all user emails
   var identity = folder.customIdentity;
@@ -49,9 +52,6 @@ function SmartFilters() {
                getService(Components.interfaces.nsIStringBundleService).
                createBundle("chrome://smartfilters/locale/smartfilters.properties");
 
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-             .getService(Components.interfaces.nsIPrefService)
-             .getBranch("smartfilters.");
 
   var filtersMap = {
     "mailing list" : MailingListUtil,
@@ -73,13 +73,13 @@ function SmartFilters() {
     var data = new CommonData(window.arguments[0].folder, MAX);
     document.title = locale.GetStringFromName("title") + data.getFolder().name;
     setStatus("Looking for mailing bots");
-    var children = {};
     var allMessages = range(0, data.numberOfMessages());
     var results = [new SmartFiltersResult(allMessages, ["wow"], "", "INBOX", function() {})];
-    prefs.getChildList("filter.", children);
     var util = new Util(data);
+    var children = {};
+    data.preferences.getChildList("filter.", children);
     for (var i = 1; i <= children.value; i++) {
-      var pref = prefs.getCharPref("filter." + i);
+      var pref = data.preferences.getCharPref("filter." + i);
       var filt = filtersMap[pref];
       if (filt) {
         var prevResults = results;

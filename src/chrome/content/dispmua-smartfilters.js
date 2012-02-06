@@ -2,44 +2,49 @@
 // bot(dispmua) filter
 ///////////////////////////////////////////////
 function RobotUtil() {
-  // fields
+  // private fields
   var domain2map = new HashMap();
 
-  this.process = function(prevResult) {
-    this.init(prevResult, "robot", function(i, message) {
-      // collect author(From:)
-      var authors = new HashMap();
-      Util.processAddressList(message.author, authors);
-      // user is the author - not a robot
-      if (this.data.setContainsMyEmail(authors)) {
-        this.regularMails.push(i);
+  // override abstract methods
+  this.getIconName    = function() { return "robot"; }
+  this.getPrefPrefix  = function() { return "robot"; }
+  this.processMessage = function(i, message) {
+    // collect author(From:)
+    var authors = new HashMap();
+    Util.processAddressList(message.author, authors);
+    // user is the author - not a robot
+    if (this.data.setContainsMyEmail(authors)) {
+      this.regularMails.push(i);
 //        return;
+    }
+    var author = getEmailInfo(authors.keys()[0]);
+    var lower = message.messageId.toLowerCase();
+    var createIfNeeded = function(messageId) {
+      var id2map = domain2map.get(author.domain);
+      if (id2map == undefined) {
+        domain2map.put(author.domain, id2map = new HashMap());
       }
-      var author = getEmailInfo(authors.keys()[0]);
-      var lower = message.messageId.toLowerCase();
-      var createIfNeeded = function(messageId) {
-        var id2map = domain2map.get(author.domain);
-        if (id2map == undefined) {
-          domain2map.put(author.domain, id2map = new HashMap());
-        }
-        var name2index = id2map.get(messageId);
-        if (name2index == undefined) {
-          id2map.put(messageId, name2index = new HashMap());
-        }
-        var indices = name2index.get(author.username);
-        if (indices == undefined) {
-          name2index.put(author.username, indices = []);
-        }
-        return indices;
-      };
-      for (var key in RobotUtil.smartfilters_dispMUA['message-id']) {
-        if (lower.indexOf(key) > -1) {
-          createIfNeeded.call(this, key).push(i);
-          return;
-        }
+      var name2index = id2map.get(messageId);
+      if (name2index == undefined) {
+        id2map.put(messageId, name2index = new HashMap());
       }
-      createIfNeeded.call(this, 'nothing').push(i);
-    });
+      var indices = name2index.get(author.username);
+      if (indices == undefined) {
+        name2index.put(author.username, indices = []);
+      }
+      return indices;
+    };
+    for (var key in RobotUtil.smartfilters_dispMUA['message-id']) {
+      if (lower.indexOf(key) > -1) {
+        createIfNeeded.call(this, key).push(i);
+        return;
+      }
+    }
+    createIfNeeded.call(this, 'nothing').push(i);
+  };
+
+  this.process = function(prevResult) {
+    this.init(prevResult);
     var results = this.createReturnArray(this.regularMails);
     domain2map.foreach(function(domain) {
       var id2map = domain2map.get(domain);
@@ -63,8 +68,10 @@ function RobotUtil() {
             for(var i = 0; i < indices.length; i++)
               messageIndices.push(indices[i]);
           }, this);
-          var indicator = (name2index.getSize() == 1) ? name2index.keys()[0] + '@' + domain:domain;
-          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevMessage() + indicator, indicator, this.createReturnArray));
+          var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
+          var indicator = username + "@" + domain;
+          var folder = this.getFolderPath(username, domain);
+          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createReturnArray));
         }
         return;
       }
@@ -99,7 +106,8 @@ function RobotUtil() {
           return;
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
-        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevMessage() + indicator, indicator, this.createReturnArray));
+        var folder = this.getFolderPath(username, domain);
+        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createReturnArray));
       }, this);
     }, this);
     return results;
