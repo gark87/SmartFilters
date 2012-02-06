@@ -6,8 +6,6 @@ function Util(data) {
   this.getFolderPath = function(username, domain) {
     var prefPrefix = this.getPrefPrefix();
     var result = this.data.preferences.getCharPref(prefPrefix + ".pattern");
-    if (!(username || result.match(/%d/)))
-        username = domain;
     result = result.replace(/%u/g, username);
     result = result.replace(/%d/g, domain);
     return result;
