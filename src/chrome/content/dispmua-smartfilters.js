@@ -43,6 +43,23 @@ function RobotUtil() {
     createIfNeeded.call(this, 'nothing').push(i);
   };
 
+  this.createFilterTerm = function (email) {
+    return function(filter) {
+      var term = filter.createTerm();
+
+      term.attrib = Components.interfaces.nsMsgSearchAttrib.Sender;
+      term.op = Components.interfaces.nsMsgSearchOp.Contains;
+      term.booleanAnd = true;
+
+      var termValue = term.value;
+      termValue.attrib = term.attrib;
+      termValue.str = email;
+
+      term.value = termValue;
+      filter.appendTerm(term);
+    };
+  };
+
   this.process = function(prevResult) {
     this.init(prevResult);
     var results = this.createReturnArray(this.regularMails);
@@ -71,7 +88,7 @@ function RobotUtil() {
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
           var folder = this.getFolderPath(username, domain);
-          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createReturnArray));
+          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createFilterTerm(indicator)));
         }
         return;
       }
@@ -107,7 +124,7 @@ function RobotUtil() {
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
         var folder = this.getFolderPath(username, domain);
-        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createReturnArray));
+        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createFilterTerm(indicator)));
       }, this);
     }, this);
     return results;

@@ -70,7 +70,7 @@ function SmartFilters() {
     gProgressMeter = document.getElementById("progressmeter");
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
-    var data = new CommonData(window.arguments[0].folder, MAX);
+    data = new CommonData(window.arguments[0].folder, MAX);
     document.title = locale.GetStringFromName("title") + data.getFolder().name;
     setStatus("Looking for mailing bots");
     var allMessages = range(0, data.numberOfMessages());
@@ -105,7 +105,7 @@ function SmartFilters() {
     }
   };
 
-  function selectAll(select) {
+  this. selectAll = function(select) {
     var items = box.childNodes;
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
@@ -115,13 +115,7 @@ function SmartFilters() {
     }
   }
 
-  function stop() {
-    //box.createRow({message: "oooohh", icons: [ "bot" ], percent: 23}, {});
-    //box.createRow({message: "ddddssss", icons: [ "bot", "qwe" ], percent: 1}, {});
-    //box.createRow({message: "lalala", icons: [ "bot", "1", "asdas" ], percent:99}, {});
-  }
-
-  function apply() {
+  this.apply = function() {
     var folder = data.getFolder();
     var filtersList = folder.getFilterList(null);
     var items = box.childNodes;
@@ -134,10 +128,29 @@ function SmartFilters() {
 
       var msg = item.getAttribute("msg");
       // create (sub-)folder ...
-      var folderName = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder").value.replace('.', '_');
-      folder.createSubfolder(folderName, msgWindow);
-      folder.updateFolder(msgWindow);
-      var destFolder = folder.findSubFolder(encodeURIComponent(folderName));
+      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
+      // create needed folders
+      var destFolder = folder;
+      var folders = textbox.value.split('.');
+      for(var i = 0; i < folders.length; i++) {
+        var needle = folders[i];
+        var subFolders = GetSubFoldersInFolderPaneOrder(destFolder);
+
+        var shouldCreate = true;
+        for(var j = 0; j < subFolders.length; j++) {
+          var subFolder = subFolders[j];
+          if(needle == subFolder.name) {
+            shouldCreate = false;
+            destFolder = subFolder;
+          }
+        }
+        if (shouldCreate) {
+          destFolder.createSubfolder(needle, msgWindow);
+          subFolders = GetSubFoldersInFolderPaneOrder(destFolder);
+          destFolder = subFolders[0];
+        }
+      }
+      // create filter
       var newFilter = filtersList.createFilter(msg);
       newFilter.enabled = true;
       var action = newFilter.createAction();
@@ -171,3 +184,5 @@ function SmartFilters() {
     gStatus.value = locale.GetStringFromName("status") + text + "...";
   }
 }
+
+const smartfilters = new SmartFilters();
