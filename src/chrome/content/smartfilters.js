@@ -172,7 +172,7 @@ function SmartFilters() {
                                   .getService(Components.interfaces.nsIMsgFilterService);
     var folders = Components.classes["@mozilla.org/supports-array;1"]
                                   .createInstance(Components.interfaces.nsISupportsArray);
-    folders.AppendElement(data.folder);
+    folders.AppendElement(data.getFolder());
     filterService.applyFiltersToFolders(filtersList, folders, msgWindow);
   }
 
