@@ -118,6 +118,7 @@ function SmartFilters() {
   this.apply = function() {
     var folder = data.getFolder();
     var filtersList = folder.getFilterList(null);
+    var position = filtersList.filterCount;
     var items = box.childNodes;
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
@@ -151,7 +152,7 @@ function SmartFilters() {
         }
       }
       // create filter
-      var newFilter = filtersList.createFilter(msg);
+      var newFilter = filtersList.createFilter("SF_" + msg + "_" + position);
       newFilter.enabled = true;
       var action = newFilter.createAction();
       action.type = Components.interfaces.nsMsgFilterAction.MoveToFolder;
@@ -160,7 +161,7 @@ function SmartFilters() {
       // fix filter term
       var term = item.data.createFilterTerm(newFilter);
       newFilter.appendAction(action);
-      filtersList.insertFilterAt(filtersList.filterCount, newFilter);
+      filtersList.insertFilterAt(position++, newFilter);
     }
     filtersList.saveToDefaultFile();
     applyFilters(filtersList);
