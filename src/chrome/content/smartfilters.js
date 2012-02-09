@@ -74,7 +74,7 @@ function SmartFilters() {
     document.title = locale.GetStringFromName("title") + data.getFolder().name;
     setStatus("Looking for mailing bots");
     var allMessages = range(0, data.numberOfMessages());
-    var results = [new SmartFiltersResult(allMessages, ["wow"], "", "INBOX", function() {})];
+    var results = [new SmartFiltersResult(allMessages, [], "", "INBOX", function() {})];
     var util = new Util(data);
     var children = {};
     data.preferences.getChildList("filter.", children);
@@ -98,9 +98,6 @@ function SmartFilters() {
       // messages not filtered by anything
       if (result.getIcons().length == 0)
         continue;
-      // all messages filtered
-  //    if (result.getMessageIndeces().length == allMessages.length)
-  //      continue;
       box.createRow(result);
     }
   };
