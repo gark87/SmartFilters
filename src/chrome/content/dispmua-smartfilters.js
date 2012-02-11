@@ -88,7 +88,7 @@ function RobotUtil() {
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
           var folder = this.getFolderPath(username, domain);
-          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createFilterTerm(indicator)));
+          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevText() + indicator, this.composeDir(folder), this.createFilterTerm(indicator)));
         }
         return;
       }
@@ -124,7 +124,7 @@ function RobotUtil() {
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
         var folder = this.getFolderPath(username, domain);
-        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevMessage() + indicator, folder, this.createFilterTerm(indicator)));
+        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevText() + indicator, this.composeDir(folder), this.createFilterTerm(indicator)));
       }, this);
     }, this);
     return results;

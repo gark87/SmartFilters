@@ -2,10 +2,10 @@
 // result of SmartFilter's work
 // will be displayed in dialog
 ///////////////////////////////////////////////////////////////////////////////////////
-function SmartFiltersResult(messageIndices, icons, message, folder, createFilterTerm) {
+function SmartFiltersResult(messageIndices, icons, text, folder, createFilterTerm) {
   this.getMessageIndices = function() { return messageIndices; };
   this.getIcons = function() { return icons; };
-  this.getMessage = function() { return message; };
+  this.getText = function() { return text; };
   this.getFolder = function() { return folder; };
   this.createFilterTerm = createFilterTerm;
 }
@@ -14,6 +14,6 @@ function SmartFiltersResult(messageIndices, icons, message, folder, createFilter
 SmartFiltersResult.prototype = {
   toString : function () {
     return this.getMessageIndices() + " - |" +
-           this.getMessage() + "| - " + this.getFolder() + "\n";
+           this.getText() + "| - " + this.getFolder() + "\n";
   }
 }

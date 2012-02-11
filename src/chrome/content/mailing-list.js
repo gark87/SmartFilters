@@ -41,19 +41,21 @@ function MailingListUtil() {
     }, this);
   };
 
-  this.createFilterTerm = function(filter) {
-    var term = filter.createTerm();
+  this.createFilterTerm = function (email) {
+    return function(filter) {
+      var term = filter.createTerm();
 
-    term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
-    term.op = Components.interfaces.nsMsgSearchOp.Contains;
-    term.booleanAnd = true;
+      term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
+      term.op = Components.interfaces.nsMsgSearchOp.Contains;
+      term.booleanAnd = true;
 
-    var termValue = term.value;
-    termValue.attrib = term.attrib;
-    termValue.str = this.email;
+      var termValue = term.value;
+      termValue.attrib = term.attrib;
+      termValue.str = email;
 
-    term.value = termValue;
-    filter.appendTerm(term);
+      term.value = termValue;
+      filter.appendTerm(term);
+    }
   };
 
   this.process = function(prevResult) {
@@ -65,7 +67,7 @@ function MailingListUtil() {
       var set = recipient2indices[email];
       var author = getEmailInfo(email);
       var folder = this.getFolderPath(author.username, author.domain);
-      var result = new SmartFiltersResult(set.keys(), this.icons, this.prevMessage + email, this.prevFolder + folder, this.createFilterTerm);
+      var result = new SmartFiltersResult(set.keys(), this.getIcons(), this.getPrevText() + email, this.composeDir(folder), this.createFilterTerm(email));
       results.push(result);
       for (var key in recipient2indices) {
         if (key == email)
@@ -93,9 +95,9 @@ function MailingListUtil() {
 
       var author = getEmailInfo(biggestKey);
       var folder = this.getFolderPath(author.username, author.domain);
-      results.push(new SmartFiltersResult(biggestSet.keys(), this.icons,
-            this.prevMessage + biggestKey, this.prevFolder + folder,
-            this.createFilterTerm));
+      results.push(new SmartFiltersResult(biggestSet.keys(), this.getIcons(),
+            this.getPrevText() + biggestKey, this.composeDir(folder),
+            this.createFilterTerm(biggestKey)));
       // remove biggest set elements from other sets
       for (var i = 0; i < keys.length; i++) {
         var hashSet = recipient2indices[keys[i]];

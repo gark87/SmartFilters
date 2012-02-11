@@ -11,8 +11,7 @@ function Util(data) {
     return result;
   }
   this.init = function(prevResult) {
-    this.getPrevMessage = function () { return prevResult.getMessage(); };
-    this.getPrevFolder = function () { return prevResult.getFolder(); };
+    this.getPrevText = function () { return prevResult.getText(); };
     this.getPrevIcons = prevResult.getIcons;
 
     // generate correct icons array here
@@ -26,8 +25,15 @@ function Util(data) {
     // about this mails this processor cannot say anything interesting
     this.regularMails = [];
     this.createReturnArray = function(mails) {
-      return [new SmartFiltersResult(mails, this.getPrevIcons(), this.prevMessage,
-          this.prevFolder, prevResult.createFilterTerm)];
+      return [new SmartFiltersResult(mails, this.getPrevIcons(), this.getPrevText(),
+          prevResult.getFolder(), prevResult.createFilterTerm)];
+    }
+
+    this.composeDir = function(dirname) {
+      var prevFolder = prevResult.getFolder();
+      if (prevFolder == "")
+        return dirname;
+      return prevResult.getFolder() + '.' + dirname;
     }
 
     // process all messages

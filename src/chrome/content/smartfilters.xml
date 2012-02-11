@@ -21,7 +21,7 @@
           item.setAttribute("class", "smartfilters-item");
           this.appendChild(item);
           // set view properties
-          item.setAttribute("msg", result.getMessage());
+          item.setAttribute("msg", result.getText());
           item.setAttribute("folder", result.getFolder());
           // add all needed icons
           var iconBox = document.getAnonymousElementByAttribute(item, "anonid",

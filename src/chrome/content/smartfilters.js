@@ -74,7 +74,7 @@ function SmartFilters() {
     document.title = locale.GetStringFromName("title") + data.getFolder().name;
     setStatus("Looking for mailing bots");
     var allMessages = range(0, data.numberOfMessages());
-    var results = [new SmartFiltersResult(allMessages, [], "", "INBOX", function() {})];
+    var results = [new SmartFiltersResult(allMessages, [], "", "", function() {})];
     var util = new Util(data);
     var children = {};
     data.preferences.getChildList("filter.", children);
@@ -130,23 +130,23 @@ function SmartFilters() {
       // create needed folders
       var destFolder = folder;
       var folders = textbox.value.split('.');
-      for(var i = 0; i < folders.length; i++) {
-        var needle = folders[i];
-        var subFolders = GetSubFoldersInFolderPaneOrder(destFolder);
-
-        var shouldCreate = true;
+      var getChildNamed = function(folder, name) {
+        var subFolders = GetSubFoldersInFolderPaneOrder(folder);
         for(var j = 0; j < subFolders.length; j++) {
           var subFolder = subFolders[j];
-          if(needle == subFolder.name) {
-            shouldCreate = false;
-            destFolder = subFolder;
-          }
+          if(name == subFolder.name)
+            return subFolder;
         }
-        if (shouldCreate) {
+        return null;
+      }
+      for(var k = 0; k < folders.length; k++) {
+        var needle = folders[k];
+        var subFolder = getChildNamed(destFolder, needle);
+        if (subFolder == null) {
           destFolder.createSubfolder(needle, msgWindow);
-          subFolders = GetSubFoldersInFolderPaneOrder(destFolder);
-          destFolder = subFolders[0];
+          subFolder = getChildNamed(destFolder, needle);
         }
+        destFolder = subFolder;
       }
       // create filter
       var newFilter = filtersList.createFilter("SF_" + msg + "_" + position);
