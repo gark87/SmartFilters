@@ -3,7 +3,9 @@ BUILD=./build
 
 PROJECT=SmartFilters
 VERSION=$(shell cat $(SRC)/BASEVER)
-XPI=$(BUILD)/$(PROJECT)-$(VERSION).xpi
+GIT_BRANCH=$(shell git branch --no-color | sed -ne '/\*/{s/^\*\s*//;p;}')
+XPI_NAME=$(PROJECT)_$(VERSION)_$(GIT_BRANCH).xpi
+XPI=$(BUILD)/$(XPI_NAME)
 
 CHROME=chrome
 BCHROME=$(BUILD)/$(CHROME)
@@ -50,7 +52,7 @@ $(BUILD):
 	mkdir $(BUILD)
 
 $(XPI): $(JAR) $(BRDF) $(BMANIFEST) $(BUILD_DEFAULTS)
-	cd $(BUILD) && zip $(PROJECT)-${VERSION}.xpi -r $(MANIFEST) $(RDF) $(CHROME) $(DEFAULTS)
+	cd $(BUILD) && zip $(XPI_NAME) -r $(MANIFEST) $(RDF) $(CHROME) $(DEFAULTS)
 
 $(BRDF): $(BASEVER) $(RDF_PRE)
 	sed -e "s/BASEVER/${VERSION}/g;" $(RDF_PRE) > $(BRDF)
