@@ -1,7 +1,6 @@
 function startSmartFilters()
 {
-  var preselectedURI = GetSelectedFolderURI();
-  var msgFolder = GetMsgFolderFromUri(preselectedURI, true);
+  var msgFolder = gFolderDisplay.displayedFolder;
 
   window.openDialog("chrome://smartfilters/content/smartfilters.xul",
     "global:smartfilters", "chrome,centerscreen",
