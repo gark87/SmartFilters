@@ -3,8 +3,7 @@ BUILD=./build
 
 PROJECT=SmartFilters
 VERSION=$(shell cat $(SRC)/BASEVER)
-GIT_BRANCH=$(shell git branch --no-color | sed -ne '/\*/{s/^\*\s*//;p;}')
-XPI_NAME=$(PROJECT)_$(VERSION)_$(GIT_BRANCH).xpi
+XPI_NAME=$(PROJECT)_$(VERSION).xpi
 XPI=$(BUILD)/$(XPI_NAME)
 
 CHROME=chrome
