@@ -17,6 +17,8 @@
   <script type="application/x-javascript" src="chrome://messenger/content/mailWindowOverlay.js"/>
   <script type="application/x-javascript" src="chrome://messenger/content/ispUtils.js" />
   <script type="application/x-javascript" src="chrome://messenger/content/msgViewNavigation.js" />
+  <!-- thunderbird-stdlib -->
+  <script type="application/x-javascript" src="chrome://smartfilters/content/thunderbird-stdlib/msgHdrUtils.js"/>
   <!-- my scripts -->
   <script type="application/x-javascript" src="chrome://smartfilters/content/hashmap.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/result.js"/>
