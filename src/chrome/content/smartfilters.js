@@ -98,6 +98,9 @@ function SmartFilters() {
       // messages not filtered by anything
       if (result.getIcons().length == 0)
         continue;
+      // filter without messages
+      if (result.getMessageIndices().length == 0)
+        continue;
       box.createRow(result);
     }
   };
