@@ -82,9 +82,19 @@ function RobotUtil() {
           var messageIndices = [];
           name2index.foreach(function (name) {
             var indices = name2index.get(name);
-            for(var i = 0; i < indices.length; i++)
+            var length = indices.length;
+            // more than one message from this email - not a Twitter
+            if (length > 1) {
+              var indicator = name + "@" + domain;
+              var folder = this.getFolderPath(name, domain);
+              results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevText() + indicator, this.composeDir(folder), this.createFilterTerm(name)));
+              return;
+            }
+            for(var i = 0; i < length; i++)
               messageIndices.push(indices[i]);
           }, this);
+          if (messageIndices.length == 0)
+            return;
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
           var folder = this.getFolderPath(username, domain);
