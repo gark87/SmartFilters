@@ -15,7 +15,7 @@ function RobotUtil() {
     // user is the author - not a robot
     if (this.data.setContainsMyEmail(authors)) {
       this.regularMails.push(i);
-//        return;
+      return;
     }
     var author = getEmailInfo(authors.keys()[0]);
     var lower = message.messageId.toLowerCase();
