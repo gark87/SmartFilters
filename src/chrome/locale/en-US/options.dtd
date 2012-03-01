@@ -2,6 +2,8 @@
 <!ENTITY global.pane.title  "Global">
 <!ENTITY use.mailing.list   "Use mailing list SmartFilter">
 <!ENTITY common.description "Order of SmartFilters: ">
+<!ENTITY max.emails.count   "last emails should be analyzed">
+<!ENTITY threshold          "is minimum amount of emails in smartfilter">
 
 <!-- robot -->
 <!ENTITY robot "Robot">

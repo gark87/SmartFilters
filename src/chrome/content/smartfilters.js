@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // class contains common data that shared between processors
 /////////////////////////////////////////////////////////////////////////////
-function CommonData(folder, N) {
+function CommonData(folder) {
   var myEmails = [];
   var messages = [];
   this.preferences = Components.classes["@mozilla.org/preferences-service;1"]
@@ -21,6 +21,11 @@ function CommonData(folder, N) {
     myEmails.push(identity.email);
   }
   // load headers for last N messages
+  var N = this.preferences.getIntPref("max.emails.count");
+  var threshold = this.preferences.getIntPref("threshold");
+  this.getThreshold = function() {
+    return threshold;
+  };
   var database = folder.getDBFolderInfoAndDB({});
   var i = 0;
   for(var enumerator = database.EnumerateMessages(); enumerator.hasMoreElements(); ) {
@@ -43,8 +48,6 @@ function CommonData(folder, N) {
 };
 
 function SmartFilters() {
-  const MAX = 5000;
-
   var data;
   var box;
   var msgWindow;
@@ -70,7 +73,7 @@ function SmartFilters() {
     gProgressMeter = document.getElementById("progressmeter");
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
-    data = new CommonData(window.arguments[0].folder, MAX);
+    data = new CommonData(window.arguments[0].folder);
     document.title = locale.GetStringFromName("title") + data.getFolder().name;
     setStatus("Looking for mailing bots");
     var allMessages = range(0, data.numberOfMessages());
@@ -99,7 +102,7 @@ function SmartFilters() {
       if (result.getIcons().length == 0)
         continue;
       // filter without messages
-      if (result.getMessageIndices().length <= 5)
+      if (result.getMessageIndices().length <= data.getThreshold())
         continue;
       box.createRow(result);
     }

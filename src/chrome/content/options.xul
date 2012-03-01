@@ -13,24 +13,34 @@
     <preferences>
       <preference id="filter.1" name="smartfilters.filter.1" type="string"/>
       <preference id="filter.2" name="smartfilters.filter.2" type="string"/>
+      <preference id="max.emails" name="smartfilters.max.emails.count" type="int"/>
+      <preference id="threshold" name="smartfilters.threshold" type="int"/>
     </preferences>
-    <description style="white-space: pre-wrap">
-    &common.description;
-    </description>
-    <menulist preference="filter.1">
-      <menupopup>
-        <menuitem label="&robot;" value="robot"/>
-        <menuitem label="&mailing.list;" value="mailing list"/>
-        <menuitem label="Nothing" value="nothing"/>
-      </menupopup>
-    </menulist>
-    <menulist preference="filter.2">
-      <menupopup>
-        <menuitem label="&robot;" value="robot"/>
-        <menuitem label="&mailing.list;" value="mailing list"/>
-        <menuitem label="Nothing" value="nothing"/>
-      </menupopup>
-    </menulist>
+    <hbox>
+      &common.description;
+      <menulist preference="filter.1">
+        <menupopup>
+          <menuitem label="&robot;" value="robot"/>
+          <menuitem label="&mailing.list;" value="mailing list"/>
+          <menuitem label="Nothing" value="nothing"/>
+        </menupopup>
+      </menulist>
+      <menulist preference="filter.2">
+        <menupopup>
+          <menuitem label="&robot;" value="robot"/>
+          <menuitem label="&mailing.list;" value="mailing list"/>
+          <menuitem label="Nothing" value="nothing"/>
+        </menupopup>
+      </menulist>
+    </hbox>
+    <hbox>
+      <textbox type="number" max="5000" min="1" maxlength="4" size="3" preference="max.emails" />
+      &max.emails.count;
+    </hbox>
+    <hbox>
+      <textbox type="number" max="5000" min="1" maxlength="4" size="3" preference="threshold" />
+      &threshold;
+    </hbox>
   </prefpane>
   <prefpane id="mailing-list" label="&mailing.list;"
     image="chrome://smartfilters/skin/classic/mailing_list.png">
