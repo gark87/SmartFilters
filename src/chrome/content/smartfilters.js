@@ -99,7 +99,7 @@ function SmartFilters() {
       if (result.getIcons().length == 0)
         continue;
       // filter without messages
-      if (result.getMessageIndices().length == 0)
+      if (result.getMessageIndices().length <= 5)
         continue;
       box.createRow(result);
     }
@@ -128,7 +128,6 @@ function SmartFilters() {
         continue;
 
       var msg = item.getAttribute("msg");
-      // create (sub-)folder ...
       var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
       // create needed folders
       var destFolder = folder;
