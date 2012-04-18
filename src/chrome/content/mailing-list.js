@@ -62,12 +62,18 @@ function MailingListUtil() {
     this.init(prevResult);
 
     var results = this.createReturnArray(this.regularMails);
+    var composeTest = function(prevText, name) {
+      if (prevText == "")
+        return "to mailing list " + name;
+      return prevText + ", to mailing list " + name;
+    };
     // first of all: process 100% mailing list
     mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
       var author = getEmailInfo(email);
       var folder = this.getFolderPath(author.username, author.domain);
-      var result = new SmartFiltersResult(set.keys(), this.getIcons(), this.getPrevText() + email, this.composeDir(folder), this.createFilterTerm(email));
+      var text = composeTest(this.getPrevText(), email);
+      var result = new SmartFiltersResult(set.keys(), this.getIcons(), text, this.composeDir(folder), this.createFilterTerm(email));
       results.push(result);
       for (var key in recipient2indices) {
         if (key == email)
@@ -95,9 +101,9 @@ function MailingListUtil() {
 
       var author = getEmailInfo(biggestKey);
       var folder = this.getFolderPath(author.username, author.domain);
-      results.push(new SmartFiltersResult(biggestSet.keys(), this.getIcons(),
-            this.getPrevText() + biggestKey, this.composeDir(folder),
-            this.createFilterTerm(biggestKey)));
+      var text = composeTest(this.getPrevText(), biggestKey);
+      results.push(new SmartFiltersResult(biggestSet.keys(), this.getIcons(), text,
+            this.composeDir(folder), this.createFilterTerm(biggestKey)));
       // remove biggest set elements from other sets
       for (var i = 0; i < keys.length; i++) {
         var hashSet = recipient2indices[keys[i]];

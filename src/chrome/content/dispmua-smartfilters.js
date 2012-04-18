@@ -63,6 +63,11 @@ function RobotUtil() {
   this.process = function(prevResult) {
     this.init(prevResult);
     var results = this.createReturnArray(this.regularMails);
+    var composeTest = function(prevText, name) {
+      if (prevText == "")
+        return "from robot " + name;
+      return prevText + ", from robot " + name;
+    };
     domain2map.foreach(function(domain) {
       var id2map = domain2map.get(domain);
       // this check is for Twitter-like notifications
@@ -87,7 +92,9 @@ function RobotUtil() {
             if (length > 1) {
               var indicator = name + "@" + domain;
               var folder = this.getFolderPath(name, domain);
-              results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevText() + indicator, this.composeDir(folder), this.createFilterTerm(name)));
+              var text = composeTest(this.getPrevText(), indicator);
+              results.push(new SmartFiltersResult(indices, this.getIcons(), text,
+                  this.composeDir(folder), this.createFilterTerm(indicator)));
               return;
             }
             for(var i = 0; i < length; i++)
@@ -98,7 +105,9 @@ function RobotUtil() {
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
           var folder = this.getFolderPath(username, domain);
-          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), this.getPrevText() + indicator, this.composeDir(folder), this.createFilterTerm(indicator)));
+          var text = composeTest(this.getPrevText(), indicator);
+          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), text,
+                this.composeDir(folder), this.createFilterTerm(indicator)));
         }
         return;
       }
@@ -134,7 +143,9 @@ function RobotUtil() {
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
         var folder = this.getFolderPath(username, domain);
-        results.push(new SmartFiltersResult(indices, this.getIcons(), this.getPrevText() + indicator, this.composeDir(folder), this.createFilterTerm(indicator)));
+        var text = composeTest(this.getPrevText(), indicator);
+        results.push(new SmartFiltersResult(indices, this.getIcons(), text,
+            this.composeDir(folder), this.createFilterTerm(indicator)));
       }, this);
     }, this);
     return results;
