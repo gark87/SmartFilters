@@ -1,54 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
-// class contains common data that shared between processors
-/////////////////////////////////////////////////////////////////////////////
-function CommonData(folder) {
-  var myEmails = [];
-  var messages = [];
-  this.preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                     .getService(Components.interfaces.nsIPrefService)
-                     .getBranch("smartfilters.");
-
-  // find out all user emails
-  var identity = folder.customIdentity;
-  if (!identity) {
-    var accountManager = Components.classes["@mozilla.org/messenger/account-manager;1"].getService(Components.interfaces.nsIMsgAccountManager);
-    var identities = accountManager.allIdentities;
-    for (var i = 0; i < identities.Count(); i++) {
-      var identity = identities.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgIdentity);
-      myEmails.push(identity.email);
-    }
-  } else {
-    myEmails.push(identity.email);
-  }
-  // load headers for last N messages
-  var N = this.preferences.getIntPref("max.emails.count");
-  var threshold = this.preferences.getIntPref("threshold");
-  this.getThreshold = function() {
-    return threshold;
-  };
-  var database = folder.getDBFolderInfoAndDB({});
-  var i = 0;
-  for(var enumerator = database.EnumerateMessages(); enumerator.hasMoreElements(); ) {
-    var header = enumerator.getNext();
-    if (header instanceof Components.interfaces.nsIMsgDBHdr)
-      messages[i++ % N] = header;
-  }
-  // methods
-  this.setContainsMyEmail = function(set) {
-    for each (var elem in myEmails) {
-      if (set.get(elem) != undefined)
-        return true;
-    }
-    return false;
-  };
-  // getters
-  this.getFolder = function () { return folder; }
-  this.getMessage = function (i) { return messages[i]; }
-  this.numberOfMessages = function () { return messages.length; }
-};
-
 function SmartFilters() {
-  var data;
   var box;
   var msgWindow;
   var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
@@ -57,54 +7,94 @@ function SmartFilters() {
 
 
   var filtersMap = {
-    "mailing list" : MailingListUtil,
+    "mailing.list" : MailingListUtil,
     "robot"        : RobotUtil,
   };
 
-  function range(from, to) {
-    var arr = [];
-    for(var i = from; i < to; i++)
-      arr.push(i);
-    return arr;
+  this.createData = function(folder) {
+    var data = {};
+    data.myEmails = [];
+    data.messages = [];
+    var preferences = Components.classes["@mozilla.org/preferences-service;1"]
+                         .getService(Components.interfaces.nsIPrefService)
+                         .getBranch("smartfilters.");
+    // find out all user emails
+    var identity = folder.customIdentity;
+    if (!identity) {
+      var accountManager = Components.classes["@mozilla.org/messenger/account-manager;1"].getService(Components.interfaces.nsIMsgAccountManager);
+      var identities = accountManager.allIdentities;
+      for (var i = 0; i < identities.Count(); i++) {
+        var identity = identities.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgIdentity);
+        data.myEmails.push(identity.email);
+      }
+    } else {
+      data.myEmails.push(identity.email);
+    }
+    // suck out all preferences
+    data.threshold = preferences.getIntPref("threshold");
+    data.filters = [];
+    var children = {};
+    preferences.getChildList("filter.", children);
+    for (var i = 1; i <= children.value; i++) {
+      var filter = preferences.getCharPref("filter." + i);
+      var patternPref = filter.replace(' ', '.') + ".pattern";
+      var prefix = preferences.getCharPref(patternPref);
+      data.filters.push({ name : filter, prefix : prefix });
+    }
+    // load headers for last N messages
+    var N = preferences.getIntPref("max.emails.count");
+    var database = folder.getDBFolderInfoAndDB({});
+    var i = 0;
+    var headers = [];
+    for(var enumerator = database.EnumerateMessages(); enumerator.hasMoreElements(); ) {
+      var header = enumerator.getNext();
+      if (header instanceof Components.interfaces.nsIMsgDBHdr)
+        headers[i++ % N] = header;
+    }
+    data.messages = headers.map(function(header) {
+      var result = {
+        "author" : [],
+        "recipients" : [],
+      };
+      Util.processAddressListToArray(header.ccList, result.recipients);
+      Util.processAddressListToArray(header.recipients, result.recipients);
+      Util.processAddressListToArray(header.author, result.author);
+      result.messageId = header.messageId.toLowerCase();
+      return result;
+    });
+    return data;
   }
 
   this.start = function() {
+    var folder = window.arguments[0].folder;
+    var worker = new Worker("chrome://smartfilters/content/worker.js");
+    worker.postMessage({
+        'data' : this.createData(folder),
+        'id' : 'start'
+    });
     gStatus = document.getElementById("status");
     gProgressMeter = document.getElementById("progressmeter");
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
-    data = new CommonData(window.arguments[0].folder);
-    document.title = locale.GetStringFromName("title") + data.getFolder().name;
+    document.title = locale.GetStringFromName("title") + folder;
     setStatus("Looking for mailing bots");
-    var allMessages = range(0, data.numberOfMessages());
-    var results = [new SmartFiltersResult(allMessages, [], "", "", function() {})];
-    var util = new Util(data);
-    var children = {};
-    data.preferences.getChildList("filter.", children);
-    for (var i = 1; i <= children.value; i++) {
-      var pref = data.preferences.getCharPref("filter." + i);
-      var filt = filtersMap[pref];
-      if (filt) {
-        var prevResults = results;
-        results = [];
-        for(var k = 0; k < prevResults.length; k++) {
-          filt.prototype = util;
-          var filter = new filt();
-          var result = filter.process(prevResults[k]);
-          for(var j = 0; j < result.length; j++)
-            results.push(result[j]);
-        }
+    worker.onmessage = function(event) {
+      var data = event.data;
+      var id = data.id;
+      if (id == "end")
+        return;
+      setStatus(id);
+      var results = data.results;
+      for(var i = 0; i < results.length; i++) {
+        var result = results[i];
+        // messages not filtered by anything
+        if (result.icons.length == 0)
+          continue;
+        // filter without messages
+        if (result.messageIndices.length <= data.threshold)
+          continue;
+        box.createRow(result);
       }
-    }
-    for(var i = 0; i < results.length; i++) {
-      var result = results[i];
-      // messages not filtered by anything
-      if (result.getIcons().length == 0)
-        continue;
-      // filter without messages
-      if (result.getMessageIndices().length <= data.getThreshold())
-        continue;
-      box.createRow(result);
     }
   };
 
@@ -161,7 +151,7 @@ function SmartFilters() {
       // set correct destination folder
       action.targetFolderUri = destFolder.URI;
       // fix filter term
-      var term = item.data.createFilterTerm(newFilter);
+//      var term = item.data.createFilterTerm(newFilter);
       newFilter.appendAction(action);
       filtersList.insertFilterAt(position++, newFilter);
     }

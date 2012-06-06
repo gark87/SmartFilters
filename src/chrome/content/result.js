@@ -3,10 +3,10 @@
 // will be displayed in dialog
 ///////////////////////////////////////////////////////////////////////////////////////
 function SmartFiltersResult(messageIndices, icons, text, folder, createFilterTerm) {
-  this.getMessageIndices = function() { return messageIndices; };
-  this.getIcons = function() { return icons; };
-  this.getText = function() { return text; };
-  this.getFolder = function() { return folder; };
+  this.messageIndices = messageIndices;
+  this.icons = icons;
+  this.text = text;
+  this.folder = folder;
   this.createFilterTerm = createFilterTerm;
 }
 

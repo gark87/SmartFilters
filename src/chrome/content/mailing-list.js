@@ -2,38 +2,31 @@
 // mailing list SmartFilter processor
 ///////////////////////////////////////////////
 
-function MailingListUtil() {
+function MailingListUtil(prefix) {
   // private fields
   var recipient2indices = {};
   var mailing_list_100 = new HashMap();
 
   // override abstract methods
   this.getIconName    = function() { return "mailing list"; }
-  this.getPrefPrefix  = function() { return "mailing.list"; }
+  this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
-    // collect recipients(To: and CC:)
-    var recipients = new HashMap();
-    Util.processAddressList(message.ccList, recipients);
-    Util.processAddressList(message.recipients, recipients);
-    // collect author(From:)
-    var authors = new HashMap();
-    Util.processAddressList(message.author, authors);
     // user is one of the recipients - that's how we get this email
-    if (this.data.setContainsMyEmail(recipients)) {
+    if (Util.arrayContainsElementFromAnother(message.recipients, this.data.myEmails)) {
       this.regularMails.push(i);
       return;
     }
 
     // user is the author - that's how we get this email
-    if (this.data.setContainsMyEmail(authors)) {
+    if (Util.arrayContainsElementFromAnother(message.author, this.data.myEmails)) {
       this.regularMails.push(i);
       return;
     }
     // the only one recipient means that it's 100% mailing list
-    if (recipients.getSize() == 1)
-      mailing_list_100.add(recipients.keys().pop());
+    if (message.recipients.length == 1)
+      mailing_list_100.add(message.recipients[0]);
     // more than one - lets count them.
-    recipients.foreach(function (recipient) {
+    Util.foreach(message.recipients, function (recipient) {
       var indices = recipient2indices[recipient];
       if (indices == undefined)
         indices = recipient2indices[recipient] = new HashMap();
@@ -42,20 +35,7 @@ function MailingListUtil() {
   };
 
   this.createFilterTerm = function (email) {
-    return function(filter) {
-      var term = filter.createTerm();
-
-      term.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
-      term.op = Components.interfaces.nsMsgSearchOp.Contains;
-      term.booleanAnd = true;
-
-      var termValue = term.value;
-      termValue.attrib = term.attrib;
-      termValue.str = email;
-
-      term.value = termValue;
-      filter.appendTerm(term);
-    }
+    return { type : "mailing.list", email : email };
   };
 
   this.process = function(prevResult) {
@@ -70,7 +50,7 @@ function MailingListUtil() {
     // first of all: process 100% mailing list
     mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
-      var author = getEmailInfo(email);
+      var author = Util.getEmailInfo(email);
       var folder = this.getFolderPath(author.username, author.domain);
       var text = composeTest(this.getPrevText(), email);
       var result = new SmartFiltersResult(set.keys(), this.getIcons(), text, this.composeDir(folder), this.createFilterTerm(email));
@@ -99,7 +79,7 @@ function MailingListUtil() {
       if (biggestSize == 0)
         break;
 
-      var author = getEmailInfo(biggestKey);
+      var author = Util.getEmailInfo(biggestKey);
       var folder = this.getFolderPath(author.username, author.domain);
       var text = composeTest(this.getPrevText(), biggestKey);
       results.push(new SmartFiltersResult(biggestSet.keys(), this.getIcons(), text,

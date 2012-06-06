@@ -21,12 +21,12 @@
           item.setAttribute("class", "smartfilters-item");
           this.appendChild(item);
           // set view properties
-          item.setAttribute("msg", result.getText());
-          item.setAttribute("folder", result.getFolder());
+          item.setAttribute("msg", result.text);
+          item.setAttribute("folder", result.folder);
           // add all needed icons
           var iconBox = document.getAnonymousElementByAttribute(item, "anonid",
               "smartfilters-iconbox");
-          var icons = result.getIcons();
+          var icons = result.icons;
           for (var i = 0; i < icons.length; i++) {
             var icon = document.createElement('image');
             icon.setAttribute('class', 'smartfilters-row-icon');

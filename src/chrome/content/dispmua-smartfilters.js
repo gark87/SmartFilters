@@ -1,23 +1,20 @@
 ///////////////////////////////////////////////
 // bot(dispmua) filter
 ///////////////////////////////////////////////
-function RobotUtil() {
+function RobotUtil(prefix) {
   // private fields
   var domain2map = new HashMap();
 
   // override abstract methods
   this.getIconName    = function() { return "robot"; }
-  this.getPrefPrefix  = function() { return "robot"; }
+  this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
-    // collect author(From:)
-    var authors = new HashMap();
-    Util.processAddressList(message.author, authors);
     // user is the author - not a robot
-    if (this.data.setContainsMyEmail(authors)) {
+    if (Util.arrayContainsElementFromAnother(message.author, this.data.myEmails)) {
       this.regularMails.push(i);
       return;
     }
-    var author = getEmailInfo(authors.keys()[0]);
+    var author = Util.getEmailInfo(message.author[0]);
     var lower = message.messageId.toLowerCase();
     var createIfNeeded = function(messageId) {
       var id2map = domain2map.get(author.domain);
@@ -44,20 +41,7 @@ function RobotUtil() {
   };
 
   this.createFilterTerm = function (email) {
-    return function(filter) {
-      var term = filter.createTerm();
-
-      term.attrib = Components.interfaces.nsMsgSearchAttrib.Sender;
-      term.op = Components.interfaces.nsMsgSearchOp.Contains;
-      term.booleanAnd = true;
-
-      var termValue = term.value;
-      termValue.attrib = term.attrib;
-      termValue.str = email;
-
-      term.value = termValue;
-      filter.appendTerm(term);
-    };
+    return { type : 'robot', email : email };
   };
 
   this.process = function(prevResult) {
