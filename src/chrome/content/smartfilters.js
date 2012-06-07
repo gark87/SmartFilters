@@ -4,6 +4,9 @@ function SmartFilters() {
   var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
                getService(Components.interfaces.nsIStringBundleService).
                createBundle("chrome://smartfilters/locale/smartfilters.properties");
+  var preferences = Components.classes["@mozilla.org/preferences-service;1"]
+                       .getService(Components.interfaces.nsIPrefService)
+                       .getBranch("smartfilters.");
 
 
   var filtersMap = {
@@ -15,9 +18,6 @@ function SmartFilters() {
     var data = {};
     data.myEmails = [];
     data.messages = [];
-    var preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                         .getService(Components.interfaces.nsIPrefService)
-                         .getBranch("smartfilters.");
     // find out all user emails
     var identity = folder.customIdentity;
     if (!identity) {
@@ -31,7 +31,6 @@ function SmartFilters() {
       data.myEmails.push(identity.email);
     }
     // suck out all preferences
-    data.threshold = preferences.getIntPref("threshold");
     data.filters = [];
     var children = {};
     preferences.getChildList("filter.", children);
@@ -78,6 +77,7 @@ function SmartFilters() {
     box = document.getElementById("smartfilters-box");
     document.title = locale.GetStringFromName("title") + folder;
     setStatus("Looking for mailing bots");
+    var threshold = preferences.getIntPref("threshold");
     worker.onmessage = function(event) {
       var data = event.data;
       var id = data.id;
@@ -91,7 +91,7 @@ function SmartFilters() {
         if (result.icons.length == 0)
           continue;
         // filter without messages
-        if (result.messageIndices.length <= data.threshold)
+        if (result.messageIndices.length <= threshold)
           continue;
         box.createRow(result);
       }
