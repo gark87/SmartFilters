@@ -75,7 +75,7 @@ function SmartFilters() {
     gProgressMeter = document.getElementById("progressmeter");
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
-    document.title = locale.GetStringFromName("title") + folder;
+    document.title = locale.GetStringFromName("title") + " " + folder.URI;
     setStatus("Looking for mailing bots");
     var threshold = preferences.getIntPref("threshold");
     worker.onmessage = function(event) {

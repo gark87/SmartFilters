@@ -6,7 +6,7 @@
 <window
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     id="SmartFiltersWindow"
-    title="Oooops"
+    title="Smartfilters"
     windowtype="global:SmartFilters"
     persist="width height screenX screenY sizemode zlevel"
     onload="smartfilters.start();"
