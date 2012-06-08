@@ -84,6 +84,10 @@ function SmartFilters() {
       if (id == "end")
         return;
       setStatus(id);
+      // remove all children from box
+      while (box.firstChild) {
+        box.removeChild(box.lastChild);
+      }
       var results = data.results;
       for(var i = 0; i < results.length; i++) {
         var result = results[i];
