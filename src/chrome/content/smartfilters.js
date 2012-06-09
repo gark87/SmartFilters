@@ -76,14 +76,16 @@ function SmartFilters() {
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
     document.title = locale.GetStringFromName("title") + " " + folder.URI;
-    setStatus("Looking for mailing bots");
+    setStatus("initializing", 0);
     var threshold = preferences.getIntPref("threshold");
     worker.onmessage = function(event) {
       var data = event.data;
       var id = data.id;
-      if (id == "end")
+      if (id == "end") {
+        setStatus("finished", 100);
         return;
-      setStatus(id);
+      }
+      setStatus(id, data.percentage);
       // remove all children from box
       while (box.firstChild) {
         box.removeChild(box.lastChild);
@@ -173,12 +175,9 @@ function SmartFilters() {
     filterService.applyFiltersToFolders(filtersList, folders, msgWindow);
   }
 
-  function setProgress(processed) {
-    gProgressMeter.value = 100 * processed / allMessages;
-  }
-
-  function setStatus(text) {
+  function setStatus(text, percentage) {
     gStatus.value = locale.GetStringFromName("status") + text + "...";
+    gProgressMeter.value = percentage;
   }
 }
 

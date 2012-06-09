@@ -28,7 +28,8 @@ onmessage = function(event) {
     var results = [new SmartFiltersResult(allMessages, [], "", "", {type : 'nothing', email : ""})];
     var util = new Util(data);
     var filters = data.filters;
-    for (var i = 0; i < filters.length; i++) {
+    var length = filters.length;
+    for (var i = 0; i < length; i++) {
       var pref = filters[i].name;
       var filt = filtersMap[pref];
       if (filt) {
@@ -41,7 +42,7 @@ onmessage = function(event) {
           for(var j = 0; j < result.length; j++)
             results.push(result[j]);
         }
-        postMessage({id : pref, results: results});
+        postMessage({id : pref, results: results, percentage: 100 * (i + 1) / length});
       }
     }
   }
