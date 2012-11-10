@@ -12,10 +12,10 @@
     >
   <prefpane id="globals" label="&global.pane.title;">
     <preferences>
-      <preference id="filter.1" name="smartfilters.filter.1" type="string"/>
-      <preference id="filter.2" name="smartfilters.filter.2" type="string"/>
-      <preference id="max.emails" name="smartfilters.max.emails.count" type="int"/>
-      <preference id="threshold" name="smartfilters.threshold" type="int"/>
+      <preference id="filter.1" name="extensions.smartfilters.filter.1" type="string"/>
+      <preference id="filter.2" name="extensions.smartfilters.filter.2" type="string"/>
+      <preference id="max.emails" name="extensions.smartfilters.max.emails.count" type="int"/>
+      <preference id="threshold" name="extensions.smartfilters.threshold" type="int"/>
     </preferences>
     <hbox>
       &common.description;
@@ -46,7 +46,7 @@
   <prefpane id="mailing-list" label="&mailing.list;"
     image="chrome://smartfilters/skin/classic/mailing_list.png">
     <preferences>
-      <preference id="mailing.list.pattern" name="smartfilters.mailing.list.pattern" type="string"/>
+      <preference id="mailing.list.pattern" name="extensions.smartfilters.mailing.list.pattern" type="string"/>
     </preferences>
     <hbox>
       <label value="Folder pattern:"/>
@@ -63,7 +63,7 @@
   <prefpane id="robot" label="&robot;"
     image="chrome://smartfilters/skin/classic/robot.png">
     <preferences>
-      <preference id="robot.pattern" name="smartfilters.robot.pattern" type="string"/>
+      <preference id="robot.pattern" name="extensions.smartfilters.robot.pattern" type="string"/>
     </preferences>
     <hbox>
       <label value="Folder pattern:"/>
