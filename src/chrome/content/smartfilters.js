@@ -1,6 +1,9 @@
+Cu.import("resource:///modules/virtualFolderWrapper.js");
+
 function SmartFilters() {
   var box;
   var msgWindow;
+  var folder;
   var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
                getService(Components.interfaces.nsIStringBundleService).
                createBundle("chrome://smartfilters/locale/smartfilters.properties");
@@ -65,7 +68,7 @@ function SmartFilters() {
   }
 
   this.start = function() {
-    var folder = window.arguments[0].folder;
+    folder = window.arguments[0].folder;
     var worker = new Worker("chrome://smartfilters/content/worker.js");
     worker.postMessage({
         'data' : this.createData(folder),
@@ -115,10 +118,12 @@ function SmartFilters() {
   }
 
   this.apply = function() {
-    var folder = data.getFolder();
+//    var folder = data.getFolder();
     var filtersList = folder.getFilterList(null);
     var position = filtersList.filterCount;
     var items = box.childNodes;
+    var termCreator = Components.classes["@mozilla.org/messenger/searchSession;1"]
+                      .createInstance(Ci.nsIMsgSearchSession);
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
       var checkbox = document.getAnonymousElementByAttribute(item,
@@ -130,39 +135,35 @@ function SmartFilters() {
       var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
       // create needed folders
       var destFolder = folder;
-      var folders = textbox.value.split('.');
-      var getChildNamed = function(folder, name) {
-        var subFolders = GetSubFoldersInFolderPaneOrder(folder);
-        for(var j = 0; j < subFolders.length; j++) {
-          var subFolder = subFolders[j];
-          if(name == subFolder.name)
-            return subFolder;
-        }
-        return null;
+      var terms = [];
+      var resultTerms = item.data.terms;
+      for(var j = 0; j < resultTerms.length; j++) {
+	var resultTerm = resultTerms[j];
+	var type = resultTerm.type;
+	var searchTerm = termCreator.createTerm();
+	if (type == 'robot') {
+	  searchTerm.attrib = Components.interfaces.nsMsgSearchAttrib.Sender;
+	  var value = searchTerm.value;
+	  value.attrib = searchTerm.attrib;
+	  value.str = resultTerm.email;
+	  searchTerm.value = value;
+	  searchTerm.op = Components.interfaces.nsMsgSearchOp.Contains;
+	} else if (type == 'mailing.list') {
+	  searchTerm.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
+	  var value = searchTerm.value;
+	  value.attrib = searchTerm.attrib;
+	  value.str = resultTerm.email;
+	  searchTerm.value = value;
+	  searchTerm.op = Components.interfaces.nsMsgSearchOp.Contains;
+	}
+	searchTerm.booleanAnd = true;
+	terms.push(searchTerm);
       }
-      for(var k = 0; k < folders.length; k++) {
-        var needle = folders[k];
-        var subFolder = getChildNamed(destFolder, needle);
-        if (subFolder == null) {
-          destFolder.createSubfolder(needle, msgWindow);
-          subFolder = getChildNamed(destFolder, needle);
-        }
-        destFolder = subFolder;
-      }
-      // create filter
-      var newFilter = filtersList.createFilter("SF_" + msg + "_" + position);
-      newFilter.enabled = true;
-      var action = newFilter.createAction();
-      action.type = Components.interfaces.nsMsgFilterAction.MoveToFolder;
-      // set correct destination folder
-      action.targetFolderUri = destFolder.URI;
-      // fix filter term
-//      var term = item.data.createFilterTerm(newFilter);
-      newFilter.appendAction(action);
-      filtersList.insertFilterAt(position++, newFilter);
+      VirtualFolderHelper.createNewVirtualFolder
+	(textbox.value, folder, [folder], terms, true);
     }
-    filtersList.saveToDefaultFile();
-    applyFilters(filtersList);
+//    filtersList.saveToDefaultFile();
+//    applyFilters(filtersList);
     close();
   }
 

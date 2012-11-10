@@ -11,6 +11,7 @@ function Util(data) {
   }
   this.init = function(prevResult) {
     this.getPrevText = function () { return prevResult.text; };
+    this.getPrevTerms = function () { return prevResult.terms; };
 
     // generate correct icons array here
     var icons = [];
@@ -24,7 +25,7 @@ function Util(data) {
     this.regularMails = [];
     this.createReturnArray = function(mails) {
       return [new SmartFiltersResult(mails, prevResult.icons, this.getPrevText(),
-          prevResult.folder, prevResult.createFilterTerm)];
+          prevResult.folder, prevResult.terms)];
     }
 
     this.composeDir = function(dirname) {

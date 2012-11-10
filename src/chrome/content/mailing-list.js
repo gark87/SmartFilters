@@ -53,7 +53,9 @@ function MailingListUtil(prefix) {
       var author = Util.getEmailInfo(email);
       var folder = this.getFolderPath(author.username, author.domain);
       var text = composeTest(this.getPrevText(), email);
-      var result = new SmartFiltersResult(set.keys(), this.getIcons(), text, this.composeDir(folder), this.createFilterTerm(email));
+      var terms = this.getPrevTerms().slice(0);
+      terms.push(this.createFilterTerm(email));
+      var result = new SmartFiltersResult(set.keys(), this.getIcons(), text, this.composeDir(folder), terms);
       results.push(result);
       for (var key in recipient2indices) {
         if (key == email)
@@ -82,8 +84,10 @@ function MailingListUtil(prefix) {
       var author = Util.getEmailInfo(biggestKey);
       var folder = this.getFolderPath(author.username, author.domain);
       var text = composeTest(this.getPrevText(), biggestKey);
+      var terms = this.getPrevTerms().slice(0);
+      terms.push(this.createFilterTerm(biggestKey));
       results.push(new SmartFiltersResult(biggestSet.keys(), this.getIcons(), text,
-            this.composeDir(folder), this.createFilterTerm(biggestKey)));
+            this.composeDir(folder), terms));
       // remove biggest set elements from other sets
       for (var i = 0; i < keys.length; i++) {
         var hashSet = recipient2indices[keys[i]];
