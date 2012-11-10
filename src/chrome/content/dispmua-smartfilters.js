@@ -77,8 +77,10 @@ function RobotUtil(prefix) {
               var indicator = name + "@" + domain;
               var folder = this.getFolderPath(name, domain);
               var text = composeTest(this.getPrevText(), indicator);
+	      var terms = this.getPrevTerms().slice(0);
+	      terms.push(this.createFilterTerm(indicator));
               results.push(new SmartFiltersResult(indices, this.getIcons(), text,
-                  this.composeDir(folder), this.createFilterTerm(indicator)));
+                  this.composeDir(folder), terms));
               return;
             }
             for(var i = 0; i < length; i++)
@@ -90,8 +92,10 @@ function RobotUtil(prefix) {
           var indicator = username + "@" + domain;
           var folder = this.getFolderPath(username, domain);
           var text = composeTest(this.getPrevText(), indicator);
+	  var terms = this.getPrevTerms().slice(0);
+	  terms.push(this.createFilterTerm(indicator));
           results.push(new SmartFiltersResult(messageIndices, this.getIcons(), text,
-                this.composeDir(folder), this.createFilterTerm(indicator)));
+                this.composeDir(folder), terms));
         }
         return;
       }
@@ -128,8 +132,10 @@ function RobotUtil(prefix) {
         var indicator = username + '@' + domain;
         var folder = this.getFolderPath(username, domain);
         var text = composeTest(this.getPrevText(), indicator);
+	var terms = this.getPrevTerms().slice(0);
+	terms.push(this.createFilterTerm(indicator));
         results.push(new SmartFiltersResult(indices, this.getIcons(), text,
-            this.composeDir(folder), this.createFilterTerm(indicator)));
+            this.composeDir(folder), terms));
       }, this);
     }, this);
     return results;
