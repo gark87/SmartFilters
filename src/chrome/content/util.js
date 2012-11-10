@@ -45,13 +45,34 @@ function Util(data) {
   }
 }
 
+// given an email address, split it into username and domain
+// return in an associative array
+Util.getEmailInfo = function (email) {
+  if (!email) return null;
+
+  var result = new Object;
+
+  var emailData = email.split('@');
+
+  if (emailData.length != 2) 
+    return null;
+
+  // all the variables we'll be returning
+  result.username = emailData[0];
+  result.domain = emailData[1];
+
+  return result;
+};
+
 Util.processAddressList = function(list, result) {
   var emails = {};
   var headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"];
   var hdrParser = headerParser.getService(Components.interfaces.nsIMsgHeaderParser);
   hdrParser.parseHeadersWithArray(list, emails, {}, {});
   for each (var recipient in emails.value) {
-    result.add(recipient);
+    if (Util.getEmailInfo(recipient)) {
+      result.add(recipient);
+    }
   }
 };
 
@@ -61,7 +82,9 @@ Util.processAddressListToArray = function(list, arr) {
   var hdrParser = headerParser.getService(Components.interfaces.nsIMsgHeaderParser);
   hdrParser.parseHeadersWithArray(list, emails, {}, {});
   for each (var recipient in emails.value) {
-    arr.push(recipient);
+    if (Util.getEmailInfo(recipient)) {
+      arr.push(recipient);
+    }
   }
 };
 
@@ -80,23 +103,3 @@ Util.foreach = function(arr, func, obj) {
     (func).call(obj, elem);
 }
 
-// given an email address, split it into username and domain
-// return in an associative array
-Util.getEmailInfo = function (email) {
-  if (!email) return null;
-
-  var result = new Object;
-
-  var emailData = email.split('@');
-
-  if (emailData.length != 2) {
-    dump("bad e-mail address!\n");
-    return null;
-  }
-
-  // all the variables we'll be returning
-  result.username = emailData[0];
-  result.domain = emailData[1];
-
-  return result;
-};
