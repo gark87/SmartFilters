@@ -9,6 +9,8 @@
     title="Smartfilters"
     windowtype="global:SmartFilters"
     persist="width height screenX screenY sizemode zlevel"
+    width="900"
+    height="640"
     onload="smartfilters.start();"
 >
   <!-- system scripts-->

@@ -45,6 +45,7 @@
 
   <binding id="item" extends="chrome://global/content/bindings/richlistbox.xml#richlistitem">
     <content>
+      <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
       <xul:vbox flex="99999">
         <xul:box>
           <xul:box anonid="smartfilters-iconbox">
@@ -60,7 +61,6 @@
           <xul:spacer flex="99999" />
         </xul:box>
       </xul:vbox>
-      <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
     </content>
   </binding>
 </bindings>
