@@ -36,7 +36,7 @@
   </hbox>
   <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
   <hbox>
-    <button label="&cancel.button;" oncommand="smartfilters.close();" />
+<!--    <button label="&cancel.button;" oncommand="smartfilters.close();" /> -->
     <button label="&apply.button;" oncommand="smartfilters.apply();" />
   </hbox>
 </window>
