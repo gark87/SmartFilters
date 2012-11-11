@@ -7,7 +7,7 @@
     <em:version>BASEVER</em:version>
     <em:creator>gark87(Arkady Galyash)</em:creator>
     <em:contributor></em:contributor>
-    <em:description>Tired of writing a lot of filters? Install SmartFilters now to organise your mailbox automaticly. </em:description>
+    <em:description>Tired of writing a lot of filters? Install SmartFilters now to organise your mailbox automatically.</em:description>
     <em:aboutURL>chrome://SmartFilters/content/about.xul</em:aboutURL>
     <em:optionsURL>chrome://SmartFilters/content/options.xul</em:optionsURL>
     <em:targetApplication>

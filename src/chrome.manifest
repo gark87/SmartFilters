@@ -1,7 +1,7 @@
-content smartfilters jar:chrome/chrome.jar!/content/
+content smartfilters chrome/content/
 
-skin smartfilters classic/1.0 jar:chrome/chrome.jar!/skin/classic
+skin smartfilters classic/1.0 chrome/skin/classic
 
-locale smartfilters en-US jar:chrome/chrome.jar!/locale/en-US/
+locale smartfilters en-US chrome/locale/en-US/
 
 overlay chrome://messenger/content/mailWindowOverlay.xul chrome://smartfilters/content/overlay.xul
