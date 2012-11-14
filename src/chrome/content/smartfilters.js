@@ -4,11 +4,11 @@ function SmartFilters() {
   var box;
   var msgWindow;
   var folder;
-  var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
-               getService(Components.interfaces.nsIStringBundleService).
+  var locale = Cc["@mozilla.org/intl/stringbundle;1"].
+               getService(Ci.nsIStringBundleService).
                createBundle("chrome://smartfilters/locale/smartfilters.properties");
-  var preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                       .getService(Components.interfaces.nsIPrefService)
+  var preferences = Cc["@mozilla.org/preferences-service;1"]
+                       .getService(Ci.nsIPrefService)
                        .getBranch("extensions.smartfilters.");
 
 
@@ -24,10 +24,10 @@ function SmartFilters() {
     // find out all user emails
     var identity = folder.customIdentity;
     if (!identity) {
-      var accountManager = Components.classes["@mozilla.org/messenger/account-manager;1"].getService(Components.interfaces.nsIMsgAccountManager);
+      var accountManager = Cc["@mozilla.org/messenger/account-manager;1"].getService(Ci.nsIMsgAccountManager);
       var identities = accountManager.allIdentities;
       for (var i = 0; i < identities.Count(); i++) {
-        var identity = identities.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgIdentity);
+        var identity = identities.GetElementAt(i).QueryInterface(Ci.nsIMsgIdentity);
         data.myEmails.push(identity.email);
       }
     } else {
@@ -45,14 +45,19 @@ function SmartFilters() {
     }
     // load headers for last N messages
     var N = preferences.getIntPref("max.emails.count");
-    var database = folder.getDBFolderInfoAndDB({});
+    var dbView = Cc["@mozilla.org/messenger/msgdbview;1?type=quicksearch"].createInstance(Ci.nsIMsgDBView);
+    var out = {};
+    dbView.open(folder, Ci.nsMsgViewSortType.byDate,
+	                Ci.nsMsgViewSortOrder.descending, 
+			Ci.nsMsgViewFlagsType.kNone, out);
     var i = 0;
     var headers = [];
-    for(var enumerator = database.EnumerateMessages(); enumerator.hasMoreElements(); ) {
-      var header = enumerator.getNext();
-      if (header instanceof Components.interfaces.nsIMsgDBHdr)
-        headers[i++ % N] = header;
+    if (out.value > N)
+      out.value = N;
+    for(var i = 0; i < out.value; i++) {
+      headers[i] = dbView.getMsgHdrAt(i);
     }
+    dbView.close();
     data.messages = headers.map(function(header) {
       var result = {
         "author" : [],
@@ -66,7 +71,7 @@ function SmartFilters() {
     });
     return data;
   }
-
+;
   this.start = function() {
     folder = window.arguments[0].folder;
     var worker = new Worker("chrome://smartfilters/content/worker.js");
@@ -122,7 +127,7 @@ function SmartFilters() {
     var filtersList = folder.getFilterList(null);
     var position = filtersList.filterCount;
     var items = box.childNodes;
-    var termCreator = Components.classes["@mozilla.org/messenger/searchSession;1"]
+    var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
                       .createInstance(Ci.nsIMsgSearchSession);
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
@@ -142,19 +147,19 @@ function SmartFilters() {
 	var type = resultTerm.type;
 	var searchTerm = termCreator.createTerm();
 	if (type == 'robot') {
-	  searchTerm.attrib = Components.interfaces.nsMsgSearchAttrib.Sender;
+	  searchTerm.attrib = Ci.nsMsgSearchAttrib.Sender;
 	  var value = searchTerm.value;
 	  value.attrib = searchTerm.attrib;
 	  value.str = resultTerm.email;
 	  searchTerm.value = value;
-	  searchTerm.op = Components.interfaces.nsMsgSearchOp.Contains;
+	  searchTerm.op = Ci.nsMsgSearchOp.Contains;
 	} else if (type == 'mailing.list') {
-	  searchTerm.attrib = Components.interfaces.nsMsgSearchAttrib.ToOrCC;
+	  searchTerm.attrib = Ci.nsMsgSearchAttrib.ToOrCC;
 	  var value = searchTerm.value;
 	  value.attrib = searchTerm.attrib;
 	  value.str = resultTerm.email;
 	  searchTerm.value = value;
-	  searchTerm.op = Components.interfaces.nsMsgSearchOp.Contains;
+	  searchTerm.op = Ci.nsMsgSearchOp.Contains;
 	}
 	searchTerm.booleanAnd = true;
 	terms.push(searchTerm);
@@ -168,10 +173,10 @@ function SmartFilters() {
   }
 
   function applyFilters(filtersList) {
-    var filterService = Components.classes["@mozilla.org/messenger/services/filters;1"]
-                                  .getService(Components.interfaces.nsIMsgFilterService);
-    var folders = Components.classes["@mozilla.org/supports-array;1"]
-                                  .createInstance(Components.interfaces.nsISupportsArray);
+    var filterService = Cc["@mozilla.org/messenger/services/filters;1"]
+                                  .getService(Ci.nsIMsgFilterService);
+    var folders = Cc["@mozilla.org/supports-array;1"]
+                                  .createInstance(Ci.nsISupportsArray);
     folders.AppendElement(data.getFolder());
     filterService.applyFiltersToFolders(filtersList, folders, msgWindow);
   }
