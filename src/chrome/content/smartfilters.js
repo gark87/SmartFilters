@@ -122,24 +122,49 @@ function SmartFilters() {
     }
   }
 
+  function createFolders(items) {
+    var result = {};
+    for (var i = 0 ; i < items.length; i++) {
+      var item = items[i];
+      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
+      var relativePath = textbox.value;
+      var folders = relativePath.split(".");
+      var currentFolder = folder;
+      for(var j = 0; j < folders.length; j++) {
+	var newFolderName = folders[j];
+	if (currentFolder.containsChildNamed(newFolderName))
+	  currentFolder = currentFolder.getChildNamed(newFolderName);
+	else
+	  currentFolder = VirtualFolderHelper.createNewVirtualFolder
+	    (newFolderName, currentFolder, [folder], [], true).virtualFolder;
+      }
+      result[relativePath] = 
+		VirtualFolderHelper.wrapVirtualFolder(currentFolder);
+    }
+    return result;
+  }
+
   this.apply = function() {
-//    var folder = data.getFolder();
     var filtersList = folder.getFilterList(null);
     var position = filtersList.filterCount;
     var items = box.childNodes;
     var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
                       .createInstance(Ci.nsIMsgSearchSession);
+    var checkedItems = [];
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
       var checkbox = document.getAnonymousElementByAttribute(item,
                                   "anonid", "smartfilters-checkbox");
       if (!checkbox.checked)
         continue;
+      checkedItems.push(item);
+    }
 
+    var folders = createFolders(checkedItems);
+    for (var i = 0 ; i < checkedItems.length; i++) {
+      var item = checkedItems[i];
       var msg = item.getAttribute("msg");
       var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
-      // create needed folders
-      var destFolder = folder;
       var terms = [];
       var resultTerms = item.data.terms;
       for(var j = 0; j < resultTerms.length; j++) {
@@ -163,9 +188,8 @@ function SmartFilters() {
 	}
 	searchTerm.booleanAnd = true;
 	terms.push(searchTerm);
+        folders[textbox.value].searchTerms = terms;
       }
-      VirtualFolderHelper.createNewVirtualFolder
-	(textbox.value, folder, [folder], terms, true);
     }
 //    filtersList.saveToDefaultFile();
 //    applyFilters(filtersList);
