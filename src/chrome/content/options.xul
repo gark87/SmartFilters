@@ -7,7 +7,7 @@
 <prefwindow
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    style="height:300px; width:600px"
+    style="height:500px; width:600px"
     id="smartfilters preferences"
     >
   <prefpane id="globals" label="&global.pane.title;">
@@ -17,12 +17,13 @@
       <preference id="max.emails" name="extensions.smartfilters.max.emails.count" type="int"/>
       <preference id="threshold" name="extensions.smartfilters.threshold" type="int"/>
     </preferences>
-    <hbox>
-      &common.description;
+    &common.description;
+    <vbox>
       <menulist preference="filter.1">
         <menupopup>
           <menuitem label="&robot;" value="robot"/>
           <menuitem label="&mailing.list;" value="mailing list"/>
+          <menuitem label="&subject;" value="subject"/>
           <menuitem label="Nothing" value="nothing"/>
         </menupopup>
       </menulist>
@@ -30,10 +31,19 @@
         <menupopup>
           <menuitem label="&robot;" value="robot"/>
           <menuitem label="&mailing.list;" value="mailing list"/>
+          <menuitem label="&subject;" value="subject"/>
           <menuitem label="Nothing" value="nothing"/>
         </menupopup>
       </menulist>
-    </hbox>
+      <menulist preference="filter.3">
+        <menupopup>
+          <menuitem label="&robot;" value="robot"/>
+          <menuitem label="&mailing.list;" value="mailing list"/>
+          <menuitem label="&subject;" value="subject"/>
+          <menuitem label="Nothing" value="nothing"/>
+        </menupopup>
+      </menulist>
+    </vbox>
     <hbox>
       <textbox type="number" max="5000" min="1" maxlength="4" size="3" preference="max.emails" />
       &max.emails.count;
@@ -77,5 +87,20 @@
     </html:ul>
     <html:p>&robot.example;</html:p>
   </prefpane>
+  <prefpane id="subject" label="&subject;"
+    image="chrome://smartfilters/skin/classic/subject.png">
+    <preferences>
+      <preference id="subject.pattern" name="extensions.smartfilters.subject.pattern" type="string"/>
+    </preferences>
+    <hbox>
+      <label value="Folder pattern:"/>
+      <textbox preference="subject.pattern"/>
+    </hbox>
+    <html:p>&subject.notation;</html:p>
+    <html:ul>
+      <html:li>&subject.dot;</html:li>
+      <html:li><html:b>%k</html:b> - &subject.keywords;</html:li>
+    </html:ul>
+    <html:p>&subject.example;</html:p>
+  </prefpane>
 </prefwindow>
-

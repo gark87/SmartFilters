@@ -12,6 +12,14 @@
 <!ENTITY robot.name      "will be replaced with robot name">
 <!ENTITY robot.domain    "will be replaced with robot domain">
 <!ENTITY robot.example "For example, you write here `&#37;u.&#37;d' and SmartFilter finds out that user@domain.org is email robot address then you will be suggested to create filter that moves messages from this robot into folder /user/domain.org">
+
+<!-- Subject -->
+<!ENTITY subject "Subject Analyser">
+<!ENTITY subject.notation  "The following notation can be used:">
+<!ENTITY subject.dot       "dot stands for folder separator">
+<!ENTITY subject.keywords  "will be replaced with subject keywords">
+<!ENTITY subject.example "For example, you write here `&#37;u.&#37;k' and SmartFilter finds out that subject has keywords `branch' and `failed' then you will be suggested to create filter that moves messages from this robot into folder /user/branch_failed">
+
 <!-- mailing list -->
 <!ENTITY mailing.list "Mailing List">
 <!ENTITY mailing.list.notation  "The following notation can be used:">

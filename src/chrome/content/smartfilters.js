@@ -11,12 +11,6 @@ function SmartFilters() {
                        .getService(Ci.nsIPrefService)
                        .getBranch("extensions.smartfilters.");
 
-
-  var filtersMap = {
-    "mailing.list" : MailingListUtil,
-    "robot"        : RobotUtil,
-  };
-
   this.createData = function(folder) {
     var data = {};
     data.myEmails = [];
@@ -39,6 +33,8 @@ function SmartFilters() {
     preferences.getChildList("filter.", children);
     for (var i = 1; i <= children.value; i++) {
       var filter = preferences.getCharPref("filter." + i);
+      if (filter == 'nothing')
+	continue;
       var patternPref = filter.replace(' ', '.') + ".pattern";
       var prefix = preferences.getCharPref(patternPref);
       data.filters.push({ name : filter, prefix : prefix });
@@ -60,8 +56,9 @@ function SmartFilters() {
     dbView.close();
     data.messages = headers.map(function(header) {
       var result = {
-        "author" : [],
+        "author"     : [],
         "recipients" : [],
+	"subject"    : header.subject,
       };
       Util.processAddressListToArray(header.ccList, result.recipients);
       Util.processAddressListToArray(header.recipients, result.recipients);
@@ -92,6 +89,10 @@ function SmartFilters() {
       if (id == "end") {
         setStatus("finished", 100);
         return;
+      }
+      if (id == "test") {
+//	alert(data.J + " with K: " +data.K + "  = " + data.diff);
+	return;
       }
       setStatus(id, data.percentage);
       // remove all children from box

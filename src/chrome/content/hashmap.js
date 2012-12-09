@@ -33,8 +33,10 @@ function HashMap() {
   this.keys = function() {
     // init keys array to sort and track
     var keys = [];
-    for (var key in _map)
-      keys.push(key);
+    for (var key in _map) {
+      if (key)
+        keys.push(key);
+    }
     return keys;
   }
 
@@ -42,3 +44,12 @@ function HashMap() {
     return size;
   }
 }
+
+HashMap.prototype.toString = function mapToString() {
+  var result = '{';
+  this.foreach(function(prop){
+      result += prop + " => " + this.get(prop) + " , ";
+  }, this);
+  result += '}'
+  return result;
+};
