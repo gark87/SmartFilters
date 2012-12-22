@@ -10,6 +10,9 @@ function SmartFilters() {
   var preferences = Cc["@mozilla.org/preferences-service;1"]
                        .getService(Ci.nsIPrefService)
                        .getBranch("extensions.smartfilters.");
+  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                         .getService(Ci.nsIScriptableUnicodeConverter);
+  converter.charset = "UTF-8";
 
   this.createData = function(folder) {
     var data = {};
@@ -58,7 +61,7 @@ function SmartFilters() {
       var result = {
         "author"     : [],
         "recipients" : [],
-	"subject"    : header.subject,
+	"subject"    : header.mime2DecodedSubject,
       };
       Util.processAddressListToArray(header.ccList, result.recipients);
       Util.processAddressListToArray(header.recipients, result.recipients);
@@ -91,7 +94,7 @@ function SmartFilters() {
         return;
       }
       if (id == "test") {
-//	alert(data.J + " with K: " +data.K + "  = " + data.diff);
+        Application.console.log(data.J + " with K: " +data.K + "  = " + data.diff);
 	return;
       }
       setStatus(id, data.percentage);
