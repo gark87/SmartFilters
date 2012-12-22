@@ -14,6 +14,7 @@
     <preferences>
       <preference id="filter.1" name="extensions.smartfilters.filter.1" type="string"/>
       <preference id="filter.2" name="extensions.smartfilters.filter.2" type="string"/>
+      <preference id="filter.3" name="extensions.smartfilters.filter.3" type="string"/>
       <preference id="max.emails" name="extensions.smartfilters.max.emails.count" type="int"/>
       <preference id="threshold" name="extensions.smartfilters.threshold" type="int"/>
     </preferences>
