@@ -23,11 +23,6 @@ function Util(data) {
 
     // about this mails this processor cannot say anything interesting
     this.regularMails = [];
-    this.createReturnArray = function(mails) {
-      return [new SmartFiltersResult(mails, prevResult.icons, this.getPrevText(),
-          prevResult.folder, prevResult.terms)];
-    }
-
     this.composeDir = function(dirname) {
       var prevFolder = prevResult.folder;
       if (prevFolder == "")
@@ -40,7 +35,7 @@ function Util(data) {
     for(var i = 0; i < messageIndices.length; i++) {
       var messageIndex = messageIndices[i];
       var message = this.data.messages[messageIndex];
-      this.processMessage(i, message);
+      this.processMessage(messageIndex, message);
     }
   }
 }

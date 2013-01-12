@@ -41,7 +41,7 @@ function MailingListUtil(prefix) {
   this.process = function(prevResult) {
     this.init(prevResult);
 
-    var results = this.createReturnArray(this.regularMails);
+    var results = [];
     var composeTest = function(prevText, name) {
       if (prevText == "")
         return "to mailing list " + name;

@@ -47,7 +47,7 @@ onmessage = function(event) {
 	                 (i + k / prevResults.length) / length;
 	  postMessage({id : pref, results: result,
 	      postfix : k + "/" + prevResults.length,
-	      insteadof: prevResults[k], percentage: percentage});
+	      percentage: percentage});
         }
       }
     }

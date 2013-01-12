@@ -98,21 +98,6 @@ function SmartFilters() {
 	return;
       }
       setStatus(id + " " + data.postfix, data.percentage);
-      // remove `insteadof' children from box
-      var arraysEqual = function (arr1, arr2) {
-	if(arr1.length !== arr2.length)
-	  return false;
-	for(var i = arr1.length; i--;) {
-	  if(arr1[i] !== arr2[i])
-	    return false;
-	}
-        return true;
-      };
-      for (var i = 0; i < box.childNodes.length; i++) {
-	var child = box.childNodes[i];
-	if (arraysEqual(child.data.messageIndices, data.insteadof.messageIndices))
-          box.removeChild(child);
-      }
       var results = data.results;
       for(var i = 0; i < results.length; i++) {
         var result = results[i];

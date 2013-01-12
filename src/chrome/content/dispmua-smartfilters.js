@@ -46,7 +46,7 @@ function RobotUtil(prefix) {
 
   this.process = function(prevResult) {
     this.init(prevResult);
-    var results = this.createReturnArray(this.regularMails);
+    var results = [];
     var composeTest = function(prevText, name) {
       if (prevText == "")
         return "from robot " + name;
