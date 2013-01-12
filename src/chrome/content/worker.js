@@ -43,8 +43,12 @@ onmessage = function(event) {
           var result = filter.process(prevResults[k]);
           for(var j = 0; j < result.length; j++)
             results.push(result[j]);
+	  var percentage = 100 *
+	                 (i + k / prevResults.length) / length;
+	  postMessage({id : pref, results: result,
+	      postfix : k + "/" + prevResults.length,
+	      insteadof: prevResults[k], percentage: percentage});
         }
-        postMessage({id : pref, results: results, percentage: 100 * (i + 1) / length});
       }
     }
   }
