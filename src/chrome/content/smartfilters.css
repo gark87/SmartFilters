@@ -22,3 +22,7 @@
 .smartfilters-row-icon[type="robot"] {
 	list-style-image: url("chrome://smartfilters/skin/classic/robot.png");
 }
+
+.smartfilters-row-icon[type="subject"] {
+	list-style-image: url("chrome://smartfilters/skin/classic/subject.png");
+}
