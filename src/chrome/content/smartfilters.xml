@@ -57,7 +57,7 @@
 	</xul:vbox>
         <xul:box>
           <xul:label value="&move.to.folder;"/>
-          <xul:textbox flex="1" xbl:inherits="value=folder" anonid="smartfilters-folder"/>
+          <xul:textbox flex="1" xbl:inherits="value=folder" anonid="smartfilters-folder" size="60"/>
           <xul:spacer flex="99999" />
         </xul:box>
       </xul:vbox>
