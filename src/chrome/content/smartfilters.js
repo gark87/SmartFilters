@@ -102,7 +102,7 @@ function SmartFilters() {
       for(var i = 0; i < results.length; i++) {
         var result = results[i];
         // messages not filtered by anything
-        if (result.icons.length == 0)
+        if (result.texts.length == 0)
           continue;
         // filter without messages
         if (result.messageIndices.length <= threshold)

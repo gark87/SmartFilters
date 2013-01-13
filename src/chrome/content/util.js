@@ -13,13 +13,11 @@ function Util(data) {
     this.getPrevText = function () { return prevResult.text; };
     this.getPrevTerms = function () { return prevResult.terms; };
 
-    // generate correct icons array here
-    var icons = [];
-    var prevIcons = prevResult.icons;
-    for(var i = 0; i < prevIcons.length; i++)
-      icons[i] = prevIcons[i];
-    icons.push(this.getIconName());
-    this.getIcons = function() { return icons; }
+    this.createTexts = function(text) { 
+      var icons = prevResult.texts.slice(0);
+      icons.push(new SmartFiltersText(this.getIconName(), text));
+      return icons; 
+    };
 
     // about this mails this processor cannot say anything interesting
     this.regularMails = [];

@@ -26,12 +26,17 @@
           // add all needed icons
           var iconBox = document.getAnonymousElementByAttribute(item, "anonid",
               "smartfilters-iconbox");
-          var icons = result.icons;
-          for (var i = 0; i < icons.length; i++) {
+          var texts = result.texts;
+          for (var i = 0; i < texts.length; i++) {
+	    var box = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "box");
+	    var text = texts[i];
             var icon = document.createElement('image');
             icon.setAttribute('class', 'smartfilters-row-icon');
-            icon.setAttribute('type', icons[i]);
-            iconBox.appendChild(icon);
+            icon.setAttribute('type', text.icon);
+            box.appendChild(icon);
+	    iconBox.appendChild(box);
+	    var textElement = document.createTextNode(text.text);
+	    box.appendChild(textElement);
           }
           item.setAttribute("checked", "false");
           // save data
@@ -47,14 +52,9 @@
     <content>
       <xul:checkbox xbl:inherits="checked" anonid="smartfilters-checkbox"/>
       <xul:vbox flex="99999">
-        <xul:box>
-          <xul:box anonid="smartfilters-iconbox">
-            <children />
-          </xul:box>
-          <xul:label xbl:inherits="xbl:text=msg"/>
-          <xul:spacer flex="99999" />
-<!--          <xul:label xbl:inherits="xbl:text=percent" crop="center"/> -->
-        </xul:box>
+	<xul:vbox anonid="smartfilters-iconbox">
+	  <children />
+	</xul:vbox>
         <xul:box>
           <xul:label value="&move.to.folder;"/>
           <xul:textbox flex="1" xbl:inherits="value=folder" anonid="smartfilters-folder"/>

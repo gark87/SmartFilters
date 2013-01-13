@@ -47,10 +47,8 @@ function RobotUtil(prefix) {
   this.process = function(prevResult) {
     this.init(prevResult);
     var results = [];
-    var composeTest = function(prevText, name) {
-      if (prevText == "")
-        return "from robot " + name;
-      return prevText + ", from robot " + name;
+    var composeText = function(name) {
+      return "from robot " + name;
     };
     domain2map.foreach(function(domain) {
       var id2map = domain2map.get(domain);
@@ -76,11 +74,12 @@ function RobotUtil(prefix) {
             if (length > 1) {
               var indicator = name + "@" + domain;
               var folder = this.getFolderPath(name, domain);
-              var text = composeTest(this.getPrevText(), indicator);
+              var text = composeText(indicator);
 	      var terms = this.getPrevTerms().slice(0);
 	      terms.push(this.createFilterTerm(indicator));
-              results.push(new SmartFiltersResult(indices, this.getIcons(), text,
-                  this.composeDir(folder), terms));
+              results.push(new SmartFiltersResult(indices, 
+		  this.createTexts(text), this.composeDir(folder),
+		  terms));
               return;
             }
             for(var i = 0; i < length; i++)
@@ -91,11 +90,12 @@ function RobotUtil(prefix) {
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
           var folder = this.getFolderPath(username, domain);
-          var text = composeTest(this.getPrevText(), indicator);
+          var text = composeText(indicator);
 	  var terms = this.getPrevTerms().slice(0);
 	  terms.push(this.createFilterTerm(indicator));
-          results.push(new SmartFiltersResult(messageIndices, this.getIcons(), text,
-                this.composeDir(folder), terms));
+          results.push(new SmartFiltersResult(messageIndices, 
+		this.createTexts(text), this.composeDir(folder), 
+		terms));
         }
         return;
       }
@@ -131,11 +131,12 @@ function RobotUtil(prefix) {
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
         var folder = this.getFolderPath(username, domain);
-        var text = composeTest(this.getPrevText(), indicator);
+        var text = composeText(indicator);
 	var terms = this.getPrevTerms().slice(0);
 	terms.push(this.createFilterTerm(indicator));
-        results.push(new SmartFiltersResult(indices, this.getIcons(), text,
-            this.composeDir(folder), terms));
+        results.push(new SmartFiltersResult(indices, 
+	    this.createTexts(text), this.composeDir(folder),
+	    terms));
       }, this);
     }, this);
     return results;

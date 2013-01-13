@@ -27,7 +27,7 @@ onmessage = function(event) {
   if (type == 'start') {
     data = event.data.data;
     var allMessages = range(0, data.messages.length);
-    var results = [new SmartFiltersResult(allMessages, [], "", "", [])];
+    var results = [new SmartFiltersResult(allMessages, [], "", [])];
     var util = new Util(data);
     var filters = data.filters;
     var length = filters.length;

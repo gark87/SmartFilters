@@ -252,23 +252,19 @@ function SubjectUtil(prefix) {
 	  }
 	}
 	postMessage({id : "test", J : 666, K : 999, diff: "  !!! " + messageIndices});
-	var text = this.composeText(this.getPrevText(), keywords);
+	var text = this.composeText(keywords);
 	var folder = keywords.join("_");
 	var terms = this.getPrevTerms().slice(0);
 	terms.push(this.createFilterTerm(keywords));
 	results.push(new SmartFiltersResult(messageIndices, 
-	      this.getIcons(), text, this.composeDir(folder), terms));
+	    this.createTexts(text), this.composeDir(folder), terms));
       }
     }
     return results;
   };
 
-  this.composeText = function(prevText, keywords) {
-    var result = "with keywords in subject: ";
-    if (prevText != "")
-      result = ", " + result;
-    result += keywords.join(", ");
-    return result;
+  this.composeText = function(keywords) {
+    return "with keywords in subject: " + keywords.join(", ");
   };
 
   this.createFilterTerm = function (keywords) {
