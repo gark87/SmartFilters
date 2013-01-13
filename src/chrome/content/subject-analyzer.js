@@ -205,7 +205,6 @@ function SubjectUtil(prefix) {
 	}
       }
       var diff = prevJ - minJ;
-      postMessage({id : "test", J : minJ, K : K, diff:diff + " " + points.length});
       if (diff < prevJ / 10) {
 	return minCentroids;
       }
@@ -251,7 +250,6 @@ function SubjectUtil(prefix) {
 	    messageIndices.push(indexes[q]);
 	  }
 	}
-	postMessage({id : "test", J : 666, K : 999, diff: "  !!! " + messageIndices});
 	var text = this.composeText(keywords);
 	var folder = keywords.join("_");
 	var terms = this.getPrevTerms().slice(0);
