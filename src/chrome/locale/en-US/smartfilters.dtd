@@ -1,4 +1,4 @@
-<!ENTITY move.to.folder "Create new folder and filter with name:"> 
+<!ENTITY move.to.folder "Create new folder:"> 
 <!ENTITY mailing.list "Mailing List">
 <!-- buttons -->
 <!ENTITY stop.button "Stop">
