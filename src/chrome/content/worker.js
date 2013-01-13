@@ -31,11 +31,11 @@ onmessage = function(event) {
     var util = new Util(data);
     var filters = data.filters;
     var length = filters.length;
+    var prevResults = results;
     for (var i = 0; i < length; i++) {
       var pref = filters[i].name;
       var filt = filtersMap[pref];
       if (filt) {
-        var prevResults = results;
         results = [];
         for(var k = 0; k < prevResults.length; k++) {
           filt.prototype = util;
@@ -49,6 +49,9 @@ onmessage = function(event) {
 	      postfix : k + "/" + prevResults.length,
 	      percentage: percentage});
         }
+	for(var k = 0; k < results.length; k++) {
+	  prevResults.push(results[k]);
+	}
       }
     }
   }
