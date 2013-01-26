@@ -93,6 +93,10 @@ function SmartFilters() {
         setStatus("finished", 100);
         return;
       }
+      if (id == "debug") {
+	Application.console.log(data.text);
+	return;
+      }
       setStatus(id + " " + data.postfix, data.percentage);
       var results = data.results;
       for(var i = 0; i < results.length; i++) {

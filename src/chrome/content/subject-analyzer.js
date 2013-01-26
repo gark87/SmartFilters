@@ -108,7 +108,7 @@ function SubjectUtil(prefix) {
       }
       J += l / centroids.length;
       if (result[index] == undefined)
-	throw (index + " "  + centroids + value);
+	throw ("Unexpected error: @" + index + " with centroids: "  + centroids + " and value: " + value);
       result[index].push(point);
     }
     return {groupBy : result, J : J};
