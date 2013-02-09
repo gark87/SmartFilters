@@ -14,7 +14,6 @@ function RobotUtil(prefix) {
       this.regularMails.push(i);
       return;
     }
-    postMessage({id : "debug", text : "message: " + message.subject + " author  " + message.author});
     var author = Util.getEmailInfo(message.author[0]);
     var lower = message.messageId.toLowerCase();
     var createIfNeeded = function(messageId) {
