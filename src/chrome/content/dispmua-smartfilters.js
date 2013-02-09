@@ -14,6 +14,7 @@ function RobotUtil(prefix) {
       this.regularMails.push(i);
       return;
     }
+    postMessage({id : "debug", text : "message: " + message.subject + " author  " + message.author});
     var author = Util.getEmailInfo(message.author[0]);
     var lower = message.messageId.toLowerCase();
     var createIfNeeded = function(messageId) {
@@ -46,7 +47,7 @@ function RobotUtil(prefix) {
 
   this.process = function(prevResult) {
     this.init(prevResult);
-    var results = [];
+    var results = this.createReturnArray(this.regularMails);
     var composeText = function(name) {
       return "from robot " + name;
     };

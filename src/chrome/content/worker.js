@@ -31,28 +31,27 @@ onmessage = function(event) {
     var util = new Util(data);
     var filters = data.filters;
     var length = filters.length;
-    var prevResults = results;
     for (var i = 0; i < length; i++) {
       var pref = filters[i].name;
       var filt = filtersMap[pref];
+      var nextResults = [];
       if (filt) {
-        results = [];
-        for(var k = 0; k < prevResults.length; k++) {
+        for(var k = 0; k < results.length; k++) {
           filt.prototype = util;
           var filter = new filt(filters[i].prefix);
-          var result = filter.process(prevResults[k]);
+	  var processing = results[k];
+          var result = filter.process(processing);
           for(var j = 0; j < result.length; j++)
-            results.push(result[j]);
+            nextResults.push(result[j]);
 	  var percentage = 100 *
-	                 (i + k / prevResults.length) / length;
+	                 (i + k / results.length) / length;
 	  postMessage({id : pref, results: result,
-	      postfix : k + "/" + prevResults.length,
+	      postfix : (k + 1) + "/" + results.length,
+	      insteadof : processing,
 	      percentage: percentage});
         }
-	for(var k = 0; k < results.length; k++) {
-	  prevResults.push(results[k]);
-	}
       }
+      results = nextResults;
     }
   }
   postMessage({id : "end"});

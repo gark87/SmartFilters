@@ -99,6 +99,7 @@ function SmartFilters() {
       }
       setStatus(id + " " + data.postfix, data.percentage);
       var results = data.results;
+      var newItems = [];
       for(var i = 0; i < results.length; i++) {
         var result = results[i];
         // messages not filtered by anything
@@ -107,8 +108,10 @@ function SmartFilters() {
         // filter without messages
         if (result.messageIndices.length <= threshold)
           continue;
-        box.createRow(result);
+	newItems.push(result);
       }
+      if (newItems.length > 0)
+        box.replaceItem(newItems, data.insteadof);
     }
   };
 

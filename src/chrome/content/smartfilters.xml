@@ -12,36 +12,65 @@
     </xul:scrollbox>
     </content>
     <implementation>
-      <method name="createRow">
-        <parameter name="result"/>
+      <method name="replaceItem">
+        <parameter name="newItems"/>
+        <parameter name="item"/>
         <body><![CDATA[
-          var item = document.createElement("richlistitem");
+	  var createAndInsert = function(result, sibling) {
+	    var item = document.createElement("richlistitem");
+	    // set right class
+	    item.setAttribute("class", "smartfilters-item");
+	    // set view properties
+	    item.setAttribute("msg", result.text);
+	    item.setAttribute("folder", result.folder);
+	    // insert
+	    this.insertBefore(item, sibling);
+	    // add all needed icons
+	    var iconBox = document.getAnonymousElementByAttribute(
+		item, "anonid", "smartfilters-iconbox");
+	    var texts = result.texts;
+	    for (var i = 0; i < texts.length; i++) {
+	      var box = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "box");
+	      var text = texts[i];
+	      var icon = document.createElement('image');
+	      icon.setAttribute('class', 'smartfilters-row-icon');
+	      icon.setAttribute('type', text.icon);
+	      box.appendChild(icon);
+	      iconBox.appendChild(box);
+	      var textElement = document.createTextNode(text.text);
+	      box.appendChild(textElement);
+	    }
+	    item.setAttribute("checked", "false");
+	    // save data
+	    item.data = result;
+	    return item;
+	  };
 
-          // set right class
-          item.setAttribute("class", "smartfilters-item");
-          this.appendChild(item);
-          // set view properties
-          item.setAttribute("msg", result.text);
-          item.setAttribute("folder", result.folder);
-          // add all needed icons
-          var iconBox = document.getAnonymousElementByAttribute(item, "anonid",
-              "smartfilters-iconbox");
-          var texts = result.texts;
-          for (var i = 0; i < texts.length; i++) {
-	    var box = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "box");
-	    var text = texts[i];
-            var icon = document.createElement('image');
-            icon.setAttribute('class', 'smartfilters-row-icon');
-            icon.setAttribute('type', text.icon);
-            box.appendChild(icon);
-	    iconBox.appendChild(box);
-	    var textElement = document.createTextNode(text.text);
-	    box.appendChild(textElement);
-          }
-          item.setAttribute("checked", "false");
-          // save data
-          item.data = result;
+          var arraysEqual = function(arr1, arr2) {
+	    if(arr1.length !== arr2.length)
+	      return false;
+	    for(var i = arr1.length; i--;) {
+              if(arr1[i] !== arr2[i])
+                return false;
+            }
+            return true;
+	  };
 
+          var children = this.children;
+	  var nextSibling = null;
+	  for(var i = 0; i < children.length; i++) {
+	    var child = children[i];
+	    var childData = child.data;
+	    if (arraysEqual(childData.messageIndices, item.messageIndices))
+	    {
+              nextSibling = child.nextSibling;
+	      break;
+	    }
+	  }
+          for(var i = 0; i < newItems.length; i++) 
+	    createAndInsert.call(this, newItems[i], nextSibling);
+          if (nextSibling != null)
+            this.removeChild(nextSibling);
           return;
         ]]></body>
       </method>

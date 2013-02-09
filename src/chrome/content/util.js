@@ -10,7 +10,7 @@ function Util(data) {
     return result;
   }
   this.init = function(prevResult) {
-    this.getPrevText = function () { return prevResult.text; };
+    this.getPrevTexts = function () { return prevResult.texts; };
     this.getPrevTerms = function () { return prevResult.terms; };
 
     this.createTexts = function(text) { 
@@ -21,6 +21,11 @@ function Util(data) {
 
     // about this mails this processor cannot say anything interesting
     this.regularMails = [];
+    this.createReturnArray = function(mails) {
+      return [new SmartFiltersResult(mails, prevResult.texts, 
+          prevResult.folder, prevResult.terms)];
+    }
+
     this.composeDir = function(dirname) {
       var prevFolder = prevResult.folder;
       if (prevFolder == "")
