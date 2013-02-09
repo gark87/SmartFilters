@@ -243,6 +243,9 @@ function SubjectUtil(prefix) {
 	  keywords.push(index2word[j]);
       }
       if (keywords.length > 0) {
+	keywords.sort(function (a, b) {
+	   return a.toLowerCase().localeCompare(b.toLowerCase());
+	});
 	var messageIndices = [];
 	var ps = result.groupBy[i];
 	for(var k = 0; k < ps.length; k++) {
