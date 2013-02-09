@@ -185,10 +185,12 @@ function SubjectUtil(prefix) {
 
   var findClusters = function(points) {
     var prevJ = Number.POSITIVE_INFINITY;
-    for(var K = 2; K < points.length; K++) {
+    var max = Math.sqrt(points.length);
+    var repeat = Math.min(max, 100);
+    for(var K = 2; K < max; K++) {
       var minJ = Number.POSITIVE_INFINITY;
       var minCentroids = [];
-      for(var i = 0; i < 100; i++) {
+      for(var i = 0; i < repeat; i++) {
 	var prevCentroids = [];
 	var centroids = randomCentroids(K, points);
 	var J;
