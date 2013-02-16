@@ -58,6 +58,7 @@
       <menupopup>
         <menuitem label="&virtual.folders;" value="virtual folders"/>
         <menuitem label="&online.virtual.folders;" value="online virtual folders"/>
+        <menuitem label="&imap.folders;" value="imap folders"/>
       </menupopup>
     </menulist>
   </prefpane>

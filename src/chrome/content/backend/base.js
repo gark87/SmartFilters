@@ -1,4 +1,29 @@
 function Backend(termCreator) {
+  this.wrapFolder = function(folder) {
+    return folder;
+  };
+
+  this.createFolders = function(items, folder) {
+    var result = {};
+    for (var i = 0 ; i < items.length; i++) {
+      var item = items[i];
+      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
+      var relativePath = textbox.value;
+      var folders = relativePath.split(".");
+      var currentFolder = folder;
+      for(var j = 0; j < folders.length; j++) {
+	var newFolderName = folders[j];
+	if (currentFolder.containsChildNamed(newFolderName))
+	  currentFolder = currentFolder.getChildNamed(newFolderName);
+	else
+	  currentFolder = 
+	    this.createFolder(newFolderName, currentFolder, folder);
+      }
+      result[relativePath] = this.wrapFolder(currentFolder);
+    }
+    return result;
+  };
+
   this.createTerms = function(item) {
     var terms = [];
     var resultTerms = item.data.terms;

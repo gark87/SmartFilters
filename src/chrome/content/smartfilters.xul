@@ -32,6 +32,7 @@
   <!-- backends -->
   <script type="application/x-javascript" src="chrome://smartfilters/content/backend/base.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/backend/virtualfolders.js"/>
+  <script type="application/x-javascript" src="chrome://smartfilters/content/backend/imapfolders.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <label id="status" value="(Before start)" />
   <hbox>

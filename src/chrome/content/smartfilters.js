@@ -15,11 +15,13 @@ function SmartFilters() {
   converter.charset = "UTF-8";
   var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
 		    .createInstance(Ci.nsIMsgSearchSession);
-  VirtualFoldersBackend.prototype = new Backend(termCreator);
+  var baseBackend = new Backend(termCreator);
+  VirtualFoldersBackend.prototype = baseBackend;
+  ImapFoldersBackend.prototype = baseBackend;
   var backendsMap = {
     "virtual folders" : new VirtualFoldersBackend(false),
     "online virtual folders" : new VirtualFoldersBackend(true),
-    //"imap folders" : new ImapFoldersBackend(true),
+    "imap folders" : new ImapFoldersBackend(),
   };
 
   this.createData = function(folder) {
