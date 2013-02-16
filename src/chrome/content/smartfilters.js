@@ -13,9 +13,13 @@ function SmartFilters() {
   var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
                          .getService(Ci.nsIScriptableUnicodeConverter);
   converter.charset = "UTF-8";
+  var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
+		    .createInstance(Ci.nsIMsgSearchSession);
+  VirtualFoldersBackend.prototype = new Backend(termCreator);
   var backendsMap = {
     "virtual folders" : new VirtualFoldersBackend(false),
     "online virtual folders" : new VirtualFoldersBackend(true),
+    //"imap folders" : new ImapFoldersBackend(true),
   };
 
   this.createData = function(folder) {
@@ -142,10 +146,8 @@ function SmartFilters() {
         continue;
       checkedItems.push(item);
     }
-    var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
-                      .createInstance(Ci.nsIMsgSearchSession);
     var backend = backendsMap[preferences.getCharPref("backend")];
-    backend.apply(checkedItems, folder, termCreator);
+    backend.apply(checkedItems, folder);
     close();
   }
 
