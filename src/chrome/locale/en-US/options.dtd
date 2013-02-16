@@ -4,7 +4,9 @@
 <!ENTITY common.description "Order of SmartFilters: ">
 <!ENTITY max.emails.count   "last emails should be analyzed">
 <!ENTITY threshold          "is minimum amount of emails in smartfilter">
-
+<!-- backend -->
+<!ENTITY virtual.folders        "Generate Virtual Folders">
+<!ENTITY online.virtual.folders "Generate Online Search Virtual Folders">
 <!-- robot -->
 <!ENTITY robot "Robot">
 <!ENTITY robot.notation  "The following notation can be used:">

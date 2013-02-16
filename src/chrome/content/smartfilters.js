@@ -13,6 +13,10 @@ function SmartFilters() {
   var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
                          .getService(Ci.nsIScriptableUnicodeConverter);
   converter.charset = "UTF-8";
+  var backendsMap = {
+    "virtual folders" : new VirtualFoldersBackend(false),
+    "online virtual folders" : new VirtualFoldersBackend(true),
+  };
 
   this.createData = function(folder) {
     var data = {};
@@ -125,34 +129,10 @@ function SmartFilters() {
     }
   }
 
-  function createFolders(items) {
-    var result = {};
-    for (var i = 0 ; i < items.length; i++) {
-      var item = items[i];
-      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
-      var relativePath = textbox.value;
-      var folders = relativePath.split(".");
-      var currentFolder = folder;
-      for(var j = 0; j < folders.length; j++) {
-	var newFolderName = folders[j];
-	if (currentFolder.containsChildNamed(newFolderName))
-	  currentFolder = currentFolder.getChildNamed(newFolderName);
-	else
-	  currentFolder = VirtualFolderHelper.createNewVirtualFolder
-	    (newFolderName, currentFolder, [folder], [], true).virtualFolder;
-      }
-      result[relativePath] = 
-		VirtualFolderHelper.wrapVirtualFolder(currentFolder);
-    }
-    return result;
-  }
-
   this.apply = function() {
     var filtersList = folder.getFilterList(null);
     var position = filtersList.filterCount;
     var items = box.childNodes;
-    var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
-                      .createInstance(Ci.nsIMsgSearchSession);
     var checkedItems = [];
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
@@ -162,59 +142,10 @@ function SmartFilters() {
         continue;
       checkedItems.push(item);
     }
-
-    var folders = createFolders(checkedItems);
-    for (var i = 0 ; i < checkedItems.length; i++) {
-      var item = checkedItems[i];
-      var msg = item.getAttribute("msg");
-      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
-      var terms = [];
-      var resultTerms = item.data.terms;
-      for(var j = 0; j < resultTerms.length; j++) {
-	var resultTerm = resultTerms[j];
-	var type = resultTerm.type;
-	if (type == 'robot') {
-	  var searchTerm = termCreator.createTerm();
-	  searchTerm.attrib = Ci.nsMsgSearchAttrib.Sender;
-	  var value = searchTerm.value;
-	  value.attrib = searchTerm.attrib;
-	  value.str = resultTerm.email;
-	  searchTerm.value = value;
-	  searchTerm.op = Ci.nsMsgSearchOp.Contains;
-	  searchTerm.booleanAnd = true;
-	  terms.push(searchTerm);
-	} else if (type == 'mailing.list') {
-	  var searchTerm = termCreator.createTerm();
-	  searchTerm.attrib = Ci.nsMsgSearchAttrib.ToOrCC;
-	  var value = searchTerm.value;
-	  value.attrib = searchTerm.attrib;
-	  value.str = resultTerm.email;
-	  searchTerm.value = value;
-	  searchTerm.op = Ci.nsMsgSearchOp.Contains;
-	  searchTerm.booleanAnd = true;
-	  terms.push(searchTerm);
-	} else if (type == 'subject') {
-	  var keywords = resultTerm.keywords;
-	  for(var k = 0; k < keywords.length; k++) {
-	    var keyword = keywords[k];
-	    var searchTerm = termCreator.createTerm();
-	    searchTerm.attrib = Ci.nsMsgSearchAttrib.Subject;
-	    var value = searchTerm.value;
-	    value.attrib = searchTerm.attrib;
-	    value.str = keyword;
-	    searchTerm.value = value;
-	    searchTerm.op = Ci.nsMsgSearchOp.Contains;
-	    searchTerm.booleanAnd = true;
-	    terms.push(searchTerm);
-	  }
-	} else {
-	  throw "Unknown type: " + type;
-	}
-        folders[textbox.value].searchTerms = terms;
-      }
-    }
-//    filtersList.saveToDefaultFile();
-//    applyFilters(filtersList);
+    var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
+                      .createInstance(Ci.nsIMsgSearchSession);
+    var backend = backendsMap[preferences.getCharPref("backend")];
+    backend.apply(checkedItems, folder, termCreator);
     close();
   }
 

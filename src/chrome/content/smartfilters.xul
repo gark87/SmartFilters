@@ -29,6 +29,8 @@
   <script type="application/x-javascript" src="chrome://smartfilters/content/subject-analyzer.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-smartfilters.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua-data.js"/>
+  <!-- backends -->
+  <script type="application/x-javascript" src="chrome://smartfilters/content/backend/virtualfolders.js"/>
   <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters.js"/>
   <label id="status" value="(Before start)" />
   <hbox>

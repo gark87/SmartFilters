@@ -17,6 +17,7 @@
       <preference id="filter.3" name="extensions.smartfilters.filter.3" type="string"/>
       <preference id="max.emails" name="extensions.smartfilters.max.emails.count" type="int"/>
       <preference id="threshold" name="extensions.smartfilters.threshold" type="int"/>
+      <preference id="backend" name="extensions.smartfilters.backend" type="string"/>
     </preferences>
     &common.description;
     <vbox>
@@ -53,6 +54,12 @@
       <textbox type="number" max="5000" min="1" maxlength="4" size="3" preference="threshold" />
       &threshold;
     </hbox>
+    <menulist preference="backend">
+      <menupopup>
+        <menuitem label="&virtual.folders;" value="virtual folders"/>
+        <menuitem label="&online.virtual.folders;" value="online virtual folders"/>
+      </menupopup>
+    </menulist>
   </prefpane>
   <prefpane id="mailing-list" label="&mailing.list;"
     image="chrome://smartfilters/skin/classic/mailing_list.png">
