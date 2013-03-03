@@ -11,17 +11,15 @@ function SmartFilters() {
                        .getService(Ci.nsIPrefService)
                        .getBranch("extensions.smartfilters.");
   var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                         .getService(Ci.nsIScriptableUnicodeConverter);
+                       .getService(Ci.nsIScriptableUnicodeConverter);
   converter.charset = "UTF-8";
-  var termCreator = Cc["@mozilla.org/messenger/searchSession;1"]
+  var msgSearchSession = Cc["@mozilla.org/messenger/searchSession;1"]
 		    .createInstance(Ci.nsIMsgSearchSession);
-  var baseBackend = new Backend(termCreator);
-  VirtualFoldersBackend.prototype = baseBackend;
-  ImapFoldersBackend.prototype = baseBackend;
+  var termCreator = new TermCreator(msgSearchSession);
   var backendsMap = {
-    "virtual folders" : new VirtualFoldersBackend(false),
-    "online virtual folders" : new VirtualFoldersBackend(true),
-    "imap folders" : new ImapFoldersBackend(),
+    "virtual folders" : new VirtualFoldersBackend(termCreator, false),
+    "online virtual folders" : new VirtualFoldersBackend(termCreator, true),
+    "imap folders" : new ImapFoldersBackend(termCreator),
   };
 
   this.createData = function(folder) {
@@ -121,7 +119,7 @@ function SmartFilters() {
 	newItems.push(result);
       }
       if (newItems.length > 0)
-        box.replaceItem(newItems, data.insteadof);
+        box.addItems(newItems);
     }
   };
 

@@ -45,9 +45,8 @@ onmessage = function(event) {
             nextResults.push(result[j]);
 	  var percentage = 100 *
 	                 (i + k / results.length) / length;
-	  postMessage({id : pref, results: result,
+	  postMessage({id : pref, results: result.splice(1),
 	      postfix : (k + 1) + "/" + results.length,
-	      insteadof : processing,
 	      percentage: percentage});
         }
       }

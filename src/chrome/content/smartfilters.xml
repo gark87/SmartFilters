@@ -12,11 +12,10 @@
     </xul:scrollbox>
     </content>
     <implementation>
-      <method name="replaceItem">
+      <method name="addItems">
         <parameter name="newItems"/>
-        <parameter name="item"/>
         <body><![CDATA[
-	  var createAndInsert = function(result, sibling) {
+	  var createAndInsert = function(result) {
 	    var item = document.createElement("richlistitem");
 	    // set right class
 	    item.setAttribute("class", "smartfilters-item");
@@ -24,7 +23,7 @@
 	    item.setAttribute("msg", result.text);
 	    item.setAttribute("folder", result.folder);
 	    // insert
-	    this.insertBefore(item, sibling);
+	    this.insertBefore(item, this.firstChild);
 	    // add all needed icons
 	    var iconBox = document.getAnonymousElementByAttribute(
 		item, "anonid", "smartfilters-iconbox");
@@ -46,31 +45,8 @@
 	    return item;
 	  };
 
-          var arraysEqual = function(arr1, arr2) {
-	    if(arr1.length !== arr2.length)
-	      return false;
-	    for(var i = arr1.length; i--;) {
-              if(arr1[i] !== arr2[i])
-                return false;
-            }
-            return true;
-	  };
-
-          var children = this.children;
-	  var nextSibling = null;
-	  for(var i = 0; i < children.length; i++) {
-	    var child = children[i];
-	    var childData = child.data;
-	    if (arraysEqual(childData.messageIndices, item.messageIndices))
-	    {
-              nextSibling = child.nextSibling;
-	      break;
-	    }
-	  }
           for(var i = 0; i < newItems.length; i++) 
-	    createAndInsert.call(this, newItems[i], nextSibling);
-          if (nextSibling != null)
-            this.removeChild(nextSibling);
+	    createAndInsert.call(this, newItems[i]);
           return;
         ]]></body>
       </method>
