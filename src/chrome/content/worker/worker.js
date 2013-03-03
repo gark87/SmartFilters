@@ -1,9 +1,9 @@
 importScripts("chrome://smartfilters/content/util.js",
               "chrome://smartfilters/content/result.js",
               "chrome://smartfilters/content/hashmap.js",
-              "chrome://smartfilters/content/mailing-list.js",
-              "chrome://smartfilters/content/subject-analyzer.js",
-              "chrome://smartfilters/content/dispmua-smartfilters.js",
+              "chrome://smartfilters/content/worker/mailing-list.js",
+              "chrome://smartfilters/content/worker/subject-analyzer.js",
+              "chrome://smartfilters/content/worker/dispmua-smartfilters.js",
               "chrome://smartfilters/content/dispmua-data.js");
 
 // global vars
