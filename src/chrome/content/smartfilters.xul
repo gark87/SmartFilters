@@ -37,13 +37,12 @@
   <label id="status" value="(Before start)" />
   <hbox>
     <progressmeter id="progressmeter" mode="determined" flex="999" />
-    <button label="&stop.button;" oncommand="smartfilters.stop();" />
-    <button label="&select.all.button;" oncommand="smartfilters.selectAll(true);" />
-    <button label="&unselect.all.button;" oncommand="smartfilters.selectAll(false);" />
+    <button label="&stop.button;" oncommand="smartfilters.stop();" id="stop" />
+    <button label="&select.all.button;" oncommand="smartfilters.selectAll(true);" id="select_all" disabled="true" />
+    <button label="&unselect.all.button;" oncommand="smartfilters.selectAll(false);" id="unselect_all" disabled="true" />
   </hbox>
   <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
   <hbox>
-<!--    <button label="&cancel.button;" oncommand="smartfilters.close();" /> -->
-    <button label="&apply.button;" oncommand="smartfilters.apply();" />
+    <button label="&apply.button;" oncommand="smartfilters.apply();" id="apply" disabled="true" />
   </hbox>
 </window>

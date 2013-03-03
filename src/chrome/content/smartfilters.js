@@ -21,6 +21,7 @@ function SmartFilters() {
     "online virtual folders" : new VirtualFoldersBackend(termCreator, true),
     "imap folders" : new ImapFoldersBackend(termCreator),
   };
+  var worker;
 
   this.createData = function(folder) {
     var data = {};
@@ -79,13 +80,13 @@ function SmartFilters() {
     });
     return data;
   }
-;
+
   this.start = function() {
     folder = window.arguments[0].folder;
-    var worker = new Worker("chrome://smartfilters/content/worker.js");
+    worker = new Worker("chrome://smartfilters/content/worker.js");
     worker.postMessage({
         'data' : this.createData(folder),
-        'id' : 'start'
+        'id' : 'start',
     });
     gStatus = document.getElementById("status");
     gProgressMeter = document.getElementById("progressmeter");
@@ -99,6 +100,7 @@ function SmartFilters() {
       var id = data.id;
       if (id == "end") {
         setStatus("finished", 100);
+	atEnd();
         return;
       }
       if (id == "debug") {
@@ -123,7 +125,22 @@ function SmartFilters() {
     }
   };
 
-  this. selectAll = function(select) {
+  function atEnd() {
+    document.getElementById("stop").disabled = true;
+    document.getElementById("select_all").disabled = false;
+    document.getElementById("unselect_all").disabled = false;
+    document.getElementById("apply").disabled = false;
+  } 
+
+  this.stop = function() {
+    if (worker) {
+      worker.terminate();
+      worker = null;
+      atEnd();
+    }
+  }
+
+  this.selectAll = function(select) {
     var items = box.childNodes;
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
@@ -149,15 +166,6 @@ function SmartFilters() {
     var backend = backendsMap[preferences.getCharPref("backend")];
     backend.apply(checkedItems, folder);
     close();
-  }
-
-  function applyFilters(filtersList) {
-    var filterService = Cc["@mozilla.org/messenger/services/filters;1"]
-                                  .getService(Ci.nsIMsgFilterService);
-    var folders = Cc["@mozilla.org/supports-array;1"]
-                                  .createInstance(Ci.nsISupportsArray);
-    folders.AppendElement(data.getFolder());
-    filterService.applyFiltersToFolders(filtersList, folders, msgWindow);
   }
 
   function setStatus(text, percentage) {
