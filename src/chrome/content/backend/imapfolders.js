@@ -70,13 +70,15 @@ function ImapFoldersBackend(termCreator) {
       var position = filtersList.filterCount;
       for (var i = 0 ; i < checkedItems.length; i++) {
 	var relativePath = texts[i];
-	var terms = termCreator.createTerms(checkedItems[i]);
         var newFilter = filtersList.createFilter("SmartFilter_" + relativePath + "_" + position);
 	newFilter.enabled = true;
 	var action = newFilter.createAction();
 	action.type = Components.interfaces.nsMsgFilterAction.MoveToFolder;
 	action.targetFolderUri = createdFolders[i].URI;
 	newFilter.appendAction(action);
+	var terms = termCreator.createTerms(checkedItems[i]);
+	for(var j = 0; j < terms.length; j++)
+	  newFilter.appendTerm(terms[j]);
 	filtersList.insertFilterAt(position++, newFilter);
       }
       filtersList.saveToDefaultFile();
