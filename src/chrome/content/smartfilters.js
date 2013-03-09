@@ -34,10 +34,10 @@ function SmartFilters() {
       var identities = accountManager.allIdentities;
       for (var i = 0; i < identities.Count(); i++) {
         var identity = identities.GetElementAt(i).QueryInterface(Ci.nsIMsgIdentity);
-        data.myEmails.push(identity.email);
+        data.myEmails.push(identity.email.toLowerCase());
       }
     } else {
-      data.myEmails.push(identity.email);
+      data.myEmails.push(identity.email.toLowerCase());
     }
     // suck out all preferences
     data.filters = [];
@@ -70,7 +70,7 @@ function SmartFilters() {
       var result = {
         "author"     : [],
         "recipients" : [],
-	"subject"    : header.mime2DecodedSubject,
+	"subject"    : header.mime2DecodedSubject.toLowerCase(),
       };
       Util.processAddressListToArray(header.ccList, result.recipients);
       Util.processAddressListToArray(header.recipients, result.recipients);

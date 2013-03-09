@@ -81,7 +81,7 @@ Util.processAddressListToArray = function(list, arr) {
   hdrParser.parseHeadersWithArray(list, emails, {}, {});
   for each (var recipient in emails.value) {
     if (Util.getEmailInfo(recipient)) {
-      arr.push(recipient);
+      arr.push(recipient.toLowerCase());
     }
   }
 };
