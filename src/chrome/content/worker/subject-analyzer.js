@@ -21,6 +21,9 @@ function SubjectUtil(prefix) {
       this.weight += element * element;
     }
   };
+  Centroid.prototype.toString = function() {
+    return "(centroid: " + this.array + " with weight: " + this.weight + ")";
+  };
 
   // private fields
   var word2index = new HashMap();
@@ -55,7 +58,7 @@ function SubjectUtil(prefix) {
     var point = new HashMap();
     for(var j = 0; j < words.length; j++) {
       var word = words[j];
-      if (word.length == 0)
+      if (word.length <= 2)
 	continue;
       var oldIndex = word2index.get(word);
       if (undefined != oldIndex) {
@@ -71,6 +74,8 @@ function SubjectUtil(prefix) {
       }
     }
     var str = map2str(point);
+    if (!str)
+      return;
     var oldPointCount = points.get(str);
     if (!oldPointCount)
       points.put(str, oldPointCount = []);
@@ -108,7 +113,7 @@ function SubjectUtil(prefix) {
       }
       J += l / centroids.length;
       if (result[index] == undefined)
-	throw ("Unexpected error: @" + index + " with centroids: "  + centroids + " and value: " + value);
+	throw ("SmartFilters: Unexpected error: @" + index + " with centroids: "  + centroids + " and value: " + value + " for point:" + point);
       result[index].push(point);
     }
     return {groupBy : result, J : J};
@@ -219,13 +224,16 @@ function SubjectUtil(prefix) {
     this.init(prevResult);
     var ps = [];
     points.foreach(function (p) {
-      var str = p;
       var vs = p.split("|");
       var point = new Point(points.get(p));
       for(var i = 0 ; i < vs.length; i++) {
         var v = vs[i];
 	var t = v.split(" = ");
 	point.map.put(t[0], t[1]);
+	if (!t[0] && t[0] != 0)
+	  throw "SmartFilters: Unexpected point:|" + v + "|";
+	if (!t[1] && t[1] != 0)
+	  throw "SmartFilters: Unexpected point:|" + v + "|";
       }
       ps.push(point);
     }, this);
