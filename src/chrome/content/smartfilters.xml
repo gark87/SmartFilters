@@ -36,8 +36,9 @@
 	      icon.setAttribute('type', text.icon);
 	      box.appendChild(icon);
 	      iconBox.appendChild(box);
-	      var textElement = document.createTextNode(text.text);
-	      box.appendChild(textElement);
+	      var label = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", 'label');
+	      label.setAttribute('value', text.text);
+	      box.appendChild(label);
 	    }
 	    item.setAttribute("checked", "false");
 	    // save data
