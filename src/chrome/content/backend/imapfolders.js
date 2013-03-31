@@ -5,23 +5,13 @@ function ImapFoldersBackend(termCreator) {
     this.currentFolder = root;
     this.createdFolders = [];
     this.createFilters = createFilters;
+    this._dstFolderName = null;
     var errorCount = 0;
 
-    this.OnStartRunningUrl = function(url) {
-    }
-
-    this.OnStopRunningUrl = function(url, exitCode) {
-      // this will always be a create folder url, afaik.
-      if (Components.isSuccessCode(exitCode))
-	this.processNextBatch();
-      else {
-	errorCount++;
-	if (errorCount > 5) {
-	  throw "SmartFilters: cannot create folder " + url.path + " " + exitCode; 
-	} else {
-	  this.currentFolder.createStorageIfMissing(this);
-	}
-      }
+    this.folderAdded = function(aFolder) {
+      this.currentFolder = this.currentFolder.findSubFolder(this._dstFolderName);
+      this._dstFolderName = null;
+      this.processNextBatch();
     }
 
     this.processNextBatch = function() {
@@ -44,16 +34,12 @@ function ImapFoldersBackend(termCreator) {
 	  this.currentFolder.getChildNamed(newFolderName);
 	this.processNextBatch();
       }	else {
-	this.currentFolder = this.currentFolder.addSubfolder(newFolderName);
-	this.currentFolder.createStorageIfMissing(this);
+        this._dstFolderName = newFolderName;
+	this.currentFolder.createSubfolder(newFolderName, null); 
       }
     }
   };
 
-  this.createFolder = function(newFolderName, currentFolder, folder) {
-    currentFolder.createSubfolder(newFolderName, null);
-    return currentFolder.findSubFolder(newFolderName);
-  }
 
   this.apply = function(checkedItems, folder) {
     var folders = [];
@@ -84,6 +70,9 @@ function ImapFoldersBackend(termCreator) {
       filtersList.saveToDefaultFile();
     };
     var processor = new Processor(folders, folder, createFilters);
+    var notificationService = Components.classes["@mozilla.org/messenger/msgnotificationservice;1"]
+	 .getService(Components.interfaces.nsIMsgFolderNotificationService);
+    notificationService.addListener(processor, notificationService.folderAdded);
     processor.processNextBatch();
   }
 }
