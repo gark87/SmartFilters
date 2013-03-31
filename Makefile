@@ -29,7 +29,7 @@ JAR=$(BCHROME)/$(CHROME).jar
 
 DISPMUA=dispmua
 SDISPMUA=$(SRC)/$(DISPMUA)
-DISPMUA_DATA=$(BCONTENT)/dispmua-data.js
+DISPMUA_DATA=$(BCONTENT)/worker/dispmua-data.js
 PROCESS_DISPMUA=$(SDISPMUA)/process.pl
 SRC_DISPMUA=$(shell find $(SDISPMUA) -type f -name "data-*.js")
 

@@ -83,7 +83,7 @@ function SmartFilters() {
 
   this.start = function() {
     folder = window.arguments[0].folder;
-    worker = new Worker("chrome://smartfilters/content/worker.js");
+    worker = new Worker("chrome://smartfilters/content/worker/worker.js");
     worker.postMessage({
         'data' : this.createData(folder),
         'id' : 'start',
