@@ -71,13 +71,6 @@
       <label value="Folder pattern:"/>
       <textbox preference="mailing.list.pattern"/>
     </hbox>
-    <html:p>&mailing.list.notation;</html:p>
-    <html:ul>
-      <html:li>&mailing.list.dot;</html:li>
-      <html:li><html:b>%u</html:b> - &mailing.list.name;</html:li>
-      <html:li><html:b>%d</html:b> - &mailing.list.domain;</html:li>
-    </html:ul>
-    <html:p>&mailing.list.example;</html:p>
   </prefpane>
   <prefpane id="robot" label="&robot;"
     image="chrome://smartfilters/skin/classic/robot.png">
@@ -88,28 +81,18 @@
       <label value="Folder pattern:"/>
       <textbox preference="robot.pattern"/>
     </hbox>
-    <html:p>&robot.notation;</html:p>
-    <html:ul>
-      <html:li>&robot.dot;</html:li>
-      <html:li><html:b>%u</html:b> - &robot.name;</html:li>
-      <html:li><html:b>%d</html:b> - &robot.domain;</html:li>
-    </html:ul>
-    <html:p>&robot.example;</html:p>
   </prefpane>
   <prefpane id="subject" label="&subject;"
     image="chrome://smartfilters/skin/classic/subject.png">
     <preferences>
       <preference id="subject.pattern" name="extensions.smartfilters.subject.pattern" type="string"/>
+      <preference id="subject.ignore" name="extensions.smartfilters.subject.ignore" type="string" />
     </preferences>
     <hbox>
       <label value="Folder pattern:"/>
       <textbox preference="subject.pattern"/>
     </hbox>
-    <html:p>&subject.notation;</html:p>
-    <html:ul>
-      <html:li>&subject.dot;</html:li>
-      <html:li><html:b>%k</html:b> - &subject.keywords;</html:li>
-    </html:ul>
-    <html:p>&subject.example;</html:p>
+    <label value="Words to ignore (space-separated):"/>
+    <textbox preference="subject.ignore" id="symbol" maxlength="4" multiline="true" rows="5"/>
   </prefpane>
 </prefwindow>

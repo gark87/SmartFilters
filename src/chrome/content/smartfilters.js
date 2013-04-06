@@ -51,6 +51,8 @@ function SmartFilters() {
       var prefix = preferences.getCharPref(patternPref);
       data.filters.push({ name : filter, prefix : prefix });
     }
+    // load ignores 
+    data.ignore = preferences.getCharPref("subject.ignore");
     // load headers for last N messages
     var N = preferences.getIntPref("max.emails.count");
     var dbView = Cc["@mozilla.org/messenger/msgdbview;1?type=quicksearch"].createInstance(Ci.nsIMsgDBView);
