@@ -49,7 +49,7 @@ function MailingListUtil(prefix) {
     mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
       var author = Util.getEmailInfo(email);
-      var folder = this.getFolderPath(author.username, author.domain);
+      var folder = this.getPrefix().replace(/%/g, author.username);
       var text = composeText(email);
       var terms = this.getPrevTerms().slice(0);
       terms.push(this.createFilterTerm(email));
@@ -81,7 +81,7 @@ function MailingListUtil(prefix) {
         break;
 
       var author = Util.getEmailInfo(biggestKey);
-      var folder = this.getFolderPath(author.username, author.domain);
+      var folder = this.getPrefix().replace(/%/g, author.username);
       var text = composeText(biggestKey);
       var terms = this.getPrevTerms().slice(0);
       terms.push(this.createFilterTerm(biggestKey));

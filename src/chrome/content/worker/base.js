@@ -10,12 +10,6 @@ function Base(data) {
   for (var i = 0; i < ignoreArray.length; i++)
     this.ignores.add(ignoreArray[i].toLowerCase());
 
-  this.getFolderPath = function(username, domain) {
-    var result = this.getPrefix();
-    result = result.replace(/%u/g, username);
-    result = result.replace(/%d/g, domain);
-    return result;
-  }
   this.init = function(prevResult) {
     this.getPrevTexts = function () { return prevResult.texts; };
     this.getPrevTerms = function () { return prevResult.terms; };
