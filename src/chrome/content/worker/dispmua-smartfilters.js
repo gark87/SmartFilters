@@ -73,7 +73,7 @@ function RobotUtil(prefix) {
             // more than one message from this email - not a Twitter
             if (length > 1) {
               var indicator = name + "@" + domain;
-              var folder = this.getPrefix().replace(/%/g, domain);
+	      var folder = this.createFolder(domain);
               var text = composeText(indicator);
 	      var terms = this.getPrevTerms().slice(0);
 	      terms.push(this.createFilterTerm(indicator));
@@ -89,7 +89,7 @@ function RobotUtil(prefix) {
             return;
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
-	  var folder = this.getPrefix().replace(/%/g, domain);
+	  var folder = this.createFolder(domain);
           var text = composeText(indicator);
 	  var terms = this.getPrevTerms().slice(0);
 	  terms.push(this.createFilterTerm(indicator));
@@ -130,7 +130,7 @@ function RobotUtil(prefix) {
           return;
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
-        var folder = this.getPrefix().replace(/%/g, domain);
+        var folder = this.createFolder(domain);
         var text = composeText(indicator);
 	var terms = this.getPrevTerms().slice(0);
 	terms.push(this.createFilterTerm(indicator));

@@ -10,6 +10,10 @@ function Base(data) {
   for (var i = 0; i < ignoreArray.length; i++)
     this.ignores.add(ignoreArray[i].toLowerCase());
 
+  this.createFolder = function(replacement) {
+    replacement = replacement.replace(/[.]/g, "_");
+    return this.getPrefix().replace(/%/g, replacement);
+  }
   this.init = function(prevResult) {
     this.getPrevTexts = function () { return prevResult.texts; };
     this.getPrevTerms = function () { return prevResult.terms; };
