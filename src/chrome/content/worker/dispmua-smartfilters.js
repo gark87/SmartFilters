@@ -69,7 +69,7 @@ function RobotUtil(prefix) {
     this.init(prevResult);
     var results = this.createReturnArray(this.regularMails);
     var composeText = function(name) {
-      return "from robot " + name;
+      return "notification from " + name;
     };
     domain2map.foreach(function(domain) {
       var id2map = domain2map.get(domain);
