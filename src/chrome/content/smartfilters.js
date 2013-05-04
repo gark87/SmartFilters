@@ -122,7 +122,7 @@ function SmartFilters() {
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
     document.title = locale.GetStringFromName("title") + " " + folder.URI;
-    setStatus("initializing", 50);
+    setStatus("start analyzing", 50);
     var threshold = preferences.getIntPref("threshold");
     worker.onmessage = function(event) {
       var data = event.data;
@@ -136,7 +136,7 @@ function SmartFilters() {
 	Application.console.log(data.text);
 	return;
       }
-      setStatus(id + " " + data.postfix, 50 + data.percentage);
+      setStatus(id + " " + data.postfix, 50 + data.percentage / 2);
       var results = data.results;
       var newItems = [];
       for(var i = 0; i < results.length; i++) {
