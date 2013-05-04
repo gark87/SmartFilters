@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://dispmua/skin/dispmua.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://dispmua/locale/dispmua.dtd">
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	id="dispmuaFeedback"
+	title="dispMUA: &feedback.title;"
+	autostretch="always"
+	orient="vertical"
+	onkeypress="doKeypress(event);"
+	onload="init();">
+	
+	<script type="application/x-javascript" src="chrome://dispmua/content/feedback.js"/>
+	
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="dispmua-strings" src="chrome://dispmua/locale/dispmua.properties" insertbefore="dispmuaFeedback"/>
+	</stringbundleset>
+	
+	<groupbox orient="horizontal" class="groupbox">
+		<vbox flex="1">
+			<textbox id="feedback-MUA1" class="plain" readonly="true" style="width:100%; background:none; font-weight:bold; font-size:large;"/>
+			<textbox id="feedback-MUA2" class="plain" readonly="true" style="width:100%; background:none;"/>
+			<spacer minheight="3"/>
+			<text id="feedback-supported"/>
+		</vbox>
+		<spacer minwidth="10"/>
+		<vbox>
+			<spacer flex="1"/>
+			<image id="feedback-icon" onclick="doOpenURL();" style="width:48px; height:48px;"/>
+			<spacer flex="1"/>
+		</vbox>
+		<vbox>
+			<image id="feedback-throbber" src="chrome://dispmua/skin/throbber.png" style="width:16px; height:16px; margin-left:3px;"/>
+			<spacer flex="1"/>
+		</vbox>
+	</groupbox>
+	<groupbox orient="vertical" class="groupbox">
+		<text id="feedback-mailinfo1"/>
+		<separator class="thin"/>
+		<text id="feedback-mailinfo2"/>
+		<separator class="thin"/>
+		<text id="feedback-iconinfo"/>
+	</groupbox>
+	<hbox>
+		<button label="&feedback.button.send;" onclick="doSend();" id="feedback-button-send"/>
+		<spacer flex="1"/>
+		<button label="&feedback.button.close;" onclick="doClose();" id="feedback-button-close"/>
+	</hbox>
+	<separator class="thin"/>
+</window>

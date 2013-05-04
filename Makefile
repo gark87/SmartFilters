@@ -27,12 +27,6 @@ RDF_PRE=$(SRC)/$(RDF).pre
 
 JAR=$(BCHROME)/$(CHROME).jar
 
-DISPMUA=dispmua
-SDISPMUA=$(SRC)/$(DISPMUA)
-DISPMUA_DATA=$(BCONTENT)/worker/dispmua-data.js
-PROCESS_DISPMUA=$(SDISPMUA)/process.pl
-SRC_DISPMUA=$(shell find $(SDISPMUA) -type f -name "data-*.js")
-
 all: $(BUILD) $(XPI)
 
 $(BMANIFEST): $(SMANIFEST)
@@ -41,13 +35,10 @@ $(BMANIFEST): $(SMANIFEST)
 $(BUILD)/%: $(SRC)/%
 	cd $(SRC) && cp --parents $* ../$(BUILD)/
 
-$(DISPMUA_DATA): $(PROCESS_DISPMUA) $(SRC_DISPMUA)
-	$(PROCESS_DISPMUA) $(SRC_DISPMUA) > $@
-
 $(BUILD):
 	mkdir $(BUILD)
 
-$(XPI): $(BUILD_CHROMES) $(DISPMUA_DATA) $(BRDF) $(BMANIFEST) $(BUILD_DEFAULTS)
+$(XPI): $(BUILD_CHROMES) $(BRDF) $(BMANIFEST) $(BUILD_DEFAULTS)
 	cd $(BUILD) && zip $(XPI_NAME) -r $(MANIFEST) $(RDF) $(CHROME) $(DEFAULTS)
 
 $(BRDF): $(BASEVER) $(RDF_PRE)

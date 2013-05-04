@@ -4,6 +4,31 @@
 function RobotUtil(prefix) {
   // private fields
   var domain2map = new HashMap();
+  var NOTHING = 'nothing.png';
+  var nothingIcons = new HashMap();
+  nothingIcons.add("thunderbird.png");
+  nothingIcons.add("thunderbird-linux.png");
+  nothingIcons.add("thunderbird-windows.png");
+  nothingIcons.add("thunderbird-mac.png");
+  nothingIcons.add("thunderbird-sunos.png");
+  nothingIcons.add("thunderbird-freebsd.png");
+  nothingIcons.add("thunderbird-x11.png");
+  nothingIcons.add("seamonkey.png");
+  nothingIcons.add("shredder.png");
+  nothingIcons.add("netscape.png");
+  nothingIcons.add("firefox.png");
+  nothingIcons.add("eudora.png");
+  nothingIcons.add("ms_exchange.png");
+  nothingIcons.add("ms_outlook.png");
+  nothingIcons.add("empty.png");
+  nothingIcons.add("google_mail.png");
+  nothingIcons.add("mail_ru.png");
+
+  this.createIconTexts = function(text, icon) {
+    var result = this.createTexts(text);
+    result[result.length - 1].icon = "chrome://smartfilters/skin/classic/dispmua/" + icon;
+    return result; 
+  }
 
   // override abstract methods
   this.getIconName    = function() { return "robot"; }
@@ -15,15 +40,14 @@ function RobotUtil(prefix) {
       return;
     }
     var author = Util.getEmailInfo(message.author[0]);
-    var lower = message.messageId.toLowerCase();
-    var createIfNeeded = function(messageId) {
+    var createIfNeeded = function(dispMUAIcon) {
       var id2map = domain2map.get(author.domain);
       if (id2map == undefined) {
         domain2map.put(author.domain, id2map = new HashMap());
       }
-      var name2index = id2map.get(messageId);
+      var name2index = id2map.get(dispMUAIcon);
       if (name2index == undefined) {
-        id2map.put(messageId, name2index = new HashMap());
+        id2map.put(dispMUAIcon, name2index = new HashMap());
       }
       var indices = name2index.get(author.username);
       if (indices == undefined) {
@@ -31,13 +55,10 @@ function RobotUtil(prefix) {
       }
       return indices;
     };
-    for (var key in RobotUtil.smartfilters_dispMUA['message-id']) {
-      if (lower.indexOf(key) > -1) {
-        createIfNeeded.call(this, key).push(i);
-        return;
-      }
-    }
-    createIfNeeded.call(this, 'nothing').push(i);
+    var icon = message.dispMUAIcon;
+    if (nothingIcons.get(icon))
+      icon = NOTHING;
+    createIfNeeded.call(this, icon).push(i);
   };
 
   this.createFilterTerm = function (email) {
@@ -58,7 +79,7 @@ function RobotUtil(prefix) {
         var id = id2map.keys()[0];
         var name2index = id2map.get(id);
         // just regular
-        if (id == 'nothing') {
+        if (id == NOTHING) {
           name2index.foreach(function (name) {
             var indices = name2index.get(name);
             for(var i = 0; i < indices.length; i++)
@@ -78,7 +99,7 @@ function RobotUtil(prefix) {
 	      var terms = this.getPrevTerms().slice(0);
 	      terms.push(this.createFilterTerm(indicator));
               results.push(new SmartFiltersResult(indices, 
-		  this.createTexts(text), this.composeDir(folder),
+		  this.createIconTexts(text, id), this.composeDir(folder),
 		  terms));
               return;
             }
@@ -94,7 +115,7 @@ function RobotUtil(prefix) {
 	  var terms = this.getPrevTerms().slice(0);
 	  terms.push(this.createFilterTerm(indicator));
           results.push(new SmartFiltersResult(messageIndices, 
-		this.createTexts(text), this.composeDir(folder), 
+		this.createIconTexts(text, id), this.composeDir(folder), 
 		terms));
         }
         return;
@@ -110,14 +131,14 @@ function RobotUtil(prefix) {
           if (prevId != undefined && prevId != id) {
             for(var i = 0; i < indices.length; i++)
               this.regularMails.push(indices[i]);
-            user2id.put(name, 'nothing');
+            user2id.put(name, NOTHING);
             return;
           }
           // message has no Message-ID or some other mail from this user is regular
-          if (prevId == 'nothing' || id == 'nothing') {
+          if (prevId == NOTHING || id == NOTHING) {
             for(var i = 0; i < indices.length; i++)
               this.regularMails.push(indices[i]);
-            user2id.put(name, 'nothing');
+            user2id.put(name, NOTHING);
             return;
           }
           user2id.put(name, id);
@@ -126,7 +147,7 @@ function RobotUtil(prefix) {
       user2id.foreach(function(username) {
         var id = user2id.get(username);
         // already added to regularMails
-        if (id == 'nothing')
+        if (id == NOTHING)
           return;
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
@@ -135,7 +156,7 @@ function RobotUtil(prefix) {
 	var terms = this.getPrevTerms().slice(0);
 	terms.push(this.createFilterTerm(indicator));
         results.push(new SmartFiltersResult(indices, 
-	    this.createTexts(text), this.composeDir(folder),
+	    this.createIconTexts(text, id), this.composeDir(folder),
 	    terms));
       }, this);
     }, this);

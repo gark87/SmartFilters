@@ -8,7 +8,7 @@ function MailingListUtil(prefix) {
   var mailing_list_100 = new HashMap();
 
   // override abstract methods
-  this.getIconName    = function() { return "mailing list"; }
+  this.getIconName    = function() { return "chrome://smartfilters/skin/classic/mailing_list.png"; }
   this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
     // user is one of the recipients - that's how we get this email

@@ -48,7 +48,7 @@ function SubjectUtil(prefix) {
   };
 
   // override abstract methods
-  this.getIconName    = function() { return "subject"; }
+  this.getIconName    = function() { return "chrome://smartfilters/skin/classic/subject.png"; }
   this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
     var words = message.subject.match(this.pattern);

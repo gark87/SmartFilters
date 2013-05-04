@@ -23,7 +23,7 @@ function SmartFilters() {
   };
   var worker;
 
-  this.createData = function(folder) {
+  this.startWorker = function(worker, folder) {
     var data = {};
     data.myEmails = [];
     data.messages = [];
@@ -61,14 +61,30 @@ function SmartFilters() {
 	                Ci.nsMsgViewSortOrder.descending, 
 			Ci.nsMsgViewFlagsType.kNone, out);
     var i = 0;
-    var headers = [];
+    var messages = [];
     if (out.value > N)
       out.value = N;
     for(var i = 0; i < out.value; i++) {
-      headers[i] = dbView.getMsgHdrAt(i);
+      messages[i] = { 
+        header : dbView.getMsgHdrAt(i),
+	   URI : dbView.getURIForViewIndex(i),
+      };
     }
     dbView.close();
-    data.messages = headers.map(function(header) {
+    var messenger = Components.classes["@mozilla.org/messenger;1"].createInstance ( Components.interfaces.nsIMessenger );
+    var total = messages.length;
+    var convertMessage = function () {
+      var length = total - messages.length;
+      setStatus(length + " of " + total + " messages is loaded", 50 * length / total);
+      if (length == total) {
+	worker.postMessage({
+	    'data' : data,
+	    'id' : 'start',
+	});
+	return;
+      }
+      var message = messages.shift();
+      var header = message.header;      
       var result = {
         "author"     : [],
         "recipients" : [],
@@ -77,25 +93,36 @@ function SmartFilters() {
       Util.processAddressListToArray(header.ccList, result.recipients);
       Util.processAddressListToArray(header.recipients, result.recipients);
       Util.processAddressListToArray(header.author, result.author);
-      result.messageId = header.messageId.toLowerCase();
-      return result;
-    });
-    return data;
+
+      var msgURI = message.URI;
+      var msgService = messenger.messageServiceFromURI ( msgURI ) ;
+      dispMUA.setInfo(false, []);
+      msgService.CopyMessage ( msgURI , dispMUA.StreamListener , false , null , msgWindow , {} ) ;
+      var fillResult = function() {
+	var icon = dispMUA.Info["ICON"];
+	if (icon == "empty.png" && !dispMUA.Info["STRING"]) {
+	  setTimeout(fillResult, 0);
+	  return;
+	}
+	result.dispMUAIcon = icon;
+	data.messages.push(result);
+	setTimeout(convertMessage, 0);
+      };
+      setTimeout(fillResult, 0);
+    };
+    setTimeout(convertMessage, 0);
   }
 
   this.start = function() {
     folder = window.arguments[0].folder;
     worker = new Worker("chrome://smartfilters/content/worker/worker.js");
-    worker.postMessage({
-        'data' : this.createData(folder),
-        'id' : 'start',
-    });
+    this.startWorker(worker, folder);
     gStatus = document.getElementById("status");
     gProgressMeter = document.getElementById("progressmeter");
     msgWindow = window.arguments[0].msgWindow;
     box = document.getElementById("smartfilters-box");
     document.title = locale.GetStringFromName("title") + " " + folder.URI;
-    setStatus("initializing", 0);
+    setStatus("initializing", 50);
     var threshold = preferences.getIntPref("threshold");
     worker.onmessage = function(event) {
       var data = event.data;
@@ -109,7 +136,7 @@ function SmartFilters() {
 	Application.console.log(data.text);
 	return;
       }
-      setStatus(id + " " + data.postfix, data.percentage);
+      setStatus(id + " " + data.postfix, 50 + data.percentage);
       var results = data.results;
       var newItems = [];
       for(var i = 0; i < results.length; i++) {

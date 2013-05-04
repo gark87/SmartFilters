@@ -33,7 +33,7 @@
 	      var text = texts[i];
 	      var icon = document.createElement('image');
 	      icon.setAttribute('class', 'smartfilters-row-icon');
-	      icon.setAttribute('type', text.icon);
+	      icon.setAttribute('src', text.icon);
 	      box.appendChild(icon);
 	      iconBox.appendChild(box);
 	      var label = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", 'label');

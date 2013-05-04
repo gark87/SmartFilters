@@ -4,8 +4,7 @@ importScripts("chrome://smartfilters/content/util.js",
 	      "chrome://smartfilters/content/worker/base.js",
               "chrome://smartfilters/content/worker/mailing-list.js",
               "chrome://smartfilters/content/worker/subject-analyzer.js",
-              "chrome://smartfilters/content/worker/dispmua-smartfilters.js",
-              "chrome://smartfilters/content/worker/dispmua-data.js");
+              "chrome://smartfilters/content/worker/dispmua-smartfilters.js");
 
 // global vars
 const MAX = 5000;

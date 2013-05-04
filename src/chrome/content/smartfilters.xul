@@ -19,6 +19,59 @@
   <script type="application/x-javascript" src="chrome://messenger/content/mailWindowOverlay.js"/>
   <script type="application/x-javascript" src="chrome://messenger/content/ispUtils.js" />
   <script type="application/x-javascript" src="chrome://messenger/content/msgViewNavigation.js" />
+  <!-- dispmua scripts -->
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/dispmua-common.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-27.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-28.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-2e.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-2f.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-31.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-32.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-33.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-34.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-36.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-37.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-38.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-39.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-3c.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-3e.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-40.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-5b.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-61.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-62.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-63.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-64.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-65.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-66.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-67.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-68.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-69.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-6a.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-6b.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-6c.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-6d.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-6e.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-6f.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-70.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-71.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-72.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-73.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-74.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-75.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-76.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-77.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-78.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-79.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-7a.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-fullmatch.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-message-id.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-organization.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-postsearch.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-presearch.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/data-x-mimeole.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/dispmua-2.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/dispmua-3.js" />
+  <script type="application/x-javascript" src="chrome://smartfilters/content/dispmua/feedback.js" />
   <!-- thunderbird-stdlib -->
   <script type="application/x-javascript" src="chrome://smartfilters/content/thunderbird-stdlib/msgHdrUtils.js"/>
   <!-- my scripts -->
