@@ -1,14 +1,15 @@
+Components.utils.import("resource:///modules/virtualFolderWrapper.js");
+
 function VirtualFoldersBackend(termCreator, onlineSearch) {
   this.wrapFolder = function(folder) {
-    return VirtualFolderHelper.wrapVirtualFolder(currentFolder);
+    return VirtualFolderHelper.wrapVirtualFolder(folder);
   }
 
   this.createFolders = function(items, folder) {
     var result = {};
     for (var i = 0 ; i < items.length; i++) {
       var item = items[i];
-      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
-      var relativePath = textbox.value;
+      var relativePath = item.folder;
       var folders = relativePath.split(".");
       var currentFolder = folder;
       for(var j = 0; j < folders.length; j++) {
@@ -34,8 +35,7 @@ function VirtualFoldersBackend(termCreator, onlineSearch) {
     var folders = this.createFolders(checkedItems, folder);
     for (var i = 0 ; i < checkedItems.length; i++) {
       var item = checkedItems[i];
-      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
-      folders[textbox.value].searchTerms = termCreator.createTerms(item);
+      folders[item.folder].searchTerms = termCreator.createTerms(item);
     }
   }
 }

@@ -46,8 +46,7 @@ function ImapFoldersBackend(termCreator) {
     var texts = [];
     for (var i = 0 ; i < checkedItems.length; i++) {
       var item = checkedItems[i];
-      var textbox = document.getAnonymousElementByAttribute(item, "anonid", "smartfilters-folder");
-      var relativePath = textbox.value;
+      var relativePath = item.folder;
       texts.push(relativePath);
       folders.push(relativePath.split("."));
     }

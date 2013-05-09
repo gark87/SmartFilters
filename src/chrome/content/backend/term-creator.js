@@ -1,7 +1,9 @@
 function TermCreator(msgSearchSession) {
+  const Ci = Components.interfaces;
+
   this.createTerms = function(item) {
     var terms = [];
-    var resultTerms = item.data.terms;
+    var resultTerms = item.terms;
     for(var j = 0; j < resultTerms.length; j++) {
       var resultTerm = resultTerms[j];
       var type = resultTerm.type;

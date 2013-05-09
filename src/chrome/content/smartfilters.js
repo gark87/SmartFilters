@@ -1,5 +1,3 @@
-Cu.import("resource:///modules/virtualFolderWrapper.js");
-
 function SmartFilters() {
   var box;
   var msgWindow;
@@ -10,17 +8,6 @@ function SmartFilters() {
   var preferences = Cc["@mozilla.org/preferences-service;1"]
                        .getService(Ci.nsIPrefService)
                        .getBranch("extensions.smartfilters.");
-  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                       .getService(Ci.nsIScriptableUnicodeConverter);
-  converter.charset = "UTF-8";
-  var msgSearchSession = Cc["@mozilla.org/messenger/searchSession;1"]
-		    .createInstance(Ci.nsIMsgSearchSession);
-  var termCreator = new TermCreator(msgSearchSession);
-  var backendsMap = {
-    "virtual folders" : new VirtualFoldersBackend(termCreator, false),
-    "online virtual folders" : new VirtualFoldersBackend(termCreator, true),
-    "imap folders" : new ImapFoldersBackend(termCreator),
-  };
   var worker;
 
   this.startWorker = function(worker, folder) {
@@ -190,11 +177,18 @@ function SmartFilters() {
                                   "anonid", "smartfilters-checkbox");
       if (!checkbox.checked)
         continue;
-      checkedItems.push(item);
+      var data = item.data;
+      data.folder = document.getAnonymousElementByAttribute(item,
+	  "anonid", "smartfilters-folder").value;
+      checkedItems.push(data);
     }
-    var backend = backendsMap[preferences.getCharPref("backend")];
-    backend.apply(checkedItems, folder);
-    close();
+    var arg = { backend : preferences.getCharPref("backend"),
+                 folder : folder,
+           checkedItems : checkedItems,
+    };
+    window.openDialog("chrome://smartfilters/content/backend/confirmation.xul", "showmore", "chrome,modal", arg);
+    if (arg.close)
+      window.close();
   }
 
   function setStatus(text, percentage) {
