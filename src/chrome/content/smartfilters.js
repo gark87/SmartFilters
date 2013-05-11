@@ -86,10 +86,11 @@ function SmartFilters() {
       var msgURI = message.URI;
       var msgService = messenger.messageServiceFromURI ( msgURI ) ;
       dispMUA.setInfo(false, []);
+      dispMUA.stopped = false;
       msgService.CopyMessage ( msgURI , dispMUA.StreamListener , false , null , msgWindow , {} ) ;
       var fillResult = function() {
         var icon = dispMUA.Info["ICON"];
-        if (icon == "empty.png" && !dispMUA.Info["STRING"]) {
+        if (!dispMUA.stopped) {
           setTimeout(fillResult, 0);
           return;
         }

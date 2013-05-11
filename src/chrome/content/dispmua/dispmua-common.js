@@ -1,5 +1,6 @@
 var dispMUA =
 {
+  stopped : false,
   bundle: null ,
   Info: {} ,
   arDispMUAOverlay: new Array() ,
@@ -45,6 +46,7 @@ dispMUA.StreamListener =
     dispMUA.headers.initialize ( this.content , this.content.length ) ;
     dispMUA.headerdata = this.content ;
     dispMUA.searchIcon ( "" ) ;
+    dispMUA.stopped = true;
   }
 } ;
 
