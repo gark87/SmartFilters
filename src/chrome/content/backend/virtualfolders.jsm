@@ -1,3 +1,5 @@
+var EXPORTED_SYMBOLS = ["VirtualFoldersBackend"];
+
 Components.utils.import("resource:///modules/virtualFolderWrapper.js");
 
 function VirtualFoldersBackend(termCreator, onlineSearch) {
@@ -13,12 +15,12 @@ function VirtualFoldersBackend(termCreator, onlineSearch) {
       var folders = relativePath.split(".");
       var currentFolder = folder;
       for(var j = 0; j < folders.length; j++) {
-	var newFolderName = folders[j];
-	if (currentFolder.containsChildNamed(newFolderName))
-	  currentFolder = currentFolder.getChildNamed(newFolderName);
-	else
-	  currentFolder = 
-	    this.createFolder(newFolderName, currentFolder, folder);
+        var newFolderName = folders[j];
+        if (currentFolder.containsChildNamed(newFolderName))
+          currentFolder = currentFolder.getChildNamed(newFolderName);
+        else
+          currentFolder = 
+            this.createFolder(newFolderName, currentFolder, folder);
       }
       result[relativePath] = this.wrapFolder(currentFolder);
     }
@@ -27,8 +29,8 @@ function VirtualFoldersBackend(termCreator, onlineSearch) {
 
   this.createFolder = function(newFolderName, currentFolder, folder) {
     return VirtualFolderHelper.createNewVirtualFolder
-	    (newFolderName, currentFolder, [folder], [], onlineSearch)
-	    .virtualFolder;
+            (newFolderName, currentFolder, [folder], [], onlineSearch)
+            .virtualFolder;
   }
 
   this.apply = function(checkedItems, folder) {

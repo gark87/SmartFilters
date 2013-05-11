@@ -1,6 +1,7 @@
+var EXPORTED_SYMBOLS = ["ImapFoldersBackend"];
+
 function ImapFoldersBackend(termCreator) {
   function Processor(folders, root, createFilters) {
-    this.folders = folders;
     this.root = root;
     this.currentFolder = root;
     this.createdFolders = [];
@@ -80,7 +81,7 @@ function ImapFoldersBackend(termCreator) {
               getService(Components.interfaces.nsIPromptService);
       let title = locale.GetStringFromName("run.filters.title"); 
       let text = locale.GetStringFromName("run.filters.text"); 
-      if (prompts.confirm(window, title, text)) {
+      if (prompts.confirm(/*window*/null, title, text)) {
         // run filters on folder
         var array = Components.classes["@mozilla.org/supports-array;1"]
                   .createInstance(Components.interfaces.nsISupportsArray);

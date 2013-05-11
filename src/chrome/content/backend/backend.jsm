@@ -1,3 +1,10 @@
+var EXPORTED_SYMBOLS = ["smartfiltersBackend"];
+
+const Cu = Components.utils;
+Cu.import("chrome://smartfilters/content/backend/imapfolders.jsm");
+Cu.import("chrome://smartfilters/content/backend/term-creator.jsm");
+Cu.import("chrome://smartfilters/content/backend/virtualfolders.jsm");
+
 function SmartFiltersBackend() {
   const Cc = Components.classes;
   const Ci = Components.interfaces;
@@ -26,25 +33,14 @@ function SmartFiltersBackend() {
          },
   };
 
-  this.init = function() {
-    var argument = window.arguments[0];
-    var count = argument.checkedItems.length;
-    var text = backendsMap[argument.backend].text;
-    text = text.replace('{}', count);
-    document.getElementById("confirmQuestion").setAttribute("value", text);
-    window.sizeToContent();
+  this.getText = function(backend, count) {
+    var text = backendsMap[backend].text;
+    return text.replace('{}', count);
   };
 
-  this.doOK = function() {
-    var argument = window.arguments[0];
-    var backend = backendsMap[argument.backend].backend;
-    backend.apply(argument.checkedItems, argument.folder);
-    argument.close = true;
-    return true;
-  }
-
-  this.doCancel = function() {
-    return true;
+  this.run = function(backend, folder, checkedItems) {
+    var backend = backendsMap[backend].backend;
+    backend.apply(checkedItems, folder);
   }
 }
 
