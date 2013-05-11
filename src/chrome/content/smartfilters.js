@@ -1,4 +1,5 @@
 Components.utils.import("chrome://smartfilters/content/backend/backend.jsm");
+Components.utils.import("chrome://smartfilters/content/preferences.jsm");
 
 function SmartFilters() {
   var box;
@@ -7,9 +8,6 @@ function SmartFilters() {
   var locale = Cc["@mozilla.org/intl/stringbundle;1"].
                getService(Ci.nsIStringBundleService).
                createBundle("chrome://smartfilters/locale/smartfilters.properties");
-  var preferences = Cc["@mozilla.org/preferences-service;1"]
-                       .getService(Ci.nsIPrefService)
-                       .getBranch("extensions.smartfilters.");
   var worker;
 
   this.startWorker = function(worker, folder) {
