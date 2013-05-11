@@ -94,13 +94,13 @@ function RobotUtil(prefix) {
             // more than one message from this email - not a Twitter
             if (length > 1) {
               var indicator = name + "@" + domain;
-	      var folder = this.createFolder(domain);
+              var folder = this.createFolder(domain);
               var text = composeText(indicator);
-	      var terms = this.getPrevTerms().slice(0);
-	      terms.push(this.createFilterTerm(indicator));
+              var terms = this.getPrevTerms().slice(0);
+              terms.push(this.createFilterTerm(indicator));
               results.push(new SmartFiltersResult(indices, 
-		  this.createIconTexts(text, id), this.composeDir(folder),
-		  terms));
+                  this.createIconTexts(text, id), this.composeDir(folder),
+                  terms));
               return;
             }
             for(var i = 0; i < length; i++)
@@ -110,13 +110,13 @@ function RobotUtil(prefix) {
             return;
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
-	  var folder = this.createFolder(domain);
+          var folder = this.createFolder(domain);
           var text = composeText(indicator);
-	  var terms = this.getPrevTerms().slice(0);
-	  terms.push(this.createFilterTerm(indicator));
+          var terms = this.getPrevTerms().slice(0);
+          terms.push(this.createFilterTerm(indicator));
           results.push(new SmartFiltersResult(messageIndices, 
-		this.createIconTexts(text, id), this.composeDir(folder), 
-		terms));
+                this.createIconTexts(text, id), this.composeDir(folder), 
+                terms));
         }
         return;
       }
@@ -151,13 +151,13 @@ function RobotUtil(prefix) {
           return;
         var indices = id2map.get(id).get(username);
         var indicator = username + '@' + domain;
-        var folder = this.createFolder(domain);
+        var folder = this.createFolder(username);
         var text = composeText(indicator);
-	var terms = this.getPrevTerms().slice(0);
-	terms.push(this.createFilterTerm(indicator));
+        var terms = this.getPrevTerms().slice(0);
+        terms.push(this.createFilterTerm(indicator));
         results.push(new SmartFiltersResult(indices, 
-	    this.createIconTexts(text, id), this.composeDir(folder),
-	    terms));
+            this.createIconTexts(text, id), this.composeDir(folder),
+            terms));
       }, this);
     }, this);
     return results;
