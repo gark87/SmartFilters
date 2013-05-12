@@ -1,7 +1,7 @@
-importScripts("chrome://smartfilters/content/util.js",
+importScripts("chrome://smartfilters/content/util.jsm",
               "chrome://smartfilters/content/result.js",
               "chrome://smartfilters/content/hashmap.js",
-	      "chrome://smartfilters/content/worker/base.js",
+              "chrome://smartfilters/content/worker/base.js",
               "chrome://smartfilters/content/worker/mailing-list.js",
               "chrome://smartfilters/content/worker/subject-analyzer.js",
               "chrome://smartfilters/content/worker/dispmua-smartfilters.js");
@@ -39,15 +39,15 @@ onmessage = function(event) {
         for(var k = 0; k < results.length; k++) {
           filt.prototype = util;
           var filter = new filt(filters[i].prefix);
-	  var processing = results[k];
+          var processing = results[k];
           var result = filter.process(processing);
           for(var j = 0; j < result.length; j++)
             nextResults.push(result[j]);
-	  var percentage = 100 *
-	                 (i + k / results.length) / length;
-	  postMessage({id : pref, results: result.splice(1),
-	      postfix : (k + 1) + "/" + results.length,
-	      percentage: percentage});
+          var percentage = 100 *
+                         (i + k / results.length) / length;
+          postMessage({id : pref, results: result.splice(1),
+              postfix : (k + 1) + "/" + results.length,
+              percentage: percentage});
         }
       }
       results = nextResults;

@@ -1,3 +1,5 @@
+var EXPORTED_SYMBOLS = ["Util"];
+
 var Util = {
   // given an email address, split it into username and domain
   // return in an associative array

@@ -9,21 +9,20 @@ function startSmartFilters()
 
 Components.utils.import("chrome://smartfilters/content/preferences.jsm");
 
-if (!preferences.getBoolPref("daily"))
-  return;
+if (preferences.getBoolPref("daily")) {
+  const newMailListener = {
+    msgAdded: function(aMsgHdr) {
+      var lastDate = preferences.getCharPref("last.date");
+      var now = (new Date()).toDateString();
 
-const newMailListener = {
-  msgAdded: function(aMsgHdr) {
-    var lastDate = preferences.getCharPref("last.date");
-    var now = (new Date()).toDateString();
+      if (lastDate == now)
+        return;
+      preferences.setCharPref("last.date", now);
+    }
+  };
 
-    if (lastDate == now)
-      return;
-    preferences.setCharPref("last.date", now);
-  }
-};
-
-var notificationService =
-    Cc["@mozilla.org/messenger/msgnotificationservice;1"]
-   .getService(Ci.nsIMsgFolderNotificationService);
-notificationService.addListener(newMailListener, notificationService.msgAdded);
+  var notificationService =
+      Cc["@mozilla.org/messenger/msgnotificationservice;1"]
+     .getService(Ci.nsIMsgFolderNotificationService);
+  notificationService.addListener(newMailListener, notificationService.msgAdded);
+}
