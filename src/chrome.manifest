@@ -4,4 +4,6 @@ skin smartfilters classic/1.0 chrome/skin/classic
 
 locale smartfilters en-US chrome/locale/en-US/
 
-overlay chrome://messenger/content/mailWindowOverlay.xul chrome://smartfilters/content/overlay.xul
+style chrome://global/content/customizeToolbar.xul chrome://smartfilters/skin/classic/overlay.css
+
+overlay chrome://messenger/content/messenger.xul   chrome://smartfilters/content/overlay.xul
