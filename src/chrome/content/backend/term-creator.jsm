@@ -5,16 +5,16 @@ function TermCreator(msgSearchSession) {
 
   this.createTerms = function(item) {
     var terms = [];
-    var resultTerms = item.terms;
-    for(var j = 0; j < resultTerms.length; j++) {
-      var resultTerm = resultTerms[j];
-      var type = resultTerm.type;
+    var resultTexts = item.texts;
+    for(var j = 0; j < resultTexts.length; j++) {
+      var resultText = resultTexts[j];
+      var type = resultText.type;
       if (type == 'robot') {
         var searchTerm = msgSearchSession.createTerm();
         searchTerm.attrib = Ci.nsMsgSearchAttrib.Sender;
         var value = searchTerm.value;
         value.attrib = searchTerm.attrib;
-        value.str = resultTerm.email;
+        value.str = resultText.text;
         searchTerm.value = value;
         searchTerm.op = Ci.nsMsgSearchOp.Contains;
         searchTerm.booleanAnd = true;
@@ -24,13 +24,13 @@ function TermCreator(msgSearchSession) {
         searchTerm.attrib = Ci.nsMsgSearchAttrib.ToOrCC;
         var value = searchTerm.value;
         value.attrib = searchTerm.attrib;
-        value.str = resultTerm.email;
+        value.str = resultText.text;
         searchTerm.value = value;
         searchTerm.op = Ci.nsMsgSearchOp.Contains;
         searchTerm.booleanAnd = true;
         terms.push(searchTerm);
       } else if (type == 'subject') {
-        var keywords = resultTerm.keywords;
+        var keywords = resultText.text.split(", ");
         for(var k = 0; k < keywords.length; k++) {
           var keyword = keywords[k];
           var searchTerm = msgSearchSession.createTerm();

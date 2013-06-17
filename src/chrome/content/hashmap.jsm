@@ -1,6 +1,7 @@
-///////////////////////////////////////////////
-// Hash map
-///////////////////////////////////////////////
+var EXPORTED_SYMBOLS = ["HashMap"];
+/**
+ * Hash map with quick size
+ */
 function HashMap() {
   var size = 0;
   var _map = {};

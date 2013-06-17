@@ -41,14 +41,6 @@ function SmartFilters() {
     document.getElementById("apply").disabled = false;
   } 
 
-  this.stop = function() {
-    if (worker) {
-      worker.terminate();
-      worker = null;
-      atEnd();
-    }
-  }
-
   this.selectAll = function(select) {
     var items = box.childNodes;
     for (var i = 0 ; i < items.length; i++) {

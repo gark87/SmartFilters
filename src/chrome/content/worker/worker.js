@@ -1,6 +1,6 @@
 importScripts("chrome://smartfilters/content/util.jsm",
-              "chrome://smartfilters/content/result.js",
-              "chrome://smartfilters/content/hashmap.js",
+              "chrome://smartfilters/content/result.jsm",
+              "chrome://smartfilters/content/hashmap.jsm",
               "chrome://smartfilters/content/worker/base.js",
               "chrome://smartfilters/content/worker/mailing-list.js",
               "chrome://smartfilters/content/worker/subject-analyzer.js",
@@ -27,7 +27,7 @@ onmessage = function(event) {
   if (type == 'start') {
     data = event.data.data;
     var allMessages = range(0, data.messages.length);
-    var results = [new SmartFiltersResult(allMessages, [], "", [])];
+    var results = [new SmartFiltersResult(allMessages, [], "")];
     var util = new Base(data);
     var filters = data.filters;
     var length = filters.length;

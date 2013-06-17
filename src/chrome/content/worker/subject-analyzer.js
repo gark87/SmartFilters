@@ -49,6 +49,7 @@ function SubjectUtil(prefix) {
 
   // override abstract methods
   this.getIconName    = function() { return "chrome://smartfilters/skin/classic/subject.png"; }
+  this.getType        = function() { return "subject"; }
   this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
     var words = message.subject.match(this.pattern);
@@ -58,20 +59,20 @@ function SubjectUtil(prefix) {
     for(var j = 0; j < words.length; j++) {
       var word = words[j];
       if (word.length == 0)
-	continue;
+       continue;
       if (this.ignores.get(word))
-	continue;
+       continue;
       var oldIndex = word2index.get(word);
       if (undefined != oldIndex) {
-	var coordinate = point.get(oldIndex);
-	if (!coordinate) {
-	  coordinate = 0;
-	}
-	point.put(oldIndex, coordinate + 1);
+       var coordinate = point.get(oldIndex);
+       if (!coordinate) {
+         coordinate = 0;
+       }
+       point.put(oldIndex, coordinate + 1);
       } else {
-	word2index.put(word, oldIndex = word2index.getSize());
-	index2word.push(word);
-	point.put(oldIndex, 1);
+       word2index.put(word, oldIndex = word2index.getSize());
+       index2word.push(word);
+       point.put(oldIndex, 1);
       }
     }
     var str = map2str(point);
@@ -105,16 +106,16 @@ function SubjectUtil(prefix) {
       var index = -1;
       var value = Number.POSITIVE_INFINITY;
       for(var j = 0; j < centroids.length; j++) {
-	var centroid = centroids[j];
-	var l = distance(centroid, point);
-	if (l < value) {
-	  value = l;
-	  index = j;
-	}
+       var centroid = centroids[j];
+       var l = distance(centroid, point);
+       if (l < value) {
+         value = l;
+         index = j;
+       }
       }
       J += l / centroids.length;
       if (result[index] == undefined)
-	throw ("SmartFilters: Unexpected error: @" + index + " with centroids: "  + centroids + " and value: " + value + " for point:" + point);
+       throw ("SmartFilters: Unexpected error: @" + index + " with centroids: "  + centroids + " and value: " + value + " for point:" + point);
       result[index].push(point);
     }
     return {groupBy : result, J : J};
@@ -128,17 +129,17 @@ function SubjectUtil(prefix) {
       var corresponding = points[i];
       var count = 0;
       for(var j = 0; j < corresponding.length; j++) {
-	var multiplier = corresponding[j].weight.length;
-	count += multiplier;
-	var point = corresponding[j].map;
-	var keys = point.keys();
-	for(var k = 0; k < keys.length; k++) {
-	  var key = keys[k];
-	  centroid[key] += multiplier * point.get(key); 
-	}
+       var multiplier = corresponding[j].weight.length;
+       count += multiplier;
+       var point = corresponding[j].map;
+       var keys = point.keys();
+       for(var k = 0; k < keys.length; k++) {
+         var key = keys[k];
+         centroid[key] += multiplier * point.get(key); 
+       }
       }
       for(var j = 0; j < centroid.length; j++)
-	centroid[j] /= count;
+       centroid[j] /= count;
       centroids.push(new Centroid(centroid));
     }
     return centroids;
@@ -175,15 +176,15 @@ function SubjectUtil(prefix) {
       var centroid1 = c1[i];
       var centroid2 = c2[i];
       if (centroid1.weight != centroid2.weight)
-	return false;
+       return false;
       var array1 = centroid1.array;
       var array2 = centroid2.array;
       var cLength = array1.length;
       for(var j = 0; j < cLength; j++) {
-	var value1 = array1[j];
-	var value2 = array2[j];
-	if (value1 != value2)
-	  return false;
+       var value1 = array1[j];
+       var value2 = array2[j];
+       if (value1 != value2)
+         return false;
       }
     }
     return true;
@@ -197,24 +198,24 @@ function SubjectUtil(prefix) {
       var minJ = Number.POSITIVE_INFINITY;
       var minCentroids = [];
       for(var i = 0; i < repeat; i++) {
-	var prevCentroids = [];
-	var centroids = randomCentroids(K, points);
-	var J;
-	do {
-	  var result = clusterAssignment(points, centroids);
-	  J = result.J;
-	  var newCentroids = moveCentroid(result.groupBy);
-	  prevCentroids = centroids;
-	  centroids = newCentroids;
-	} while(!sameCentroids(prevCentroids, centroids));
-	if (J < minJ) {
-	  minJ = J;
-	  minCentroids = centroids;
-	}
+       var prevCentroids = [];
+       var centroids = randomCentroids(K, points);
+       var J;
+       do {
+         var result = clusterAssignment(points, centroids);
+         J = result.J;
+         var newCentroids = moveCentroid(result.groupBy);
+         prevCentroids = centroids;
+         centroids = newCentroids;
+       } while(!sameCentroids(prevCentroids, centroids));
+       if (J < minJ) {
+         minJ = J;
+         minCentroids = centroids;
+       }
       }
       var diff = prevJ - minJ;
       if (diff < prevJ / 10) {
-	return minCentroids;
+       return minCentroids;
       }
       prevJ = minJ;
     }
@@ -229,12 +230,12 @@ function SubjectUtil(prefix) {
       var point = new Point(points.get(p));
       for(var i = 0 ; i < vs.length; i++) {
         var v = vs[i];
-	var t = v.split(" = ");
-	point.map.put(t[0], t[1]);
-	if (!t[0] && t[0] != 0)
-	  throw "SmartFilters: Unexpected point:|" + v + "|";
-	if (!t[1] && t[1] != 0)
-	  throw "SmartFilters: Unexpected point:|" + v + "|";
+       var t = v.split(" = ");
+       point.map.put(t[0], t[1]);
+       if (!t[0] && t[0] != 0)
+         throw "SmartFilters: Unexpected point:|" + v + "|";
+       if (!t[1] && t[1] != 0)
+         throw "SmartFilters: Unexpected point:|" + v + "|";
       }
       ps.push(point);
     }, this);
@@ -248,39 +249,28 @@ function SubjectUtil(prefix) {
       var centroidLength = centroid.array.length;
       var keywords = [];
       for(var j = 0; j < centroidLength; j++) {
-	if (centroid.array[j] > 0.98)
-	  keywords.push(index2word[j]);
+       if (centroid.array[j] > 0.98)
+         keywords.push(index2word[j]);
       }
       if (keywords.length > 0) {
-	keywords.sort(function (a, b) {
-	   return a.toLowerCase().localeCompare(b.toLowerCase());
-	});
-	var messageIndices = [];
-	var ps = result.groupBy[i];
-	for(var k = 0; k < ps.length; k++) {
+       keywords.sort(function (a, b) {
+          return a.toLowerCase().localeCompare(b.toLowerCase());
+       });
+       var messageIndices = [];
+       var ps = result.groupBy[i];
+       for(var k = 0; k < ps.length; k++) {
           var str = map2str(ps[k].map);
-	  var indexes = points.get(str);
-	  for(var q = 0; q < indexes.length; q++) {
-	    messageIndices.push(indexes[q]);
-	  }
-	}
-	var text = this.composeText(keywords);
-	var folder = keywords.join("_");
-	var terms = this.getPrevTerms().slice(0);
-	terms.push(this.createFilterTerm(keywords));
-	results.push(new SmartFiltersResult(messageIndices, 
-	    this.createTexts(text), this.composeDir(folder), terms));
+         var indexes = points.get(str);
+         for(var q = 0; q < indexes.length; q++) {
+           messageIndices.push(indexes[q]);
+         }
+       }
+       var text = keywords.join(", ");
+       var folder = keywords.join("_");
+       results.push(new SmartFiltersResult(messageIndices, 
+           this.createTexts(text), this.composeDir(folder)));
       }
     }
     return results;
   };
-
-  this.composeText = function(keywords) {
-    return "with keywords in subject: " + keywords.join(", ");
-  };
-
-  this.createFilterTerm = function (keywords) {
-    return { type : 'subject', keywords : keywords };
-  };
-
 }

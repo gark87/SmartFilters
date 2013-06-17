@@ -6,12 +6,6 @@
 
 <overlay id="smartFiltersOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://smartfilters/content/overlay.js"/>
-    <toolbarpalette id="MailToolbarPalette">
-      <toolbarbutton id="smartfilters-button" 
-         title="&SmartFilters.title;"
-         tooltiptext="&SmartFilters.button.tooltip;"
-      />
-    </toolbarpalette>
     <popup id="folderPaneContext">
       <menuitem id="smartFiltersMenu" label="&SmartFilters.title;" tooltiptext="&SmartFilters.tooltip;" oncommand="startSmartFilters();"/>
     </popup>

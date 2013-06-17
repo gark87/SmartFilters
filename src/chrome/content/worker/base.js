@@ -14,13 +14,13 @@ function Base(data) {
     replacement = replacement.replace(/[.]/g, "_");
     return this.getPrefix().replace(/%/g, replacement);
   }
+
   this.init = function(prevResult) {
     this.getPrevTexts = function () { return prevResult.texts; };
-    this.getPrevTerms = function () { return prevResult.terms; };
 
     this.createTexts = function(text) { 
       var icons = prevResult.texts.slice(0);
-      icons.push(new SmartFiltersText(this.getIconName(), text));
+      icons.push(new SmartFiltersText(this.getType(), this.getIconName(), text));
       return icons; 
     };
 
@@ -28,7 +28,7 @@ function Base(data) {
     this.regularMails = [];
     this.createReturnArray = function(mails) {
       return [new SmartFiltersResult(mails, prevResult.texts, 
-          prevResult.folder, prevResult.terms)];
+          prevResult.folder)];
     }
 
     this.composeDir = function(dirname) {

@@ -118,7 +118,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
         var id = data.id;
         if (id == "end") {
           this.setStatus("finished", 100);
-          atEnd();
+          this.atEnd();
           return;
         }
         if (id == "debug") {
@@ -131,6 +131,14 @@ function SmartFiltersLogic(folder, window, msgWindow) {
       onMessage.call(owner);
     }
   };
+
+  this.stop = function() {
+    if (worker) {
+      worker.terminate();
+      worker = null;
+      this.atEnd();
+    }
+  }
 
   this.onResultsArrived = function(results) {
   }

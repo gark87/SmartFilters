@@ -9,6 +9,7 @@ function MailingListUtil(prefix) {
 
   // override abstract methods
   this.getIconName    = function() { return "chrome://smartfilters/skin/classic/mailing_list.png"; }
+  this.getType        = function() { return "mailing.list"; }
   this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
     // user is one of the recipients - that's how we get this email
@@ -34,27 +35,18 @@ function MailingListUtil(prefix) {
     }, this);
   };
 
-  this.createFilterTerm = function (email) {
-    return { type : "mailing.list", email : email };
-  };
-
   this.process = function(prevResult) {
     this.init(prevResult);
 
     var results = this.createReturnArray(this.regularMails);
-    var composeText = function(name) {
-      return "to mailing list " + name;
-    };
     // first of all: process 100% mailing list
     mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
       var author = Util.getEmailInfo(email);
       var folder = this.createFolder(author.username);
-      var text = composeText(email);
-      var terms = this.getPrevTerms().slice(0);
-      terms.push(this.createFilterTerm(email));
+      var text = email;
       var result = new SmartFiltersResult(set.keys(), 
-	   this.createTexts(text), this.composeDir(folder), terms);
+           this.createTexts(text), this.composeDir(folder));
       results.push(result);
       for (var key in recipient2indices) {
         if (key == email)
@@ -82,11 +74,9 @@ function MailingListUtil(prefix) {
 
       var author = Util.getEmailInfo(biggestKey);
       var folder = this.createFolder(author.username);
-      var text = composeText(biggestKey);
-      var terms = this.getPrevTerms().slice(0);
-      terms.push(this.createFilterTerm(biggestKey));
+      var text = biggestKey;
       results.push(new SmartFiltersResult(biggestSet.keys(), 
-	    this.createTexts(text), this.composeDir(folder), terms));
+            this.createTexts(text), this.composeDir(folder)));
       // remove biggest set elements from other sets
       for (var i = 0; i < keys.length; i++) {
         var hashSet = recipient2indices[keys[i]];
