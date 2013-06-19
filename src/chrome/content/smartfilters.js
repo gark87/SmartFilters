@@ -6,9 +6,9 @@ function SmartFilters() {
   var box;
   var gStatus;
   var gProgressMeter;
-  var locale = Cc["@mozilla.org/intl/stringbundle;1"].
-               getService(Ci.nsIStringBundleService).
-               createBundle("chrome://smartfilters/locale/smartfilters.properties");
+  var locale = Components.classes["@mozilla.org/intl/stringbundle;1"].
+         getService(Components.interfaces.nsIStringBundleService).
+         createBundle("chrome://smartfilters/locale/smartfilters.properties");
 
   this.start = function() {
     gStatus = document.getElementById("status");
