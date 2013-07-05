@@ -18,18 +18,7 @@ function SmartFilters() {
     this.prototype.start.call(this);
   }
 
-  this.onResultsArrived = function(results) {
-    var newItems = [];
-    for(var i = 0; i < results.length; i++) {
-      var result = results[i];
-      // messages not filtered by anything
-      if (result.texts.length == 0)
-        continue;
-      // filter without messages
-      if (result.messageIndices.length <= this.threshold)
-        continue;
-      newItems.push(result);
-    }
+  this.addItems = function(newItems) {
     if (newItems.length > 0)
       box.addItems(newItems);
   }
@@ -74,7 +63,6 @@ function SmartFilters() {
     let text = smartfiltersBackend.getText(backend, checkedItems.length);
     if (prompts.confirm(window, locale.GetStringFromName("confirmation.title"), text)) {
       smartfiltersBackend.run(backend, folder, checkedItems);
-      window.close();
     } 
   }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE bindings SYSTEM "chrome://smartfilters/locale/smartfilters.dtd">
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://smartfilters/content/smartfilters.css" type="text/css"?>
+
+<overlay id="specialTabs"
+   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://smartfilters/content/smartfilters-tab.js"/>
+  <richlistbox id="smartfilters-box" class="smartfilters-box" seltype="multiple" flex="1" context="SmartFiltersContext" persist="sortOrder mode modeLang modeCtx dupes"/>
+</overlay>

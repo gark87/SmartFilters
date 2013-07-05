@@ -30,6 +30,18 @@
             var textBox = document.getAnonymousElementByAttribute(
                 item, "anonid", "smartfilters-textbox");
             var texts = result.texts;
+            let createText = function(text) {
+              switch(text.type) {
+                case 'robot':
+                  return 'notification from ' + text.text;
+                case 'mailing.list':
+                  return 'to mailing list ' + text.text;
+                case 'subject':
+                  return 'with words in subject: ' + text.text;
+                default:
+                  return text.text;
+              }
+            };
             for (var i = 0; i < texts.length; i++) {
               var text = texts[i];
               var icon = document.createElement('image');
@@ -39,7 +51,7 @@
               icon.setAttribute('src', text.icon);
               iconBox.appendChild(icon);
               var label = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", 'label');
-              label.setAttribute('value', text.text);
+              label.setAttribute('value', createText(text));
               textBox.appendChild(label);
             }
             item.setAttribute("checked", "false");

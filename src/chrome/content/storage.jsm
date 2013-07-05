@@ -13,6 +13,7 @@ const Storage = (function() {
   const logger = Log4Moz.repository.getLogger("SmartFilters.Storage");
   const textsMap   = new HashMap();
   const resultsMap = new HashMap();
+  var listener;
   var connection;
   var resultsCount = 0;
   var insertResult;
@@ -72,104 +73,16 @@ const Storage = (function() {
     return text.type + "_" + text.text;
   }
 
-  this.merge = function(inputFolder, results, callback) {
-    logger.info("Start merging " + results.length + 
-        " results for " + inputFolder);
-    if (results.length == 0) {
-      logger.info("No results: no merging should be done");
-      callback.call(this, 0);
-      return;
+  var getResults = function(resultsForFolder) {
+    let keys = resultsForFolder.keys().sort().reverse();
+    let results = [];
+    for (let i = 0; i < keys.length; i++) {
+      let result = resultsForFolder.get(keys[i]);
+      if (result.count <= 4)
+        results.push(result);
     }
-    let insertResultParams = insertResult.newBindingParamsArray();
-    let insertTextParams = insertText.newBindingParamsArray();
-    let insertLinkParams = insertLink.newBindingParamsArray();
-    let map = resultsMap.get(inputFolder);
-    let returnValue = 0;
-    let newTexts = false;
-    let newResults = false;
-    if (!map)
-      resultsMap.put(inputFolder, map = new HashMap());
-    for (let i = 0; i < results.length; i++) {
-      let result = results[i];
-      let texts = result.texts;
-      let textIds = []
-      for (let j = 0; j < texts.length; j++) {
-        let text = texts[j];
-        let key = textToKey(inputFolder, text);
-        let saved = textsMap.get(key);
-        if (!saved) {
-          textsMap.put(key, saved = text);
-          text.id = textsMap.size();
-          let params = insertTextParams.newBindingParams();
-          params.bindByName("id", text.id);
-          params.bindByName("icon", text.icon);
-          params.bindByName("text", text.text);
-          params.bindByName("type", text.type);
-          insertTextParams.addParams(params);
-          newTexts = true;
-        }
-        textIds.push(saved.id);
-      }
-      let resultKey = textIds.sort().join("_");
-      let savedResult = map.get(resultKey);
-      if (!savedResult) {
-        map.put(resultKey, savedResult = result);
-        returnValue++;
-        result.id = resultsCount++;
-        result.count = 0;
-        let params = insertResultParams.newBindingParams();
-        params.bindByName("id", result.id);
-        params.bindByName("folder", result.folder);
-        params.bindByName("count", 0);
-        logger.debug("WOW              " + params);
-        insertResultParams.addParams(params);
-        for (let j = 0; j < textIds.length; j++) {
-          let linkParams = insertLinkParams.newBindingParams();
-          linkParams.bindByName("result_id", result.id);
-          linkParams.bindByName("text_id", textIds[j]);
-          insertLinkParams.addParams(linkParams);
-        }
-        newResults = true;
-      }
-    }
-
-    let toExec = [];
-    if (newTexts) {
-      insertText.bindParameters(insertTextParams);
-      toExec.push(insertText);
-    }
-
-    if (newResults) {
-      insertResult.bindParameters(insertResultParams);
-      toExec.push(insertResult);
-      insertLink.bindParameters(insertLinkParams);
-      toExec.push(insertLink);
-    }
-
-    if (toExec.length > 0) {
-      connection.executeAsync(toExec, toExec.length,
-      {
-        handleResult: function(aResultSet) {
-        },
-                             
-        handleError: function(aError) {
-          logger.error("SmartFilters Error: " + aError.message 
-               + " during merge");
-        },
-                                     
-        handleCompletion: function(aReason) {
-          if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) 
-          {
-            logger.error("SmartFilters Query canceled or aborted during merge");
-          } else {
-            callback.call(this, returnValue);
-          }
-        }
-      });
-    } else {
-      callback.call(this, 0);
-    }
-  }
+    return results;
+  };
 
   this.start = function(callback) {
     logger.info("Starting");
@@ -248,6 +161,126 @@ const Storage = (function() {
           callback.call(this);
         });
       });
+    });
+  };
+
+  this.setListener = function(listener) {
+    this.start(function() {
+      logger.info("setting listener");
+      this.listener = listener;
+      let arg = new HashMap();
+      let keys = resultsMap.keys();
+      for(let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        arg.put(key, getResults(resultsMap.get(key)));
+      }
+      logger.error(JSON.stringify(arg) + "-----------" +  JSON.stringify(resultsMap));
+      this.listener.call(this, arg);
+    });
+  }
+
+  this.merge = function(inputFolder, results, callback) {
+    this.start(function() {
+      logger.info("Start merging " + results.length + 
+          " results for " + inputFolder);
+      if (results.length == 0) {
+        logger.info("No results: no merging should be done");
+        callback.call(this, 0);
+        return;
+      }
+      let insertResultParams = insertResult.newBindingParamsArray();
+      let insertTextParams = insertText.newBindingParamsArray();
+      let insertLinkParams = insertLink.newBindingParamsArray();
+      let map = resultsMap.get(inputFolder);
+      let returnResults = [];
+      let newTexts = false;
+      let newResults = false;
+      if (!map)
+        resultsMap.put(inputFolder, map = new HashMap());
+      for (let i = 0; i < results.length; i++) {
+        let result = results[i];
+        let texts = result.texts;
+        let textIds = []
+        for (let j = 0; j < texts.length; j++) {
+          let text = texts[j];
+          let key = textToKey(text);
+          let saved = textsMap.get(key);
+          if (!saved) {
+            text.id = textsMap.getSize();
+            textsMap.put(key, saved = text);
+            let params = insertTextParams.newBindingParams();
+            params.bindByName("id", text.id);
+            params.bindByName("icon", text.icon);
+            params.bindByName("text", text.text);
+            params.bindByName("type", text.type);
+            insertTextParams.addParams(params);
+            newTexts = true;
+          }
+          textIds.push(saved.id);
+        }
+        let resultKey = textIds.sort().join("_");
+        let savedResult = map.get(resultKey);
+        if (!savedResult) {
+          map.put(resultKey, savedResult = result);
+          returnResults.push(result);
+          result.id = resultsCount++;
+          result.count = 0;
+          let params = insertResultParams.newBindingParams();
+          params.bindByName("id", result.id);
+          params.bindByName("folder", result.folder);
+          params.bindByName("count", 0);
+          insertResultParams.addParams(params);
+          for (let j = 0; j < textIds.length; j++) {
+            let linkParams = insertLinkParams.newBindingParams();
+            linkParams.bindByName("result_id", result.id);
+            linkParams.bindByName("text_id", textIds[j]);
+            insertLinkParams.addParams(linkParams);
+          }
+          newResults = true;
+        }
+      }
+
+      let toExec = [];
+      if (newTexts) {
+        insertText.bindParameters(insertTextParams);
+        toExec.push(insertText);
+      }
+
+      if (newResults) {
+        insertResult.bindParameters(insertResultParams);
+        toExec.push(insertResult);
+        insertLink.bindParameters(insertLinkParams);
+        toExec.push(insertLink);
+      }
+
+      if (toExec.length > 0) {
+        connection.executeAsync(toExec, toExec.length,
+        {
+          handleResult: function(aResultSet) {
+          },
+                               
+          handleError: function(aError) {
+            logger.error("SmartFilters Error: " + aError.message 
+                 + " during merge");
+          },
+                                       
+          handleCompletion: function(aReason) {
+            if (aReason != Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) 
+            {
+              logger.error("SmartFilters Query canceled or aborted during merge");
+            } else {
+              if (this.listener) {
+                let arg = new HashMap();
+                arg.put(inputFolder, returnResults);
+                this.listener.call(this, arg);
+              }
+              callback.call(this, returnResults.length);
+            }
+          }
+        });
+      } else {
+        callback.call(this, 0);
+      }
     });
   };
 

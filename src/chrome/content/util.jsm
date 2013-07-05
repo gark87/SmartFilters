@@ -6,7 +6,7 @@ var Util = {
   getEmailInfo : function (email) {
     if (!email) return null;
 
-    var result = new Object;
+    var result = {};
 
     var emailData = email.split('@');
 

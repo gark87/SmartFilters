@@ -11,7 +11,6 @@ const DailyRunner = function(window) {
   const logger = Log4Moz.repository.getLogger("SmartFilters.DailyRunner");
   const urls = [];
   const dates = [];
-  let inProcess = false;
 
   let openTab = function(folder, count) {
     logger.info("Try to open tab");
@@ -22,16 +21,30 @@ const DailyRunner = function(window) {
         return;
     }
     let tab = tabmail.openTab("chromeTab", 
-        { chromePage : "chrome://smartfilters/content/smartfilters.xul", 
+        { 
+          chromePage : "chrome://smartfilters/content/smartfilters-tab.xul", 
           background : true,
-          folder     : folder,
-          msgWindow  : window, 
+          onLoad : function(event, browser) {
+            let box = browser.contentDocument.getElementById("smartfilters-box");
+            Storage.setListener(function(results) {
+              logger.info("arrived results: " + JSON.stringify(results));
+              let keys = results.keys();
+              for(let i = 0; i< keys.length; i++) {
+                logger.error(results.get(keys[i]));
+                box.addItems(results.get(keys[i]));
+              }
+            });
+          }
         });
     let icon = "chrome://smartfilters/skin/classic/logo-active.png";
+    tabmail.setTabIcon(tab, icon);
 
-    Components.classes['@mozilla.org/alerts-service;1'].
-       getService(Components.interfaces.nsIAlertsService).
-       showAlertNotification(icon, "Smartfilters", "found new filters", true, '', null);
+    try {
+      Components.classes['@mozilla.org/alerts-service;1'].
+         getService(Components.interfaces.nsIAlertsService).
+         showAlertNotification(icon, "Smartfilters", "found new filters", true, '', null);
+    } catch (e) {
+    }
   };
 
   this.msgAdded = function (aMsgHdr) {
@@ -45,17 +58,15 @@ const DailyRunner = function(window) {
       dates.push(now);
     } else {
       let date = dates[index];
- //     if (now != date)
- //       dates[index] = now;
+//      if (now != date)
+//        dates[index] = now;
     }
 
     Storage.start(function() {
       let smartfilters = (function() {
-        let storedResults = [];
-        let count = 0;
-        let ended = false;
+        let queue = [];
 
-        let report = function() {
+        let report = function(count) {
           openTab(folder, count);
         };
 
@@ -63,35 +74,13 @@ const DailyRunner = function(window) {
           logger.info(percentage + " %: " + text);
         };
 
-        let callback = function(newResultsCount) {
-          count += newResultsCount;
-          inProcess = false;
-          logger.info("merged, release lock");
-          if (ended)
-            report();
-        };
-
-        this.onResultsArrived = function(results) {
-          let length = results.length;
-          if (inProcess) {
-            storedResults = storedResults.concat(results);
-            logger.info("adding " + length + " to " + storedResults.length + " queue");
-          } else {
-            let toProcess = storedResults;
-            storedResults = [];
-            inProcess = true;
-            logger.info("start merging " + toProcess.length + " queue");
-            Storage.merge(url, toProcess, callback);
-          }
+        this.addItems = function(results) {
+          queue = queue.concat(results);
+          logger.info("add " + results.length + " results. Current queue: " + JSON.stringify(queue));
         };
 
         this.atEnd = function() {
-          if (inProcess) {
-            logger.info("try to end, but in process");
-            ended = true;
-          } else {
-            report();
-          }
+          Storage.merge(url, queue, report);
         };
 
         return this;

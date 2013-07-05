@@ -66,6 +66,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     var messenger = Components.classes["@mozilla.org/messenger;1"].createInstance ( Components.interfaces.nsIMessenger );
     var total = messages.length;
     var setStatus = this.setStatus;
+    const dispMUA = new DispMUA();
     var convertMessage = function () {
       var length = total - messages.length;
       setStatus(length + " of " + total + " messages is loaded", 50 * length / total);
@@ -107,6 +108,21 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     window.setTimeout(convertMessage, 0);
   }
 
+  let onResultsArrived = function(results) {
+    var newItems = [];
+    for(var i = 0; i < results.length; i++) {
+      var result = results[i];
+      // messages not filtered by anything
+      if (result.texts.length == 0)
+        continue;
+      // filter without messages
+      if (result.messageIndices.length <= this.threshold)
+        continue;
+      newItems.push(result);
+    }
+    return newItems;
+  }
+
   this.start = function() {
     startWorker.call(this);
     this.setStatus("start analyzing", 50);
@@ -126,7 +142,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
           return;
         }
         this.setStatus(id + " " + data.postfix, 50 + data.percentage / 2);
-        this.onResultsArrived(data.results);
+        this.addItems(onResultsArrived(data.results));
       };
       onMessage.call(owner);
     }
@@ -140,11 +156,11 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     }
   }
 
-  this.onResultsArrived = function(results) {
+  this.atEnd = function() {
   }
 
-  this.atEnd = function() {
-  } 
+  this.addItems = function(newItems) {
+  }
 
   this.setStatus = function(text, percentage) {
   }
