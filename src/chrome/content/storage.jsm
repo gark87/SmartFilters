@@ -167,6 +167,10 @@ const Storage = (function() {
   this.setListener = function(listener) {
     this.start(function() {
       logger.info("setting listener");
+      if (this.listener) {
+        this.listener.call(this, null);
+        return;
+      }
       this.listener = listener;
       let arg = new HashMap();
       let keys = resultsMap.keys();

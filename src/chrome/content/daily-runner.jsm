@@ -27,6 +27,10 @@ const DailyRunner = function(window) {
           onLoad : function(event, browser) {
             let box = browser.contentDocument.getElementById("smartfilters-box");
             Storage.setListener(function(results) {
+              if (results == null) {
+                tabmail.closeTab(tab, true);
+                return;
+              }
               logger.info("arrived results: " + JSON.stringify(results));
               let keys = results.keys();
               for(let i = 0; i< keys.length; i++) {
