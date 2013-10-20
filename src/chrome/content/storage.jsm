@@ -10,7 +10,7 @@ Components.utils.import("chrome://smartfilters/content/result.jsm");
  * This class contains all logic about storage (SQLite)
  */
 const Storage = (function() {
-  const logger = Log4Moz.repository.getLogger("SmartFilters.Storage");
+  const logger = Log4Moz.repository.getLogger("Storage");
   const textsMap   = new HashMap();
   const resultsMap = new HashMap();
   var listener;

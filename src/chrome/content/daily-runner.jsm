@@ -8,7 +8,7 @@ Components.utils.import("resource:///modules/gloda/log4moz.js");
  * All code about daily smartfilters check run
  */
 const DailyRunner = function(window) {
-  const logger = Log4Moz.repository.getLogger("SmartFilters.DailyRunner");
+  const logger = Log4Moz.repository.getLogger("DailyRunner");
   const urls = [];
   const dates = [];
 
@@ -62,10 +62,13 @@ const DailyRunner = function(window) {
       dates.push(now);
     } else {
       let date = dates[index];
+      if (now == date)
+        return;
 //      if (now != date)
 //        dates[index] = now;
     }
 
+    logger.info("created smartfilters for " + url);
     Storage.start(function() {
       let smartfilters = (function() {
         let queue = [];
@@ -90,7 +93,6 @@ const DailyRunner = function(window) {
         return this;
       })();
       smartfilters.prototype = new SmartFiltersLogic(folder, window);
-      logger.info("created smartfilters");
       smartfilters.prototype.start.call(smartfilters);
       logger.info("smartfilters started");
     });
