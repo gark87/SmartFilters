@@ -24,6 +24,9 @@ function RobotUtil(prefix) {
   nothingIcons.add("google_mail.png");
   nothingIcons.add("mail_ru.png");
 
+  var stripTopLevel = function(domain) {
+    return domain.replace(/[.][^.]*$/, "");
+  }
   this.createIconTexts = function(text, icon) {
     var result = this.createTexts(text);
     result[result.length - 1].icon = "chrome://smartfilters/skin/classic/dispmua/" + icon;
@@ -88,7 +91,7 @@ function RobotUtil(prefix) {
             // more than one message from this email - not a Twitter
             if (length > 1) {
               var indicator = name + "@" + domain;
-              var folder = this.createFolder(domain);
+              var folder = this.createFolder(stripTopLevel(domain));
               var text = indicator;
               results.push(new SmartFiltersResult(indices, 
                   this.createIconTexts(text, id), this.composeDir(folder)));
@@ -101,7 +104,7 @@ function RobotUtil(prefix) {
             return;
           var username = (name2index.getSize() == 1)? name2index.keys()[0] : "";
           var indicator = username + "@" + domain;
-          var folder = this.createFolder(domain);
+          var folder = this.createFolder(stripTopLevel(domain));
           var text = indicator;
           results.push(new SmartFiltersResult(messageIndices, 
                 this.createIconTexts(text, id), this.composeDir(folder)));
