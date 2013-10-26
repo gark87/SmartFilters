@@ -44,10 +44,10 @@ var Util = {
     }
   },
 
-  arrayContainsElementFromAnother : function(heap, needle) {
-    for each (var elem in needle) {
-      for each (var elem2 in heap) {
-	if (elem == elem2)
+  arrayContainsMatched : function(arr, regexes) {
+    for each (var regex in regexes) {
+      for each (var elem in arr) {
+	if (elem.match(regex))
 	  return true;
       }
     }

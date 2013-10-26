@@ -15,13 +15,13 @@ function MailingListUtil(prefix) {
   };
   this.processMessage = function(i, message) {
     // user is one of the recipients - that's how we get this email
-    if (Util.arrayContainsElementFromAnother(message.recipients, this.data.myEmails)) {
+    if (Util.arrayContainsMatched(message.recipients, this.data.myEmails)) {
       this.regularMails.push(i);
       return;
     }
 
     // user is the author - that's how we get this email
-    if (Util.arrayContainsElementFromAnother(message.author, this.data.myEmails)) {
+    if (Util.arrayContainsMatched(message.author, this.data.myEmails)) {
       this.regularMails.push(i);
       return;
     }

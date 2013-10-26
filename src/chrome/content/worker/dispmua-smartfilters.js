@@ -39,7 +39,7 @@ function RobotUtil(prefix) {
   this.getPrefix      = function() { return prefix; }
   this.processMessage = function(i, message) {
     // user is the author - not a robot
-    if (Util.arrayContainsElementFromAnother(message.author, this.data.myEmails)) {
+    if (Util.arrayContainsMatched(message.author, this.data.myEmails)) {
       this.regularMails.push(i);
       return;
     }

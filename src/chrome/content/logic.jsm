@@ -21,15 +21,20 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     data.messages = [];
     // find out all user emails
     var identity = folder.customIdentity;
+    var toRegexp = function(mail) {
+      mail = mail.replace(/[^@\w]*/g, '.*');
+      mail = mail.replace('@', '.*@');
+      return new RegExp(mail, "i");
+    };
     if (!identity) {
       var accountManager = Cc["@mozilla.org/messenger/account-manager;1"].getService(Ci.nsIMsgAccountManager);
       var identities = accountManager.allIdentities;
       for (var i = 0; i < identities.Count(); i++) {
         var identity = identities.GetElementAt(i).QueryInterface(Ci.nsIMsgIdentity);
-        data.myEmails.push(identity.email.toLowerCase());
+        data.myEmails.push(toRegexp(identity.email));
       }
     } else {
-      data.myEmails.push(identity.email.toLowerCase());
+      data.myEmails.push(toRegexp(identity.email));
     }
     // suck out all preferences
     data.filters = [];
