@@ -11,6 +11,7 @@ var EXPORTED_SYMBOLS = ["SmartFiltersLogic"];
  */ 
 function SmartFiltersLogic(folder, window, msgWindow) {
   var worker;
+  var threshold;
   const Cc = Components.classes;
   const Ci = Components.interfaces;
 
@@ -121,7 +122,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
       if (result.texts.length == 0)
         continue;
       // filter without messages
-      if (result.messageIndices.length <= this.threshold)
+      if (result.messageIndices.length <= threshold)
         continue;
       newItems.push(result);
     }
@@ -131,7 +132,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
   this.start = function() {
     startWorker.call(this);
     this.setStatus("start analyzing", 50);
-    this.threshold = preferences.getIntPref("threshold");
+    threshold = preferences.getIntPref("threshold");
     var owner = this;
     worker.onmessage = function(event) {
       var onMessage = function() { 
