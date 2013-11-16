@@ -1,2 +1,2 @@
-https://travis-ci.org/gark87/SmartFilters.png?branch=travis-ci
+[![Build Status](https://travis-ci.org/gark87/SmartFilters.png?branch=travis-ci)](https://travis-ci.org/gark87/SmartFilters)
 This is addon for Thunderbird that analyzes your mailbox and suggests you a better structure
