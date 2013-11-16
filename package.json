@@ -1,3 +1,6 @@
-"scripts": {
-  "test": "expresso -I lib-cov test/*"
-},
+{
+  "scripts": {
+    "test": "expresso test/*"
+  },
+  "engine": "node >= 0.4.1"
+}
