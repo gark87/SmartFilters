@@ -9,4 +9,4 @@ pref("extensions.smartfilters.filter.3", "subject");
 pref("extensions.smartfilters.max.emails.count", 1000);
 pref("extensions.smartfilters.threshold", 5);
 pref("extensions.smartfilters.last.date", "");
-pref("extensions.smartfilters.daily", true);
+pref("extensions.smartfilters.daily", false);
