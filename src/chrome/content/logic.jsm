@@ -2,6 +2,7 @@ Components.utils.import("chrome://smartfilters/content/backend/backend.jsm");
 Components.utils.import("chrome://smartfilters/content/preferences.jsm");
 Components.utils.import("chrome://smartfilters/content/util.jsm");
 Components.utils.import("chrome://smartfilters/content/dispmua/dispmua-common.jsm");
+Components.utils.import("resource:///modules/gloda/log4moz.js");
 
 var EXPORTED_SYMBOLS = ["SmartFiltersLogic"];
 
@@ -10,12 +11,14 @@ var EXPORTED_SYMBOLS = ["SmartFiltersLogic"];
  * to analyze and spawning worker.
  */ 
 function SmartFiltersLogic(folder, window, msgWindow) {
-  var worker;
-  var threshold;
+  const logger = Log4Moz.repository.getLogger("Logic");
   const Cc = Components.classes;
   const Ci = Components.interfaces;
+  var worker;
+  var threshold;
 
   var startWorker = function() {
+    logger.info("Before worker call");
     worker = new Worker("chrome://smartfilters/content/worker/worker.js");
     var data = {};
     data.myEmails = [];
@@ -23,20 +26,22 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     // find out all user emails
     var identity = folder.customIdentity;
     var toRegexp = function(mail) {
-      mail = mail.replace(/[^@\w]*/g, '.*');
+      mail = mail.replace(/[^@\w]+/g, '.*');
       mail = mail.replace('@', '.*@');
       return new RegExp(mail, "i");
     };
     if (!identity) {
       var accountManager = Cc["@mozilla.org/messenger/account-manager;1"].getService(Ci.nsIMsgAccountManager);
       var identities = accountManager.allIdentities;
-      for (var i = 0; i < identities.Count(); i++) {
-        var identity = identities.GetElementAt(i).QueryInterface(Ci.nsIMsgIdentity);
+      var enumerator = identities.enumerate();
+      while(enumerator.hasMoreElements()) {
+        var identity = enumerator.getNext().QueryInterface(Ci.nsIMsgIdentity);
         data.myEmails.push(toRegexp(identity.email));
       }
     } else {
       data.myEmails.push(toRegexp(identity.email));
     }
+    logger.info("Found my emails: " + data.myEmails);
     // suck out all preferences
     data.filters = [];
     var children = {};

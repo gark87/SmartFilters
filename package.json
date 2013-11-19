@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "expresso test/*"
+  },
+  "devDependencies": {
+    "expresso": "0.9.x"
+  },
+  "engine": "node >= 0.4.1"
+}

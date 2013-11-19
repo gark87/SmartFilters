@@ -1,8 +1,10 @@
 Components.utils.import("chrome://smartfilters/content/backend/backend.jsm");
 Components.utils.import("chrome://smartfilters/content/preferences.jsm");
 Components.utils.import("chrome://smartfilters/content/logic.jsm");
+Components.utils.import("resource:///modules/gloda/log4moz.js");
 
 function SmartFilters() {
+  const logger = Log4Moz.repository.getLogger("SmartFilters");
   var box;
   var gStatus;
   var gProgressMeter;
@@ -15,6 +17,7 @@ function SmartFilters() {
     gProgressMeter = document.getElementById("progressmeter");
     box = document.getElementById("smartfilters-box");
     document.title = locale.GetStringFromName("title") + " " + folder.URI;
+    logger.info("Before Logic start() call");
     this.prototype.start.call(this);
   }
 
