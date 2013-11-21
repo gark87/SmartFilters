@@ -33,10 +33,18 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     if (!identity) {
       var accountManager = Cc["@mozilla.org/messenger/account-manager;1"].getService(Ci.nsIMsgAccountManager);
       var identities = accountManager.allIdentities;
-      var enumerator = identities.enumerate();
-      while(enumerator.hasMoreElements()) {
-        var identity = enumerator.getNext().QueryInterface(Ci.nsIMsgIdentity);
-        data.myEmails.push(toRegexp(identity.email));
+      // backward compatibility if
+      if (identities.enumerate) {
+        var enumerator = identities.enumerate();
+        while(enumerator.hasMoreElements()) {
+          var identity = enumerator.getNext().QueryInterface(Ci.nsIMsgIdentity);
+          data.myEmails.push(toRegexp(identity.email));
+        }
+      } else {
+        for (var i = 0; i < identities.Count(); i++) {
+          var identity = identities.GetElementAt(i).QueryInterface(Ci.nsIMsgIdentity);
+          data.myEmails.push(toRegexp(identity.email));
+        }
       }
     } else {
       data.myEmails.push(toRegexp(identity.email));
