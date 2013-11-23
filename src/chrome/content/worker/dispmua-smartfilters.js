@@ -23,6 +23,8 @@ function RobotUtil(prefix) {
   nothingIcons.add("empty.png");
   nothingIcons.add("google_mail.png");
   nothingIcons.add("mail_ru.png");
+  nothingIcons.add("yahoo.png");
+  nothingIcons.add("yandex_ru.png");
 
   var stripTopLevel = function(domain) {
     return domain.replace(/[.][^.]*$/, "");
