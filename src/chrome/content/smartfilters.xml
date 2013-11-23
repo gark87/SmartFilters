@@ -12,6 +12,23 @@
     </xul:scrollbox>
     </content>
     <implementation>
+      <method name="removeItems">
+        <parameter name="items"/>
+        <body><![CDATA[
+           var children = document.getElementsByClassName('smartfilters-item');
+           for (var i = 0; i < children.length; i++) {
+             var child = children[i];
+             var data = child.data;
+             for (var j = 0; j < items.length; j++) {
+               if (data == items[j]) {
+                 this.removeChild(child);
+                 i--;
+                 break;
+               }
+             }
+           }
+        ]]></body>
+      </method>
       <method name="addItems">
         <parameter name="newItems"/>
         <body><![CDATA[

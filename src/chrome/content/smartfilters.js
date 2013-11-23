@@ -65,6 +65,7 @@ function SmartFilters() {
     let backend = preferences.getCharPref("backend");
     let text = smartfiltersBackend.getText(backend, checkedItems.length);
     if (prompts.confirm(window, locale.GetStringFromName("confirmation.title"), text)) {
+      box.removeItems(checkedItems);
       smartfiltersBackend.run(backend, folder, checkedItems);
     } 
   }
