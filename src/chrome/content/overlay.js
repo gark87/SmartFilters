@@ -16,11 +16,23 @@ Components.utils.import("resource:///modules/gloda/log4moz.js");
 
 function startSmartFilters()
 {
-  var msgFolder = gFolderDisplay.displayedFolder;
+  let folders = gFolderTreeView.getSelectedFolders();
+  var msgFolder = folders[0];
 
   window.openDialog(XUL,
     "global:smartfilters", "all",
     { folder: msgFolder, msgWindow: msgWindow} );
+}
+
+window.addEventListener("load", initOverlay, false);
+
+function initOverlay() {
+  var menu = document.getElementById("folderPaneContext");
+  menu.addEventListener("popupshowing", function (e) {
+    let folders = gFolderTreeView.getSelectedFolders();
+    var item = document.getElementById('smartFiltersMenu');
+    item.hidden = folders.length != 1 || folders[0].isServer;
+  }, false);
 }
 
 if (preferences.getBoolPref("daily")) {

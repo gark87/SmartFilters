@@ -5,7 +5,7 @@
 <!DOCTYPE overlay SYSTEM "chrome://smartfilters/locale/overlay.dtd">
 
 <overlay id="smartFiltersOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://smartfilters/content/overlay.js"/>
+    <script type="application/x-javascript" src="chrome://smartfilters/content/overlay.js"/>
     <popup id="folderPaneContext">
       <menuitem id="smartFiltersMenu" label="&SmartFilters.title;" tooltiptext="&SmartFilters.tooltip;" oncommand="startSmartFilters();"/>
     </popup>
