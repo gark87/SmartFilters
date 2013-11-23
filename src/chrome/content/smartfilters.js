@@ -16,7 +16,7 @@ function SmartFilters() {
     gStatus = document.getElementById("status");
     gProgressMeter = document.getElementById("progressmeter");
     box = document.getElementById("smartfilters-box");
-    document.title = locale.GetStringFromName("title") + " " + folder.URI;
+    document.title = locale.GetStringFromName("title") + " " + folder.prettiestName;
     logger.info("Before Logic start() call");
     this.prototype.start.call(this);
   }
