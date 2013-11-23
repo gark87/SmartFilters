@@ -25,9 +25,10 @@ var Util = {
     var headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"];
     var hdrParser = headerParser.getService(Components.interfaces.nsIMsgHeaderParser);
     hdrParser.parseHeadersWithArray(list, emails, {}, {});
-    for each (var recipient in emails.value) {
+    for (var i = 0; i < emails.value.length; i++) {
+      var recipient = emails.value[i];
       if (Util.getEmailInfo(recipient)) {
-	result.add(recipient);
+        result.add(recipient);
       }
     }
   },
@@ -37,25 +38,28 @@ var Util = {
     var headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"];
     var hdrParser = headerParser.getService(Components.interfaces.nsIMsgHeaderParser);
     hdrParser.parseHeadersWithArray(list, emails, {}, {});
-    for each (var recipient in emails.value) {
+    for (var i = 0; i < emails.value.length; i++) {
+      var recipient = emails.value[i];
       if (Util.getEmailInfo(recipient)) {
-	arr.push(recipient.toLowerCase());
+        arr.push(recipient.toLowerCase());
       }
     }
   },
 
   arrayContainsMatched : function(arr, regexes) {
-    for each (var regex in regexes) {
-      for each (var elem in arr) {
-	if (elem.match(regex))
-	  return true;
+    for (var i = 0; i < regexes.length; i++) {
+      var regex = regexes[i];
+      for (var j = 0; j < arr.length; j++) {
+        if (arr[j].match(regex))
+          return true;
       }
     }
     return false;
   },
 
   foreach : function(arr, func, obj) {
-    for each (var elem in arr)
-      (func).call(obj, elem);
+    for (var i = 0; i < arr.length; i++) {
+      (func).call(obj, arr[i]);
+    }
   },
 };

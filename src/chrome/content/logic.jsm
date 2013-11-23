@@ -12,6 +12,7 @@ var EXPORTED_SYMBOLS = ["SmartFiltersLogic"];
  */ 
 function SmartFiltersLogic(folder, window, msgWindow) {
   const logger = Log4Moz.repository.getLogger("Logic");
+  const workerLogger = Log4Moz.repository.getLogger("Worker");
   const Cc = Components.classes;
   const Ci = Components.interfaces;
   var worker;
@@ -90,6 +91,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
       var length = total - messages.length;
       setStatus(length + " of " + total + " messages is loaded", 50 * length / total);
       if (length == total) {
+        logger.debug("Post to worker: " + data.messages.length);
         worker.postMessage({
             'data' : data,
             'id' : 'start',
@@ -127,7 +129,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
     window.setTimeout(convertMessage, 0);
   }
 
-  let onResultsArrived = function(results) {
+  var onResultsArrived = function(results) {
     var newItems = [];
     for(var i = 0; i < results.length; i++) {
       var result = results[i];
@@ -139,6 +141,7 @@ function SmartFiltersLogic(folder, window, msgWindow) {
         continue;
       newItems.push(result);
     }
+    logger.info("Results arrived: " + results.length + " -> " + newItems.length);
     return newItems;
   }
 
@@ -151,19 +154,23 @@ function SmartFiltersLogic(folder, window, msgWindow) {
       var onMessage = function() { 
         var data = event.data;
         var id = data.id;
+        logger.info("onmessage " + id)
         if (id == "end") {
           this.setStatus("finished", 100);
           this.atEnd();
           return;
         }
         if (id == "debug") {
-          Application.console.log(data.text);
+          logger.debug(data.text);
           return;
         }
         this.setStatus(id + " " + data.postfix, 50 + data.percentage / 2);
         this.addItems(onResultsArrived(data.results));
       };
       onMessage.call(owner);
+    }
+    worker.onerror = function(event) {
+      workerLogger.error(event.message + " @ " + event.filename + ":" + event.lineno);
     }
   };
 
