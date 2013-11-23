@@ -36,8 +36,8 @@ onmessage = function(event) {
       var filt = filtersMap[pref];
       var nextResults = [];
       if (filt) {
+        filt.prototype = util;
         for(var k = 0; k < results.length; k++) {
-          filt.prototype = util;
           var filter = new filt(filters[i].prefix);
           var processing = results[k];
           var result = filter.process(processing);
