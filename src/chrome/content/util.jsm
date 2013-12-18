@@ -6,13 +6,12 @@ var Util = {
   getEmailInfo : function (email) {
     if (!email) return null;
 
-    var result = {};
-
     var emailData = email.split('@');
 
     if (emailData.length != 2) 
       return null;
 
+    var result = {};
     // all the variables we'll be returning
     result.username = emailData[0];
     result.domain = emailData[1];
