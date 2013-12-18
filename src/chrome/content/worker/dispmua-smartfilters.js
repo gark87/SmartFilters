@@ -45,7 +45,15 @@ function RobotUtil(prefix) {
       this.regularMails.push(i);
       return;
     }
+    var icon = message.dispMUAIcon;
+    if (nothingIcons.get(icon))
+      icon = NOTHING;
     var author = Util.getEmailInfo(message.author[0]);
+    if (!author) {
+      this.log("DispMUA : cannot parse author:`" + message.author[0] + "` with icon:`" + icon + "`");
+      this.regularMails.push(i);
+      return;
+    }
     var createIfNeeded = function(dispMUAIcon) {
       var id2map = domain2map.get(author.domain);
       if (id2map == undefined) {
@@ -61,9 +69,6 @@ function RobotUtil(prefix) {
       }
       return indices;
     };
-    var icon = message.dispMUAIcon;
-    if (nothingIcons.get(icon))
-      icon = NOTHING;
     createIfNeeded.call(this, icon).push(i);
   };
 

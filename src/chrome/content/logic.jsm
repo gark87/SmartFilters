@@ -160,8 +160,8 @@ function SmartFiltersLogic(folder, window, msgWindow) {
           this.atEnd();
           return;
         }
-        if (id == "debug") {
-          logger.debug(data.text);
+        if (id == "log") {
+          workerLogger.debug(data.text);
           return;
         }
         this.setStatus(id + " " + data.postfix, 50 + data.percentage / 2);

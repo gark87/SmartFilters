@@ -37,6 +37,15 @@ function MailingListUtil(prefix) {
     }, this);
   };
 
+  this.parseUsername = function(email) {
+    var author = Util.getEmailInfo(email);
+    if (!author) {
+      this.log("MailingList: cannot parse author:`" + email + "`");
+      return "noname";
+    }
+    return author.username;
+  }
+
   this.process = function(prevResult) {
     this.init(prevResult);
 
@@ -44,8 +53,7 @@ function MailingListUtil(prefix) {
     // first of all: process 100% mailing list
     mailing_list_100.foreach(function(email) {
       var set = recipient2indices[email];
-      var author = Util.getEmailInfo(email);
-      var folder = this.createFolder(author.username);
+      var folder = this.createFolder(this.parseUsername(email));
       var text = email;
       var result = new SmartFiltersResult(set.keys(), 
            this.createTexts(text), this.composeDir(folder));
@@ -74,8 +82,7 @@ function MailingListUtil(prefix) {
       if (biggestSize == 0)
         break;
 
-      var author = Util.getEmailInfo(biggestKey);
-      var folder = this.createFolder(author.username);
+      var folder = this.createFolder(this.parseUsername(biggestKey));
       var text = biggestKey;
       results.push(new SmartFiltersResult(biggestSet.keys(), 
             this.createTexts(text), this.composeDir(folder)));

@@ -15,6 +15,10 @@ function Base(data) {
     return this.getPrefix().replace(/%/g, replacement);
   }
 
+  this.log = function(msg) {
+    postMessage({id : "log", text : msg});
+  }
+
   this.init = function(prevResult) {
     this.getPrevTexts = function () { return prevResult.texts; };
 
