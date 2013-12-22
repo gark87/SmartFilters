@@ -1,6 +1,8 @@
 var assert = require('assert');
-var fs = require('fs');
-eval(fs.readFileSync('./src/chrome/content/hashmap.jsm')+'');
+var util = require('./util');
+
+util.load('hashmap.jsm');
+
 exports['test HashMap'] = function(){
     var hashmap = new HashMap();
     assert.equal(0, hashmap.getSize());

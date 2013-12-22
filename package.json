@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "expresso test/*"
+    "test": "expresso test/*test.js"
   },
   "devDependencies": {
     "expresso": "0.9.x"
